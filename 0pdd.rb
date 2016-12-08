@@ -27,7 +27,8 @@ require 'sinatra'
 
 require_relative 'version'
 
-cfg = File.join(File.dirname(__FILE__), 'config.yml')
+#cfg = File.join(File.dirname(__FILE__), 'config.yml')
+cfg = '/code/home/assets/0pdd/config.yml'
 config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
 
 before do
@@ -39,11 +40,11 @@ get '/' do
 end
 
 error do
-  @message = 'something went wrong. get back later'
+  @message = 'Something went wrong. Get back later.'
   haml :error, layout: :layout
 end
 
 not_found do
-  @message = 'page not found. do not type in anything. use navigation'
+  @message = 'Page not found. Do not type in anything. Use navigation.'
   haml :error, layout: :layout
 end

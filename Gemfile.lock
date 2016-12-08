@@ -136,5 +136,8 @@ DEPENDENCIES
   rubocop-rspec (= 1.5.1)
   sinatra (= 1.4.5)
 
+RUBY VERSION
+   ruby 2.2.2p95
+
 BUNDLED WITH
    1.13.6
