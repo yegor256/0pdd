@@ -20,30 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'rubygems'
+require 'sinatra'
+require 'sass'
 require 'haml'
 require 'yaml'
-require 'sinatra'
 
 require_relative 'version'
 
-cfg = File.join(File.dirname(__FILE__), 'config.yml')
-config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
-
-before do
-  @config = config
-end
+# cfg = File.join(File.dirname(__FILE__), 'config.yml')
+# config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
 
 get '/' do
   haml :index, layout: :layout
 end
 
-error do
-  @message = 'Something went wrong. Get back later.'
-  haml :error, layout: :layout
-end
-
-not_found do
-  @message = 'Page not found. Do not type in anything. Use navigation.'
-  haml :error, layout: :layout
+get '/css/*.css' do
+  content_type 'text/css', charset: 'utf-8'
+  file = params[:splat].first
+  sass file.to_sym, views: "#{settings.root}/assets/sass"
 end
