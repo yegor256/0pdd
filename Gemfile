@@ -22,6 +22,8 @@
 
 source 'https://rubygems.org'
 
+gem 'sinatra', '1.4.5'
+gem 'haml', '4.0.5'
 gem 'rake', '10.5.0'
 gem 'coveralls', '0.7.2'
 gem 'cucumber', '1.3.17'

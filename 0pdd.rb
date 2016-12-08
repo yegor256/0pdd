@@ -21,41 +21,33 @@
 # SOFTWARE.
 
 require 'rubygems'
-require 'rake'
-require 'rdoc'
-require 'rake/clean'
+require 'haml'
+require 'yaml'
+require 'sinatra'
 
-task default: [:clean, :test, :features, :rubocop, :copyright]
+require_relative 'version'
 
-require 'rake/testtask'
-desc 'Run all unit tests'
-Rake::TestTask.new(:test) do |test|
-  Rake::Cleaner.cleanup_files(['coverage'])
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = false
+cfg = File.join(File.dirname(__FILE__), 'config.yml')
+if File.exist?(cfg)
+  config = YAML.load(File.open(cfg))
+else
+  config = {}
 end
 
-require 'rubocop/rake_task'
-desc 'Run RuboCop on all directories'
-RuboCop::RakeTask.new(:rubocop) do |task|
-  task.fail_on_error = true
-  task.requires << 'rubocop-rspec'
+before do
+  @config = config
 end
 
-require 'cucumber/rake/task'
-Cucumber::Rake::Task.new(:features) do |t|
-  Rake::Cleaner.cleanup_files(['coverage'])
-  t.profile = 'travis'
-end
-Cucumber::Rake::Task.new(:"features:html") do |t|
-  t.profile = 'html_report'
+get '/' do
+  haml :index, layout: :layout
 end
 
-task :copyright do
-  sh "grep -q -r '#{Date.today.strftime('%Y')}' \
-    --include '*.rb' \
-    --include '*.txt' \
-    --include 'Rakefile' \
-    ."
+error do
+  @message = 'something went wrong. get back later'
+  haml :error, layout: :layout
+end
+
+not_found do
+  @message = 'page not found. do not type in anything. use navigation'
+  haml :error, layout: :layout
 end

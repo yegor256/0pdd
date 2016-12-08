@@ -20,42 +20,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'rubygems'
-require 'rake'
-require 'rdoc'
-require 'rake/clean'
-
-task default: [:clean, :test, :features, :rubocop, :copyright]
-
-require 'rake/testtask'
-desc 'Run all unit tests'
-Rake::TestTask.new(:test) do |test|
-  Rake::Cleaner.cleanup_files(['coverage'])
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = false
-end
-
-require 'rubocop/rake_task'
-desc 'Run RuboCop on all directories'
-RuboCop::RakeTask.new(:rubocop) do |task|
-  task.fail_on_error = true
-  task.requires << 'rubocop-rspec'
-end
-
-require 'cucumber/rake/task'
-Cucumber::Rake::Task.new(:features) do |t|
-  Rake::Cleaner.cleanup_files(['coverage'])
-  t.profile = 'travis'
-end
-Cucumber::Rake::Task.new(:"features:html") do |t|
-  t.profile = 'html_report'
-end
-
-task :copyright do
-  sh "grep -q -r '#{Date.today.strftime('%Y')}' \
-    --include '*.rb' \
-    --include '*.txt' \
-    --include 'Rakefile' \
-    ."
-end
+VERSION = 'BUILD'

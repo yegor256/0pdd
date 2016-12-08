@@ -1,5 +1,7 @@
 assets:
-  config.yml: yegor256/home#assets/0pdd/config.yml
+  config.yml: teamed/home#assets/0pdd/config.yml
+  id_rsa: teamed/home#assets/heroku-key
+  id_rsa.pub: teamed/home#assets/heroku-key.pub
 install: |
   sudo apt-get update
   sudo apt-get install -y --fix-missing libmagic1 libmagic-dev
@@ -17,6 +19,9 @@ release:
     git add config.yml
     git commit -m 'config.yml'
     git fetch
+    sed -i "s/BUILD/${tag}/g" ./version.rb
+    git add ./version.rb
+    git commit -m 'build number set'
     git push -f heroku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0pdd.com > /dev/null
