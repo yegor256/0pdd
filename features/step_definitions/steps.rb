@@ -34,4 +34,3 @@ After do
   Dir.chdir(@cwd)
   FileUtils.rm_rf(@dir) if File.exist?(@dir)
 end
-
