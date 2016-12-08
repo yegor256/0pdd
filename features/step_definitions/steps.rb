@@ -14,36 +14,24 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'rubygems'
-require 'haml'
-require 'yaml'
-require 'sinatra'
+require 'tmpdir'
+require 'English'
 
-require_relative 'version'
-
-cfg = File.join(File.dirname(__FILE__), 'config.yml')
-config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
-
-before do
-  @config = config
+Before do
+  @cwd = Dir.pwd
+  @dir = Dir.mktmpdir('test')
+  FileUtils.mkdir_p(@dir) unless File.exist?(@dir)
+  Dir.chdir(@dir)
 end
 
-get '/' do
-  haml :index, layout: :layout
+After do
+  Dir.chdir(@cwd)
+  FileUtils.rm_rf(@dir) if File.exist?(@dir)
 end
 
-error do
-  @message = 'Something went wrong. Get back later.'
-  haml :error, layout: :layout
-end
-
-not_found do
-  @message = 'Page not found. Do not type in anything. Use navigation.'
-  haml :error, layout: :layout
-end
