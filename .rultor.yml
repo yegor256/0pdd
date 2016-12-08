@@ -1,0 +1,29 @@
+assets:
+  config.yml: yegor256/home#assets/0pdd/config.yml
+install: |
+  sudo apt-get update
+  sudo apt-get install -y --fix-missing libmagic1 libmagic-dev
+  sudo gem install pdd
+release:
+  script: |-
+    sudo bundle install
+    rake
+    cp ../config.yml config.yml
+    git remote add heroku git@heroku.com:zeropdd.git
+    mkdir ~/.ssh
+    mv ../id_rsa ../id_rsa.pub ~/.ssh
+    chmod -R 600 ~/.ssh/*
+    echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
+    git add config.yml
+    git commit -m 'config.yml'
+    git fetch
+    git push -f heroku $(git symbolic-ref --short HEAD):master
+    git reset HEAD~1
+    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0pdd.com > /dev/null
+  commanders:
+  - yegor256
+architect:
+- yegor256
+merge:
+  commanders: []
+deploy: {}

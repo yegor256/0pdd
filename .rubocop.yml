@@ -1,0 +1,6 @@
+MethodLength:
+  Max: 30
+Style/ClassLength:
+  Max: 150
+Metrics/AbcSize:
+  Max: 37

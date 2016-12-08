@@ -1,0 +1,17 @@
+language: ruby
+rvm:
+  - 2.2.2
+cache: bundler
+branches:
+  only:
+    - master
+addons:
+  apt:
+    packages:
+      - libmagic1
+      - libmagic-dev
+install:
+  - travis_retry bundle update
+script:
+  - rake
+
