@@ -28,11 +28,7 @@ require 'sinatra'
 require_relative 'version'
 
 cfg = File.join(File.dirname(__FILE__), 'config.yml')
-if File.exist?(cfg)
-  config = YAML.load(File.open(cfg))
-else
-  config = {}
-end
+config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
 
 before do
   @config = config
