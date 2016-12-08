@@ -4,3 +4,4 @@ coverage/
 .bundle/
 .DS_Store
 rdoc/
+.sass-cache/
