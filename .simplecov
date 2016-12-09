@@ -38,6 +38,6 @@ else
   SimpleCov.start do
     add_filter "/test/"
     add_filter "/features/"
-    minimum_coverage 100
+    minimum_coverage 80
   end
 end

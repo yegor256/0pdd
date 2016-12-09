@@ -60,8 +60,9 @@ class GitRepo
   end
 
   def prepare
-    FileUtils.mkdir_p '~/.ssh'
-    priv = '~/.ssh/id_rsa'
+    dir = "#{Dir.home}/.ssh"
+    FileUtils.mkdir_p dir
+    priv = "#{dir}/id_rsa"
     IO.write(priv, Config.new.yaml['id_rsa']) unless File.exist?(priv)
     Exec.new(
       'set -x',
