@@ -28,9 +28,10 @@ require_relative 'exec'
 # Repository in Git
 #
 class GitRepo
-  def initialize(name:, dir: '/tmp/0pdd')
+  def initialize(name:, dir: '/tmp/0pdd', uri: "git@github.com:#{name}")
     @name = name
     @path = "#{dir}/#{@name}"
+    @uri = uri
   end
 
   def push
@@ -47,7 +48,7 @@ class GitRepo
       'git clone',
       '--depth=1',
       '--quiet',
-      "git@github.com:#{@name}",
+      @uri,
       @path
     ).run
   end

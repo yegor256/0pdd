@@ -31,7 +31,7 @@ require_relative '../objects/git_repo'
 class TestGitRepo < Test::Unit::TestCase
   def test_clone_and_pull
     Dir.mktmpdir 'test' do |d|
-      repo = GitRepo.new(name: 'teamed/pdd', dir: d)
+      repo = GitRepo.new(name: 'teamed/pdd', dir: d, uri: git(d))
       repo.clone
       repo.pull
       assert File.exist?(File.join(d, 'teamed/pdd/.git'))
@@ -40,10 +40,25 @@ class TestGitRepo < Test::Unit::TestCase
 
   def test_push
     Dir.mktmpdir 'test' do |d|
-      repo = GitRepo.new(name: 'teamed/est', dir: d)
+      repo = GitRepo.new(name: 'teamed/est', dir: d, uri: git(d))
       repo.push
       repo.push
       assert File.exist?(File.join(d, 'teamed/est/.git'))
     end
+  end
+
+  def git(dir)
+    raise unless system("
+      set -e
+      cd '#{dir}'
+      git init repo
+      cd repo
+      git config user.email test@teamed.io
+      git config user.name test
+      echo 'hello, world!' > test.txt
+      git add test.txt
+      git commit -am 'add line'
+    ")
+    'file://' + File.join(dir, 'repo')
   end
 end
