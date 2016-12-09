@@ -42,7 +42,7 @@ post '/hook/github' do
   repo = json['repository']['full_name']
   Process.detach(
     fork do
-      GitRepo.new(repo).push
+      GitRepo.new(name: repo).push
     end
   )
   puts "GitHub hook from #{repo}"
