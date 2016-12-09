@@ -21,4 +21,7 @@
 # SOFTWARE.
 
 require './0pdd'
+
+$stdout.sync = true
+
 run Sinatra::Application

@@ -37,7 +37,7 @@ end
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)
-  puts ''
+  puts "GitHub hook from #{json.repository.full_name}"
   "thanks #{json.repository.full_name}"
 end
 
