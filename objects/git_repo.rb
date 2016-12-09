@@ -63,10 +63,10 @@ class GitRepo
       'set -x',
       'set -e',
       'mkdir -p ~/.ssh',
-      'chmod -R 600 ~/.ssh/*',
       'echo "Host *" > ~/.ssh/config',
       'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
-      'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config'
+      'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config',
+      'chmod -R 600 ~/.ssh/*'
     ].join('; ') + ';'
   end
 end
