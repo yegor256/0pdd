@@ -74,6 +74,6 @@ class GitRepo
       'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
       'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config',
       'chmod -R 600 ~/.ssh/*'
-    )
+    ) unless File.exists?("#{dir}/config")
   end
 end
