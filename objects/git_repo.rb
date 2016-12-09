@@ -41,6 +41,7 @@ class GitRepo
 
   def clone
     Exec.new(
+      preamble,
       'git clone',
       '--depth=1',
       "git@github.com:#{@name}",
@@ -50,9 +51,22 @@ class GitRepo
 
   def pull
     Exec.new(
+      preamble,
       'git',
       "--git-dir=#{@path}/.git",
       'pull'
     ).run
+  end
+
+  def preamble
+    [
+      'set -x',
+      'set -e',
+      'mkdir -p ~/.ssh',
+      'chmod -R 600 ~/.ssh/*',
+      'echo "Host *" > ~/.ssh/config',
+      'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
+      'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config'
+    ].join('; ') + ';'
   end
 end
