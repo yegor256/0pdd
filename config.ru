@@ -20,29 +20,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'sinatra'
-require 'sass'
-require 'haml'
-require 'yaml'
-
-require_relative 'version'
-
-# cfg = File.join(File.dirname(__FILE__), 'config.yml')
-# config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
-
-get '/' do
-  haml :index, layout: :layout
-end
-
-post '/hook/github' do
-  request.body.rewind
-  json = JSON.parse(request.body.read)
-  puts ''
-  "thanks #{json.repository.full_name}"
-end
-
-get '/css/*.css' do
-  content_type 'text/css', charset: 'utf-8'
-  file = params[:splat].first
-  sass file.to_sym, views: "#{settings.root}/assets/sass"
-end
+require './0pdd'
+run Sinatra::Application

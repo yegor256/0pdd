@@ -14,7 +14,7 @@
 finds new "puzzles" in your repository and posts them as GitHub
 issues. To start using it just create a
 [Webhook](https://developer.github.com/webhooks/creating/) in your repository
-just for `push` events  with `http://www.0pdd.com/hook` payload URL and
+just for `push` events  with `http://www.0pdd.com/hook/github` payload URL and
 `application/json` content type.
 
 Then, add [@0pdd](https://github.com/0pdd) GitHub user as a
