@@ -75,5 +75,6 @@ class GitRepo
       'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config',
       'chmod -R 600 ~/.ssh/*'
     ) unless File.exists?("#{dir}/config")
+    puts '.ssh is ready'
   end
 end
