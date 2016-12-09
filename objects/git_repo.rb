@@ -20,33 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'json'
-require 'sinatra'
-require 'sass'
-require 'haml'
-require 'yaml'
+#
+# Repository in Git
+#
+class GitRepo
+  def initialize(name)
+    @name = name
+  end
 
-require_relative 'version'
-require_relative 'objects/git-repo'
-
-# cfg = File.join(File.dirname(__FILE__), 'config.yml')
-# config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
-
-get '/' do
-  haml :index, layout: :layout
-end
-
-post '/hook/github' do
-  request.body.rewind
-  json = JSON.parse(request.body.read)
-  repo = json['repository']['full_name']
-  GitRepo.new(repo).push
-  puts "GitHub hook from #{repo}"
-  "thanks #{repo}"
-end
-
-get '/css/*.css' do
-  content_type 'text/css', charset: 'utf-8'
-  file = params[:splat].first
-  sass file.to_sym, views: "#{settings.root}/assets/sass"
+  def push
+    puts "git checkout #{@name}..."
+  end
 end
