@@ -20,19 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ruby '2.2.2'
-source 'https://rubygems.org'
+require 'English'
 
-gem 'coveralls', '0.8.17'
-gem 'cucumber', '2.4.0'
-gem 'haml', '4.0.7'
-gem 'minitest', '5.10.1'
-gem 'rack', '1.6.5'
-gem 'rake', '12.0.0'
-gem 'rspec-rails', '3.5.2'
-gem 'rubocop', '0.46.0'
-gem 'rubocop-rspec', '1.8.0'
-gem 'sass', '3.4.22'
-gem 'sinatra', '1.4.7'
-gem 'sprockets', '3.7.0'
-gem 'test-unit', '3.0.8'
+#
+# One command exec
+#
+class Exec
+  def initialize(arg, *rest)
+    @cmd = arg + ' ' + rest.join(' ')
+  end
+
+  def run
+    `set -x; #{@cmd}`
+    status = $CHILD_STATUS.to_i
+    raise "Exit code (#{status}) is not zero" unless status.zero?
+  end
+end

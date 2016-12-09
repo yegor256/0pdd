@@ -14,25 +14,36 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ruby '2.2.2'
-source 'https://rubygems.org'
+require 'test/unit'
+require 'tmpdir'
+require_relative '../objects/git_repo'
 
-gem 'coveralls', '0.8.17'
-gem 'cucumber', '2.4.0'
-gem 'haml', '4.0.7'
-gem 'minitest', '5.10.1'
-gem 'rack', '1.6.5'
-gem 'rake', '12.0.0'
-gem 'rspec-rails', '3.5.2'
-gem 'rubocop', '0.46.0'
-gem 'rubocop-rspec', '1.8.0'
-gem 'sass', '3.4.22'
-gem 'sinatra', '1.4.7'
-gem 'sprockets', '3.7.0'
-gem 'test-unit', '3.0.8'
+# GitRepo test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016 Yegor Bugayenko
+# License:: MIT
+class TestGitRepo < Test::Unit::TestCase
+  def test_clone_and_pull
+    Dir.mktmpdir 'test' do |d|
+      repo = GitRepo.new(name: 'teamed/pdd', dir: d)
+      repo.clone
+      repo.pull
+      assert File.exist?(File.join(d, 'teamed/pdd/.git'))
+    end
+  end
+
+  def test_push
+    Dir.mktmpdir 'test' do |d|
+      repo = GitRepo.new(name: 'teamed/est', dir: d)
+      repo.push
+      repo.push
+      assert File.exist?(File.join(d, 'teamed/est/.git'))
+    end
+  end
+end

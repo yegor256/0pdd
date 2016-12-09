@@ -20,15 +20,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require_relative 'exec'
+
 #
 # Repository in Git
 #
 class GitRepo
-  def initialize(name)
+  def initialize(name:, dir: '/tmp/0pdd')
     @name = name
+    @path = "#{dir}/#{@name}"
   end
 
   def push
-    puts "git checkout #{@name}..."
+    if File.exist?(@path)
+      pull
+    else
+      clone
+    end
+  end
+
+  def clone
+    Exec.new(
+      'git clone',
+      '--depth=1',
+      "git@github.com:#{@name}",
+      @path
+    ).run
+  end
+
+  def pull
+    Exec.new(
+      'git',
+      "--git-dir=#{@path}/.git",
+      'pull'
+    ).run
   end
 end
