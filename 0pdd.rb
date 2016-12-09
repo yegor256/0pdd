@@ -38,8 +38,9 @@ end
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)
-  puts "GitHub hook from #{json.repository.full_name}"
-  "thanks #{json.repository.full_name}"
+  repo = json['repository']['full_name']
+  puts "GitHub hook from #{repo}"
+  "thanks #{repo}"
 end
 
 get '/css/*.css' do
