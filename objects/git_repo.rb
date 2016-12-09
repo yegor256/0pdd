@@ -46,6 +46,7 @@ class GitRepo
     Exec.new(
       'git clone',
       '--depth=1',
+      '--quiet',
       "git@github.com:#{@name}",
       @path
     ).run
@@ -55,7 +56,8 @@ class GitRepo
     Exec.new(
       'git',
       "--git-dir=#{@path}/.git",
-      'pull'
+      'pull',
+      '--quiet'
     ).run
   end
 
