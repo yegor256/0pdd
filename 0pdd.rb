@@ -24,13 +24,9 @@ require 'json'
 require 'sinatra'
 require 'sass'
 require 'haml'
-require 'yaml'
 
 require_relative 'version'
 require_relative 'objects/git_repo'
-
-# cfg = File.join(File.dirname(__FILE__), 'config.yml')
-# config = File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
 
 get '/' do
   haml :index, layout: :layout

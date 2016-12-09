@@ -20,19 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'English'
+require 'yaml'
 
 #
-# One command exec
+# Config.
 #
-class Exec
-  def initialize(arg, *rest)
-    @cmd = arg + ' ' + rest.join(' ')
-  end
-
-  def run
-    `#{@cmd}`
-    status = $CHILD_STATUS.to_i
-    raise "Exit code (#{status}) is not zero" unless status.zero?
+class Config
+  def yaml
+    cfg = File.join(File.dirname(__FILE__), '../config.yml')
+    File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
   end
 end

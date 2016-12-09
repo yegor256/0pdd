@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'fileutils'
+require_relative 'config'
 require_relative 'exec'
 
 #
@@ -32,6 +34,7 @@ class GitRepo
   end
 
   def push
+    prepare
     if File.exist?(@path)
       pull
     else
@@ -41,7 +44,6 @@ class GitRepo
 
   def clone
     Exec.new(
-      preamble,
       'git clone',
       '--depth=1',
       "git@github.com:#{@name}",
@@ -51,22 +53,23 @@ class GitRepo
 
   def pull
     Exec.new(
-      preamble,
       'git',
       "--git-dir=#{@path}/.git",
       'pull'
     ).run
   end
 
-  def preamble
-    [
+  def prepare
+    FileUtils.mkdir_p '~/.ssh'
+    priv = '~/.ssh/id_rsa'
+    IO.write(priv, Config.new.yaml['id_rsa']) unless File.exist?(priv)
+    Exec.new(
       'set -x',
       'set -e',
-      'mkdir -p ~/.ssh',
       'echo "Host *" > ~/.ssh/config',
       'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
       'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config',
       'chmod -R 600 ~/.ssh/*'
-    ].join('; ') + ';'
+    )
   end
 end
