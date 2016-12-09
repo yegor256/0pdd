@@ -40,7 +40,11 @@ post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)
   repo = json['repository']['full_name']
-  GitRepo.new(repo).push
+  Process.detach(
+    fork do
+      GitRepo.new(repo).push
+    end
+  )
   puts "GitHub hook from #{repo}"
   "thanks #{repo}"
 end
