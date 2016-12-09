@@ -67,15 +67,16 @@ class GitRepo
     FileUtils.mkdir_p dir
     priv = "#{dir}/id_rsa"
     IO.write(priv, Config.new.yaml['id_rsa']) unless File.exist?(priv)
-    Exec.new(
-      'set -x',
-      'set -e',
-      'echo "Host *" > ~/.ssh/config',
-      'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
-      'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config',
-      'chmod -R 600 ~/.ssh/*'
-    ) unless File.exists?("#{dir}/config")
-    puts '.ssh is ready'
+    unless File.exist?("#{dir}/config")
+      Exec.new(
+        'set -x',
+        'set -e',
+        'echo "Host *" > ~/.ssh/config',
+        'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
+        'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config',
+        'chmod -R 600 ~/.ssh/*'
+      )
+    end
     Exec.new('ls -al ~/.ssh/*')
   end
 end
