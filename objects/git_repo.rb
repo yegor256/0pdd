@@ -76,5 +76,6 @@ class GitRepo
       'chmod -R 600 ~/.ssh/*'
     ) unless File.exists?("#{dir}/config")
     puts '.ssh is ready'
+    Exec.new('ls -al ~/.ssh/*')
   end
 end
