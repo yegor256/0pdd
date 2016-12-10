@@ -14,39 +14,28 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'json'
-require 'sinatra'
-require 'sass'
-require 'haml'
+ENV['RACK_ENV'] = 'test'
 
-require_relative 'version'
-require_relative 'objects/git_repo'
+require 'test/unit'
+require 'rack/test'
+require_relative '../0pdd'
 
-get '/' do
-  haml :index, layout: :layout, locals: { ver: VERSION }
-end
+class AppTest < Test::Unit::TestCase
+  include Rack::Test::Methods
 
-post '/hook/github' do
-  request.body.rewind
-  json = JSON.parse(request.body.read)
-  repo = json['repository']['full_name']
-  Process.detach(
-    fork do
-      GitRepo.new(name: repo).push
-    end
-  )
-  puts "GitHub hook from #{repo}"
-  "thanks #{repo}"
-end
+  def app
+    Sinatra::Application
+  end
 
-get '/css/*.css' do
-  content_type 'text/css', charset: 'utf-8'
-  file = params[:splat].first
-  sass file.to_sym, views: "#{settings.root}/assets/sass"
+  def test_it_renders_home_page
+    get '/'
+    assert last_response.ok?
+    assert last_response.body.include?('Hello, world')
+  end
 end
