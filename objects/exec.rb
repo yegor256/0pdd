@@ -26,12 +26,13 @@ require 'English'
 # One command exec
 #
 class Exec
-  def initialize(arg, *rest)
-    @cmd = arg + ' ' + rest.join(' ')
+  def initialize(*rest)
+    @cmd = rest.join(' ')
   end
 
   def run
-    puts `#{@cmd}`
+    puts @cmd
+    system(@cmd)
     status = $CHILD_STATUS.to_i
     raise "Exit code (#{status}) is not zero" unless status.zero?
   end
