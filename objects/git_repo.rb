@@ -69,11 +69,11 @@ class GitRepo
     IO.write(priv, Config.new.yaml['id_rsa']) unless File.exist?(priv)
     return if File.exist?("#{dir}/config")
     Exec.new(
-      'set -x',
-      'set -e',
-      'echo "Host *" > ~/.ssh/config',
-      'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
-      'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config',
+      'set -x;',
+      'set -e;',
+      'echo "Host *" > ~/.ssh/config;',
+      'echo "  StrictHostKeyChecking no" >> ~/.ssh/config;',
+      'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config;',
       'chmod -R 600 ~/.ssh/*'
     ).run
   end
