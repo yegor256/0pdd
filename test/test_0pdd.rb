@@ -38,4 +38,14 @@ class AppTest < Test::Unit::TestCase
     assert last_response.ok?
     assert last_response.body.include?('Hello, world')
   end
+
+  def test_it_understands_push_from_github
+    post(
+      '/hook/github',
+      '{"repository":{"full_name":"yegor256/0pdd"}}',
+      'CONTENT_TYPE' => 'application/json'
+    )
+    assert last_response.ok?
+    assert last_response.body.include?('thanks')
+  end
 end
