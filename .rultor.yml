@@ -8,6 +8,7 @@ release:
     rake
     cp ../config.yml config.yml
     git remote add heroku git@heroku.com:zeropdd.git
+    rm -rf ~/.ssh
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
     chmod -R 600 ~/.ssh/*
