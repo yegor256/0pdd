@@ -72,10 +72,10 @@ class GitRepo
 
   def prepare
     dir = "#{Dir.home}/.ssh"
+    return if File.exist?(dir)
     FileUtils.mkdir_p(dir)
     priv = "#{dir}/id_rsa"
     IO.write(priv, @id_rsa) unless @id_rsa.empty?
-    return if File.exist?("#{dir}/config")
     Exec.new(
       'set -x;',
       'set -e;',
