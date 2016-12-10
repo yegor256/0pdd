@@ -34,6 +34,10 @@ class GitRepo
     @uri = uri
   end
 
+  def xml
+    '<not-implemented-yet/>'
+  end
+
   def push
     prepare
     if File.exist?(@path)

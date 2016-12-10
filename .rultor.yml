@@ -2,10 +2,6 @@ assets:
   config.yml: teamed/home#assets/0pdd/config.yml
   id_rsa: teamed/home#assets/heroku-key
   id_rsa.pub: teamed/home#assets/heroku-key.pub
-install: |
-  sudo apt-get update
-  sudo apt-get install -y --fix-missing libmagic1 libmagic-dev
-  sudo gem install pdd
 release:
   script: |-
     sudo bundle install
