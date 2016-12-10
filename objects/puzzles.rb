@@ -21,21 +21,16 @@
 # SOFTWARE.
 
 #
-# Tickets in Github
+# Puzzles in XML/S3
 #
-class GithubTickets
-  def initialize(name, login, password)
-    @name = name
-    @login = login
-    @password = password
+class Puzzles
+  def initialize(repo, key, secret)
+    @repo = repo
+    @key = key
+    @secret = secret
   end
 
-  # Submit a new puzzle as a ticket
-  def submit(puzzle)
-    # tbd
-  end
-
-  def close(id)
+  def deploy(tickets)
     # tbd
   end
 end

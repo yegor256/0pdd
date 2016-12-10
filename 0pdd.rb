@@ -28,6 +28,8 @@ require 'haml'
 require_relative 'version'
 require_relative 'objects/config'
 require_relative 'objects/git_repo'
+require_relative 'objects/github_tickets'
+require_relative 'objects/puzzles'
 
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
@@ -36,14 +38,19 @@ end
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)
-  repo = json['repository']['full_name']
+  name = json['repository']['full_name']
   Process.detach(
     fork do
-      GitRepo.new(name: repo, id_rsa: Config.new.yaml['id_rsa']).push
+      cfg = Config.new.yaml
+      repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
+      repo.push
+      Puzzles.new(repo, cfg['s3']['key'], cfg['s3']['secret']).deploy(
+        GithubTickets.new(name, cfg['github']['login'], cfg['github']['pwd'])
+      )
     end
   )
-  puts "GitHub hook from #{repo}"
-  "thanks #{repo}"
+  puts "GitHub hook from #{name}"
+  "thanks #{name}"
 end
 
 get '/css/*.css' do

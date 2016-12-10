@@ -29,6 +29,14 @@ class Config
   def yaml
     cfg = File.join(File.dirname(__FILE__), '../config.yml')
     default = {
+      'github' => {
+        'login' => '0pdd',
+        'pwd' => '--secret--'
+      },
+      's3' => {
+        'key' => '?',
+        'secret' => '?'
+      },
       'id_rsa' => ''
     }
     File.exist?(cfg) ? YAML.load(File.open(cfg)) : default
