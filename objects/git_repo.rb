@@ -73,7 +73,7 @@ class GitRepo
       'set -e;',
       'echo "Host *" > ~/.ssh/config;',
       'echo "  StrictHostKeyChecking no" >> ~/.ssh/config;',
-      'echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config;',
+      'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config;',
       'chmod -R 600 ~/.ssh/*'
     ).run
   end
