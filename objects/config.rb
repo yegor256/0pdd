@@ -28,6 +28,9 @@ require 'yaml'
 class Config
   def yaml
     cfg = File.join(File.dirname(__FILE__), '../config.yml')
-    File.exist?(cfg) ? YAML.load(File.open(cfg)) : {}
+    default = {
+      'id_rsa' => ''
+    }
+    File.exist?(cfg) ? YAML.load(File.open(cfg)) : default
   end
 end

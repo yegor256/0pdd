@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ruby '2.2.2'
+# ruby '2.2.2'
 source 'https://rubygems.org'
 
 gem 'coveralls', '0.8.17'

@@ -133,8 +133,5 @@ DEPENDENCIES
   sprockets (= 3.7.0)
   test-unit (= 3.0.8)
 
-RUBY VERSION
-   ruby 2.2.2p95
-
 BUNDLED WITH
    1.13.6

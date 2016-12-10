@@ -28,10 +28,14 @@ require_relative 'exec'
 # Repository in Git
 #
 class GitRepo
-  def initialize(name:, dir: '/tmp/0pdd', uri: "git@github.com:#{name}")
+  def initialize(
+    name:, dir: '/tmp/0pdd',
+    uri: "git@github.com:#{name}", id_rsa: ''
+  )
     @name = name
     @path = "#{dir}/#{@name}"
     @uri = uri
+    @id_rsa = id_rsa
   end
 
   def xml
@@ -70,7 +74,7 @@ class GitRepo
     dir = "#{Dir.home}/.ssh"
     FileUtils.mkdir_p(dir)
     priv = "#{dir}/id_rsa"
-    IO.write(priv, Config.new.yaml['id_rsa']) unless File.exist?(priv)
+    IO.write(priv, @id_rsa) unless @id_rsa.empty?
     return if File.exist?("#{dir}/config")
     Exec.new(
       'set -x;',

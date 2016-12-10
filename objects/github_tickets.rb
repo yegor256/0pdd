@@ -20,34 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'json'
-require 'sinatra'
-require 'sass'
-require 'haml'
+#
+# Tickets in Github
+#
+class GithubTickets
+  def initialize(name:, login:, password:)
+    @name = name
+    @login = login
+    @password = password
+  end
 
-require_relative 'version'
-require_relative 'objects/config'
-require_relative 'objects/git_repo'
+  # Submit a new puzzle as a ticket
+  def submit(puzzle)
+    # tbd
+  end
 
-get '/' do
-  haml :index, layout: :layout, locals: { ver: VERSION }
-end
-
-post '/hook/github' do
-  request.body.rewind
-  json = JSON.parse(request.body.read)
-  repo = json['repository']['full_name']
-  Process.detach(
-    fork do
-      GitRepo.new(name: repo, id_rsa: Config.new.yaml['id_rsa']).push
-    end
-  )
-  puts "GitHub hook from #{repo}"
-  "thanks #{repo}"
-end
-
-get '/css/*.css' do
-  content_type 'text/css', charset: 'utf-8'
-  file = params[:splat].first
-  sass file.to_sym, views: "#{settings.root}/assets/sass"
+  def close(id)
+    # tbd
+  end
 end
