@@ -36,6 +36,10 @@ get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
 end
 
+get '/version' do
+  VERSION
+end
+
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)

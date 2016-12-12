@@ -33,6 +33,11 @@ class AppTest < Test::Unit::TestCase
     Sinatra::Application
   end
 
+  def test_renders_version
+    get '/version'
+    assert last_response.ok?
+  end
+
   def test_it_renders_home_page
     get '/'
     assert last_response.ok?
