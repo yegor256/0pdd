@@ -26,9 +26,9 @@ require 'aws-sdk'
 # S3 storage.
 #
 class S3
-  def initialize(ocket, bucket, key, secret)
+  def initialize(ocket, bucket, region, key, secret)
     @object = Aws::S3::Resource.new(
-      region: 'us-east-1',
+      region: region,
       credentials: Aws::Credentials.new(key, secret)
     ).buckets[bucket].objects[ocket]
   end

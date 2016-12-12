@@ -49,6 +49,7 @@ post '/hook/github' do
       S3.new(
         "#{name}.xml",
         cfg['s3']['bucket'],
+        cfg['s3']['region'],
         cfg['s3']['key'],
         cfg['s3']['secret']
       )

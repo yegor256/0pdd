@@ -35,6 +35,7 @@ class Config
         'pwd' => '--secret--'
       },
       's3' => {
+        'region' => '?',
         'bucket' => '?',
         'key' => '?',
         'secret' => '?'
