@@ -41,7 +41,7 @@ post '/hook/github' do
   json = JSON.parse(request.body.read)
   name = json['repository']['full_name']
   cfg = Config.new.yaml
-  unless cfg['testing_mode'].nil?
+  if cfg['testing_mode'].nil?
     repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
     repo.push
     puzzles = Puzzles.new(
@@ -61,6 +61,8 @@ post '/hook/github' do
       )
     )
     puts "GitHub hook from #{name}"
+  else
+    puts "Nothing to do for #{name}, it's a testing mode"
   end
   "thanks #{name}"
 end
