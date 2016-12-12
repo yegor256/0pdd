@@ -30,18 +30,18 @@ class S3
     @object = Aws::S3::Resource.new(
       region: region,
       credentials: Aws::Credentials.new(key, secret)
-    ).buckets[bucket].objects[ocket]
+    ).bucket(bucket).object(ocket)
   end
 
   def load
     if object.exists?
-      object.read
+      object.get.body
     else
       '<puzzles/>'
     end
   end
 
   def save(xml)
-    object.write(xml.to_s)
+    object.put(body: xml.to_s)
   end
 end
