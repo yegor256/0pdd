@@ -46,8 +46,7 @@ class GithubTickets
         If you have any technical questions, don't ask me, \
         submit new tickets instead. The task will be \"done\" when \
         the problem is fixed and the text of the puzzle is \
-        removed from the source code.",
-      puzzle.xpath('body').text
+        removed from the source code."
     )['number']
     puts "GitHub issue #{@repo}:#{ticket} submitted"
     ticket
