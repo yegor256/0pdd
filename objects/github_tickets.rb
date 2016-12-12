@@ -37,7 +37,7 @@ class GithubTickets
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: \
-#{puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')}:",
+#{puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')}",
       "Puzzle `#{puzzle.xpath('id').text}` in `#{puzzle.xpath('file').text}` \
 has to be resolved: #{puzzle.xpath('body').text}. \
 The puzzle was created by #{puzzle.xpath('author').text} on \
