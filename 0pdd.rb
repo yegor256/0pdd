@@ -40,6 +40,13 @@ get '/version' do
   VERSION
 end
 
+get '/p' do
+  # @todo #3:30min Let's implement this entry point, where
+  #  we will render all puzzles we have for a particular
+  #  project. Let's not forget about security too.
+  'not implemented yet'
+end
+
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)
