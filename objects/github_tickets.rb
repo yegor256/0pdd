@@ -33,16 +33,19 @@ class GithubTickets
   end
 
   def submit(puzzle)
-    client.create_issue(
+    ticket = client.create_issue(
       @repo,
       "#{puzzle.xpath('id').text}:
         #{puzzle.xpath('title').text}:#{puzzle.xpath('lines').text}",
       puzzle.xpath('body').text
     )['number']
+    puts "GitHub issue #{@repo}:#{ticket} submitted"
+    ticket
   end
 
   def close(ticket)
     client.close_issue(@repo, ticket)
+    puts "GitHub issue #{@repo}:#{ticket} closed"
   end
 
   private
