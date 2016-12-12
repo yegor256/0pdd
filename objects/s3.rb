@@ -27,27 +27,21 @@ require 'aws-sdk'
 #
 class S3
   def initialize(ocket, bucket, key, secret)
-    @ocket = ocket
-    @bucket = bucket
-    @key = key
-    @secret = secret
+    @object = Aws::S3::Resource.new(
+      region: 'us-east-1',
+      credentials: Aws::Credentials.new(key, secret)
+    ).buckets[bucket].objects[ocket]
   end
 
   def load
-    object.read
+    if object.exists?
+      object.read
+    else
+      '<puzzles/>'
+    end
   end
 
   def save(xml)
     object.write(xml.to_s)
-  end
-
-  private
-
-  def object
-    s3 = Aws::S3::Resource.new(
-      region: 'us-east-1',
-      credentials: Aws::Credentials.new(@key, @secret)
-    )
-    s3.buckets[@bucket].objects[@ocket]
   end
 end
