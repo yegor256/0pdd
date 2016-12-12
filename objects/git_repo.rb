@@ -70,6 +70,8 @@ class GitRepo
     ).run
   end
 
+  private
+
   def prepare
     dir = "#{Dir.home}/.ssh"
     return if File.exist?(dir)

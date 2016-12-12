@@ -20,34 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'octokit'
-
 #
-# Tickets in Github
+# S3 storage.
 #
-class GithubTickets
-  def initialize(repo, login, pwd)
-    @repo = repo
-    @login = login
-    @pwd = pwd
+class S3
+  def initialize(ocket, bucket, key, secret)
+    @ocket = ocket
+    @bucket = bucket
+    @key = key
+    @secret = secret
   end
 
-  def submit(puzzle)
-    client.create_issue(
-      @repo,
-      "#{puzzle.xpath('id').text}:
-        #{puzzle.xpath('title').text}:#{puzzle.xpath('lines').text}",
-      puzzle.xpath('body').text
-    )['number']
+  def load
+    # tbd
   end
 
-  def close(ticket)
-    client.close_issue(@repo, ticket)
-  end
-
-  private
-
-  def client
-    Octokit::Client.new(login: @login, password: @pwd)
+  def save(xml)
+    # tbd
   end
 end

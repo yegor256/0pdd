@@ -29,11 +29,13 @@ class Config
   def yaml
     cfg = File.join(File.dirname(__FILE__), '../config.yml')
     default = {
+      'testing_model' => 'true',
       'github' => {
         'login' => '0pdd',
         'pwd' => '--secret--'
       },
       's3' => {
+        'bucket' => '?',
         'key' => '?',
         'secret' => '?'
       },

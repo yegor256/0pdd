@@ -1,0 +1,61 @@
+<test>
+    <snapshot>
+        <puzzles date="2016-12-10T16:26:36Z">
+            <puzzle>
+                <ticket>516</ticket>
+                <estimate>15</estimate>
+                <role>IMP</role>
+                <id>516-ffc97ad1</id>
+                <lines>61-63</lines>
+                <body>Move header names from A to B.</body>
+                <file>src/test/java/Test.java</file>
+                <author>yegor256</author>
+                <email>yegor@0pdd.com</email>
+                <time>2016-01-21T12:44:55Z</time>
+            </puzzle>
+        </puzzles>
+    </snapshot>
+    <before>
+        <puzzles>
+            <puzzle alive="true">
+                <issue>100</issue>
+                <ticket>23</ticket>
+                <estimate>15</estimate>
+                <role>IMP</role>
+                <id>23-ae347a22</id>
+                <lines>11-18</lines>
+                <body>Some other text of the other puzzle.</body>
+                <file>readme.txt</file>
+                <author>yegor256</author>
+                <email>yegor@0pdd.com</email>
+                <time>2016-01-18T08:40:51Z</time>
+            </puzzle>
+            <puzzle alive="false">
+                <issue>516</issue>
+                <ticket>23</ticket>
+                <estimate>15</estimate>
+                <role>IMP</role>
+                <id>23-ffc97ad1</id>
+                <lines>12-16</lines>
+                <body>Some text of the puzzle.</body>
+                <file>readme.txt</file>
+                <author>yegor256</author>
+                <email>yegor@0pdd.com</email>
+                <time>2016-01-18T08:40:51Z</time>
+            </puzzle>
+        </puzzles>
+    </before>
+    <assertions>
+        <xpath>/puzzles[@date='2016-12-10T16:26:36Z']</xpath>
+        <xpath>/puzzles[count(//puzzle)=3]</xpath>
+        <xpath>/puzzles[count(//puzzle[@alive='true'])=1]</xpath>
+        <xpath>//puzzle[id='516-ffc97ad1' and @alive='true']</xpath>
+        <xpath>//puzzle[id='23-ffc97ad1' and count(children/puzzle)=1]</xpath>
+    </assertions>
+    <submit>
+        <id>516-ffc97ad1</id>
+    </submit>
+    <close>
+        <ticket>100</ticket>
+    </close>
+</test>

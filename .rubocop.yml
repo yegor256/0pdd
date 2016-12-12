@@ -1,6 +1,16 @@
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'assets/**/*'
+  DisplayCopNames: true
+
 MethodLength:
   Max: 30
 Metrics/ClassLength:
   Max: 150
 Metrics/AbcSize:
-  Max: 37
+  Max: 40
+Metrics/BlockLength:
+  Max: 50
+Style/MultilineMethodCallIndentation:
+  Enabled: false

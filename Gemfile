@@ -25,11 +25,13 @@ source 'https://rubygems.org'
 
 gem 'coveralls', '0.8.17'
 gem 'haml', '4.0.7'
+gem 'nokogiri', '1.6.8.1'
+gem 'octokit', '4.6.2'
 gem 'rack', '1.6.5'
 gem 'rake', '12.0.0'
 gem 'rspec-rails', '3.5.2'
-gem 'rubocop', '0.46.0'
-gem 'rubocop-rspec', '1.8.0'
+gem 'rubocop', '0.46.0', require: false
+gem 'rubocop-rspec', '1.8.0', require: false
 gem 'sass', '3.4.22'
 gem 'sinatra', '1.4.7'
 gem 'sprockets', '3.7.0'

@@ -30,6 +30,7 @@ require_relative 'objects/config'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
 require_relative 'objects/puzzles'
+require_relative 'objects/s3'
 
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
@@ -39,17 +40,28 @@ post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)
   name = json['repository']['full_name']
-  Process.detach(
-    fork do
-      cfg = Config.new.yaml
-      repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
-      repo.push
-      Puzzles.new(repo, cfg['s3']['key'], cfg['s3']['secret']).deploy(
-        GithubTickets.new(name, cfg['github']['login'], cfg['github']['pwd'])
+  cfg = Config.new.yaml
+  unless cfg['testing_mode'].nil?
+    repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
+    repo.push
+    puzzles = Puzzles.new(
+      repo,
+      S3.new(
+        "#{name}.xml",
+        cfg['s3']['bucket'],
+        cfg['s3']['key'],
+        cfg['s3']['secret']
       )
-    end
-  )
-  puts "GitHub hook from #{name}"
+    )
+    puzzles.deploy(
+      GithubTickets.new(
+        name,
+        cfg['github']['login'],
+        cfg['github']['pwd']
+      )
+    )
+    puts "GitHub hook from #{name}"
+  end
   "thanks #{name}"
 end
 
