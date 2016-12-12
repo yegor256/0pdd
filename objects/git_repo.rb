@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'fileutils'
+require 'pdd'
 require_relative 'config'
 require_relative 'exec'
 
@@ -39,7 +40,11 @@ class GitRepo
   end
 
   def xml
-    '<not-implemented-yet/>'
+    Nokogiri::XML(
+      PDD::Base.new(
+        source: @path
+      ).xml
+    )
   end
 
   def push

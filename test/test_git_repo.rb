@@ -34,7 +34,7 @@ class TestGitRepo < Test::Unit::TestCase
       repo = GitRepo.new(name: 'teamed/pdd', dir: d, uri: git(d))
       repo.clone
       repo.pull
-      assert File.exist?(File.join(d, 'teamed/pdd/.git'))
+      assert(File.exist?(File.join(d, 'teamed/pdd/.git')))
     end
   end
 
@@ -43,9 +43,19 @@ class TestGitRepo < Test::Unit::TestCase
       repo = GitRepo.new(name: 'teamed/est', dir: d, uri: git(d))
       repo.push
       repo.push
-      assert File.exist?(File.join(d, 'teamed/est/.git'))
+      assert(File.exist?(File.join(d, 'teamed/est/.git')))
     end
   end
+
+  def test_fetch_puzzles
+    Dir.mktmpdir 'test' do |d|
+      repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: git(d))
+      repo.push
+      assert(!repo.xml.xpath('/puzzles').empty?)
+    end
+  end
+
+  private
 
   def git(dir)
     raise unless system("
