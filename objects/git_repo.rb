@@ -22,6 +22,7 @@
 
 require 'fileutils'
 require 'pdd'
+require 'tempfile'
 require_relative 'config'
 require_relative 'exec'
 
@@ -40,11 +41,9 @@ class GitRepo
   end
 
   def xml
-    Nokogiri::XML(
-      PDD::Base.new(
-        source: @path
-      ).xml
-    )
+    tmp = Tempfile.new('pdd.xml')
+    `cd #{@path}; pdd -f #{tmp.path}`
+    Nokogiri::XML(File.open(tmp))
   end
 
   def push
