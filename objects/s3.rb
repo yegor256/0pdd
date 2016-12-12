@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'aws-sdk'
+
 #
 # S3 storage.
 #
@@ -32,10 +34,20 @@ class S3
   end
 
   def load
-    # tbd
+    object.read
   end
 
   def save(xml)
-    # tbd
+    object.write(xml.to_s)
+  end
+
+  private
+
+  def object
+    s3 = Aws::S3::Resource.new(
+      region: 'us-east-1',
+      credentials: Aws::Credentials.new(@key, @secret)
+    )
+    s3.buckets[@bucket].objects[@ocket]
   end
 end
