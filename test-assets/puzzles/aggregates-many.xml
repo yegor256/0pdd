@@ -50,6 +50,7 @@
         <xpath>/puzzles[count(//puzzle)=3]</xpath>
         <xpath>/puzzles[count(//puzzle[@alive='true'])=1]</xpath>
         <xpath>//puzzle[id='516-ffc97ad1' and @alive='true']</xpath>
+        <xpath>//puzzle[id='516-ffc97ad1' and issue='123']</xpath>
         <xpath>//puzzle[id='23-ffc97ad1' and count(children/puzzle)=1]</xpath>
     </assertions>
     <submit>

@@ -35,7 +35,10 @@ class Puzzles
     @storage.save(
       group(
         close(
-          submit(join(@storage.load, @repo.xml), tickets),
+          submit(
+            join(@storage.load, @repo.xml),
+            tickets
+          ),
           tickets
         )
       )
@@ -67,8 +70,7 @@ class Puzzles
       .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
       .each do |p|
         xml.xpath("//extra[id='#{p[:id]}']")[0]
-          .add_child('issue')[0]
-          .content = p[:issue]
+          .add_child("<issue>#{p[:issue]}</issue>")
       end
     xml
   end

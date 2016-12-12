@@ -53,7 +53,7 @@ class TestPuzzles < Test::Unit::TestCase
       after = storage.load
       assert(
         !after.xpath(xpath.to_s).empty?,
-        "#{xpath} not found in #{xml}"
+        "#{xpath} not found in #{after}"
       )
     end
     xml.xpath('/test/submit/id/text()').each do |id|
