@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'aws-sdk'
+require 'nokogiri'
 
 #
 # S3 storage.
@@ -34,11 +35,13 @@ class S3
   end
 
   def load
-    if @object.exists?
-      @object.get.body
-    else
-      '<puzzles/>'
-    end
+    Nokogiri::XML(
+      if @object.exists?
+        @object.get.body
+      else
+        '<puzzles/>'
+      end
+    )
   end
 
   def save(xml)
