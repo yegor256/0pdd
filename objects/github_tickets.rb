@@ -35,8 +35,18 @@ class GithubTickets
   def submit(puzzle)
     ticket = client.create_issue(
       @repo,
-      "#{puzzle.xpath('id').text}:
-        #{puzzle.xpath('title').text}:#{puzzle.xpath('lines').text}",
+      "#{File.basename(puzzle.xpath('file').text)}:"
+        + "#{puzzle.xpath('lines').text}: "
+        + "#{puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m,'\1...')}:",
+      "Puzzle #{puzzle.xpath('id').text} in #{puzzle.xpath('file').text}"
+        + " has to be resolved: #{puzzle.xpath('body').text}."
+        + " The puzzle was created by @#{puzzle.xpath('author').text} on"
+        + Time.parse(puzzle.xpath('time').text).strftime("%d-%b-%y")
+        + "\n\n"
+        + 'If you have any technical questions, don\'t ask me,'
+        + ' submit new tickets instead. The task will be "done" when'
+        + ' the problem is fixed and the text of the puzzle is'
+        + ' removed from the source code.'
       puzzle.xpath('body').text
     )['number']
     puts "GitHub issue #{@repo}:#{ticket} submitted"
