@@ -29,7 +29,7 @@ class Config
   def yaml
     cfg = File.join(File.dirname(__FILE__), '../config.yml')
     default = {
-      'testing_model' => 'true',
+      'testing_mode' => 'true',
       'github' => {
         'login' => '0pdd',
         'pwd' => '--secret--'

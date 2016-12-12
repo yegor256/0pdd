@@ -23,16 +23,17 @@
 # ruby '2.2.2'
 source 'https://rubygems.org'
 
+gem 'aws-sdk', '2.6.35'
 gem 'coveralls', '0.8.17'
 gem 'haml', '4.0.7'
 gem 'nokogiri', '1.6.8.1'
 gem 'octokit', '4.6.2'
 gem 'rack', '1.6.5'
-gem 'rake', '12.0.0'
-gem 'rspec-rails', '3.5.2'
+gem 'rake', '12.0.0', require: false
+gem 'rspec-rails', '3.5.2', require: false
 gem 'rubocop', '0.46.0', require: false
 gem 'rubocop-rspec', '1.8.0', require: false
 gem 'sass', '3.4.22'
 gem 'sinatra', '1.4.7'
 gem 'sprockets', '3.7.0'
-gem 'test-unit', '3.0.8'
+gem 'test-unit', '3.0.8', require: false
