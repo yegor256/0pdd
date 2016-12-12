@@ -34,14 +34,14 @@ class S3
   end
 
   def load
-    if object.exists?
-      object.get.body
+    if @object.exists?
+      @object.get.body
     else
       '<puzzles/>'
     end
   end
 
   def save(xml)
-    object.put(body: xml.to_s)
+    @object.put(body: xml.to_s)
   end
 end
