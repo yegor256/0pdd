@@ -89,7 +89,7 @@
     <xsl:template match="id" mode="fonted">
         <xsl:choose>
             <xsl:when test="../@alive='true'">
-                <strong><xsl:apply-templates select="." mode="linked"/></strong>
+                <xsl:apply-templates select="." mode="linked"/>
             </xsl:when>
             <xsl:otherwise>
                 <strike><xsl:apply-templates select="." mode="linked"/></strike>
