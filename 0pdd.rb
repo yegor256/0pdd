@@ -53,7 +53,6 @@ end
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)
-  puts json
   return unless json['ref'] == 'refs/heads/master'
   name = json['repository']['full_name']
   cfg = Config.new.yaml
