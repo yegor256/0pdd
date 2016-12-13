@@ -34,14 +34,14 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_renders_version
-    get '/version'
-    assert last_response.ok?
+    get('/version')
+    assert(last_response.ok?)
   end
 
   def test_it_renders_home_page
-    get '/'
-    assert last_response.ok?
-    assert last_response.body.include?('Hello, world')
+    get('/')
+    assert(last_response.ok?)
+    assert(last_response.body.include?('Hello, world'))
   end
 
   def test_it_understands_push_from_github
@@ -50,13 +50,15 @@ class AppTest < Test::Unit::TestCase
       '{"repository":{"full_name":"teamed/pdd"}, "ref":"refs/heads/master"}',
       'CONTENT_TYPE' => 'application/json'
     )
-    assert last_response.ok?
-    assert last_response.body.include?('thanks')
+    assert(last_response.ok?)
+    assert(last_response.body.include?('thanks'))
   end
 
   def test_renders_html_puzzles
-    get '/p?name=teamed/est'
-    assert last_response.ok?
-    assert !Nokogiri::HTML(last_response.body).xpath('//html').empty?
+    get('/p?name=teamed/est')
+    assert(last_response.ok?)
+    html = Nokogiri::HTML(last_response.body)
+    assert(!html.xpath('//html').empty?)
+    assert(html.to_s.include?('<html'), "broken HTML: #{html}")
   end
 end
