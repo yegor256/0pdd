@@ -47,7 +47,7 @@ class AppTest < Test::Unit::TestCase
   def test_it_understands_push_from_github
     post(
       '/hook/github',
-      '{"repository":{"full_name":"teamed/pdd"}}',
+      '{"repository":{"full_name":"teamed/pdd"}, "ref":"refs/heads/master"}',
       'CONTENT_TYPE' => 'application/json'
     )
     assert last_response.ok?
