@@ -46,7 +46,7 @@ class GitRepo
 
   def xml
     tmp = Tempfile.new('pdd.xml')
-    `cd #{@path}; pdd -f #{tmp.path}`
+    Exec.new("cd #{@path} && pdd -f #{tmp.path}").run
     Nokogiri::XML(File.open(tmp))
   end
 
@@ -61,18 +61,20 @@ class GitRepo
 
   def clone
     Exec.new(
-      'set -x; git clone',
+      'git clone',
       '--depth=1',
       @uri,
-      @path
+      @path,
+      '--quiet'
     ).run
   end
 
   def pull
     Exec.new(
-      'set -x; git',
+      'git',
       "--git-dir=#{@path}/.git",
       'pull',
+      '--quiet'
     ).run
   end
 
