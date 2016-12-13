@@ -33,14 +33,19 @@ class GithubTickets
   end
 
   def submit(puzzle)
+    # @todo #3:20min This mechanism of body abbreviation is rather
+    #  primitive and doesn't produce readable texts very often. Instead
+    #  of cutting the text at the hard limit (40 chars) we have to cut
+    #  it at the end of the word, staying closer to the limit.
+    title = puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')
     ticket = client.create_issue(
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
-#{puzzle.xpath('lines').text}: \
-#{puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')}",
+#{puzzle.xpath('lines').text}: #{title}",
       "The puzzle `#{puzzle.xpath('id').text}` \
 in `#{puzzle.xpath('file').text}` (lines #{puzzle.xpath('lines').text}) \
-has to be resolved: #{puzzle.xpath('body').text}. \
+has to be resolved: #{puzzle.xpath('body').text}.\
+\n\n\
 The puzzle was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
 \n\n\
