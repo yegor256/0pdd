@@ -46,11 +46,12 @@ class GithubTickets
 in `#{puzzle.xpath('file').text}` (lines #{puzzle.xpath('lines').text}) \
 has to be resolved: #{puzzle.xpath('body').text}\
 \n\n\
-The puzzle was created by #{puzzle.xpath('author').text} on \
+The [puzzle](http://www.yegor256.com/2009/03/04/pdd.html) \
+was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
 \n\n\
 Estimate: #{puzzle.xpath('estimate').text} minutes, \
-Role: #{puzzle.xpath('role').text}.\
+role: #{puzzle.xpath('role').text}.\
 \n\n\
 If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
