@@ -37,7 +37,9 @@ class S3
   def load
     Nokogiri::XML(
       if @object.exists?
-        @object.get.body
+        data = @object.get.body
+        puts "S3 #{data.size} from #{@object.bucket_name}/#{@object.key}"
+        data
       else
         '<puzzles/>'
       end
@@ -45,6 +47,8 @@ class S3
   end
 
   def save(xml)
-    @object.put(body: xml.to_s)
+    data = xml.to_s
+    @object.put(body: data)
+    puts "S3 #{data.size} to #{@object.bucket_name}/#{@object.key}"
   end
 end

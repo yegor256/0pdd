@@ -35,6 +35,7 @@ class TestPuzzles < Test::Unit::TestCase
   def test_all_xml
     Dir.mktmpdir 'test' do |d|
       test_xml(d, 'aggregates-many.xml')
+      test_xml(d, 'closes-one-puzzle.xml')
     end
   end
 

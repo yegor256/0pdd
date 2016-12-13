@@ -1,0 +1,33 @@
+<test>
+    <snapshot>
+        <puzzles date="2016-12-10T16:26:36Z"/>
+    </snapshot>
+    <before>
+        <puzzles>
+            <puzzle alive="true">
+                <issue>100</issue>
+                <ticket>23</ticket>
+                <estimate>15</estimate>
+                <role>IMP</role>
+                <id>23-ae347a22</id>
+                <lines>11-18</lines>
+                <body>Some other text of the other puzzle.</body>
+                <file>readme.txt</file>
+                <author>yegor256</author>
+                <email>yegor@0pdd.com</email>
+                <time>2016-01-18T08:40:51Z</time>
+            </puzzle>
+        </puzzles>
+    </before>
+    <assertions>
+        <xpath>/puzzles[@date='2016-12-10T16:26:36Z']</xpath>
+        <xpath>/puzzles[count(//puzzle)=1]</xpath>
+        <xpath>/puzzles[count(//puzzle[@alive='true'])=0]</xpath>
+        <xpath>/puzzles[count(//puzzle[@alive='false'])=1]</xpath>
+        <xpath>//puzzle[id='23-ae347a22' and @alive='false']</xpath>
+    </assertions>
+    <submit/>
+    <close>
+        <ticket>100</ticket>
+    </close>
+</test>
