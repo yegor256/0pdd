@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'fileutils'
 require 'timeout'
 require_relative 'git_repo'
 require_relative 'github_tickets'
@@ -48,13 +49,16 @@ class Job
   private
 
   def exclusive
-    f = File.open(@repo.lock, File::RDWR | File::CREAT, 0o644)
+    sleep(5) unless ENV['RACK_ENV'] == 'test'
+    lock = @repo.lock
+    FileUtils.mkdir_p(File.dirname(lock))
+    f = File.open(lock, File::RDWR | File::CREAT, 0o644)
     Timeout.timeout(10) do
       f.flock(File::LOCK_EX)
-      sleep(5) unless ENV['RACK_ENV'] == 'test'
       run
       f.close
     end
+    File.delete(lock)
   end
 
   def run
