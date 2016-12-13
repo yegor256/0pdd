@@ -43,9 +43,10 @@
                     <p>
                         <xsl:text>Updated by </xsl:text>
                         <a href="http://www.0pdd.com">
-                            <xsl:text>0pdd v</xsl:text>
-                            <xsl:value-of select="@version"/>
+                            <xsl:text>0pdd</xsl:text>
                         </a>
+                        <xsl:text> v</xsl:text>
+                        <xsl:value-of select="@version"/>
                         <xsl:text> on </xsl:text>
                         <xsl:value-of select="@date"/>
                         <xsl:text>.</xsl:text>
