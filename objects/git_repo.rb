@@ -61,9 +61,8 @@ class GitRepo
 
   def clone
     Exec.new(
-      'git clone',
+      'set -x; git clone',
       '--depth=1',
-      '--quiet',
       @uri,
       @path
     ).run
@@ -71,10 +70,9 @@ class GitRepo
 
   def pull
     Exec.new(
-      'git',
+      'set -x; git',
       "--git-dir=#{@path}/.git",
       'pull',
-      '--quiet'
     ).run
   end
 

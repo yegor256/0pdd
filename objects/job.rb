@@ -53,7 +53,6 @@ class Job
   private
 
   def exclusive
-    sleep(15) unless ENV['RACK_ENV'] == 'test'
     lock = @repo.lock
     FileUtils.mkdir_p(File.dirname(lock))
     f = File.open(lock, File::RDWR | File::CREAT, 0o644)
