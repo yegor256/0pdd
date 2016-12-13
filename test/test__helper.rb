@@ -20,4 +20,54 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'nokogiri'
 require 'simplecov'
+require 'tempfile'
+
+ENV['RACK_ENV'] = 'test'
+
+class FakeStorage
+  def initialize(dir, xml = '<puzzles date="2016-12-10T16:26:36Z"/>')
+    @file = File.join(dir, 'storage.xml')
+    save(xml)
+  end
+
+  def load
+    Nokogiri.XML(IO.read(@file))
+  end
+
+  def save(xml)
+    IO.write(@file, xml.to_s)
+  end
+end
+
+class FakeTickets
+  attr_reader :submitted, :closed
+  def initialize
+    @submitted = []
+    @closed = []
+  end
+
+  def submit(puzzle)
+    @submitted << puzzle.xpath('id').text
+    '123'
+  end
+
+  def close(puzzle)
+    @closed << puzzle.xpath('id').text
+  end
+end
+
+class FakeRepo
+  def lock
+    Tempfile.new('0pdd-lock')
+  end
+
+  def xml
+    Nokogiri::XML('<puzzles date="2016-12-10T16:26:36Z"/>')
+  end
+
+  def push
+    # nothing here
+  end
+end

@@ -56,11 +56,23 @@ post '/hook/github' do
   return unless json['ref'] == 'refs/heads/master'
   name = json['repository']['full_name']
   cfg = Config.new.yaml
-  if cfg['testing_mode'].nil?
-    Job.new(name, json['after']).proceed
+  unless ENV['RACK_ENV'] == 'test'
+    Job.new(
+      GitRepo.new(name: name, id_rsa: cfg['id_rsa']),
+      S3.new(
+        "#{name}.xml",
+        cfg['s3']['bucket'],
+        cfg['s3']['region'],
+        cfg['s3']['key'],
+        cfg['s3']['secret']
+      ),
+      GithubTickets.new(
+        name,
+        cfg['github']['login'],
+        cfg['github']['pwd']
+      )
+    ).proceed
     puts "GitHub hook from #{name}"
-  else
-    puts "Nothing to do for #{name}, it's a testing mode"
   end
   "thanks #{name}"
 end

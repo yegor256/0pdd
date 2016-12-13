@@ -14,37 +14,32 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
 require 'nokogiri'
+require 'ostruct'
+require 'test/unit'
+require 'tmpdir'
+require_relative '../objects/git_repo'
+require_relative '../objects/puzzles'
+require_relative '../objects/safe_storage'
 
-#
-# Safe, XSD validated, storage.
-#
-class SafeStorage
-  def initialize(origin)
-    @origin = origin
-    @xsd = Nokogiri::XML::Schema(File.read('assets/xsd/puzzles.xsd'))
-  end
-
-  def load
-    valid(@origin.load)
-  end
-
-  def save(xml)
-    @origin.save(valid(xml))
-  end
-
-  private
-
-  def valid(xml)
-    raise "XML is not valid: #{xml}" unless @xsd.validate(xml).each do |error|
-      puts error.message
-    end.empty?
-    xml
+# Job test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016 Yegor Bugayenko
+# License:: MIT
+class TestJob < Test::Unit::TestCase
+  def test_simple_scenario
+    Dir.mktmpdir 'test' do |d|
+      Job.new(
+        FakeRepo.new,
+        FakeStorage.new(d),
+        FakeTickets.new
+      ).proceed
+    end
   end
 end

@@ -40,16 +40,20 @@ class GitRepo
     @id_rsa = id_rsa
   end
 
+  def lock
+    "/tmp/0pdd-locks/#{@name}.txt"
+  end
+
   def xml
     tmp = Tempfile.new('pdd.xml')
     `cd #{@path}; pdd -f #{tmp.path}`
     Nokogiri::XML(File.open(tmp))
   end
 
-  def push(sha = 'HEAD')
+  def push
     prepare
     if File.exist?(@path)
-      pull(sha)
+      pull
     else
       clone
     end
@@ -65,8 +69,7 @@ class GitRepo
     ).run
   end
 
-  def pull(sha = 'HEAD')
-    raise 'SHA can\'t be nil' if sha.nil?
+  def pull
     Exec.new(
       'git',
       "--git-dir=#{@path}/.git",

@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 require 'timeout'
-require_relative 'config'
 require_relative 'git_repo'
 require_relative 'github_tickets'
 require_relative 'puzzles'
@@ -32,53 +31,39 @@ require_relative 's3'
 # One job.
 #
 class Job
-  def initialize(name, sha)
-    @name = name
-    @sha = sha
+  def initialize(repo, storage, tickets)
+    @repo = repo
+    @storage = storage
+    @tickets = tickets
   end
 
   def proceed
-    Process.detach(
-      fork do
-        exclusive
-      end
-    )
+    if ENV['RACK_ENV'] == 'test'
+      exclusive
+    else
+      Process.detach(fork { exclusive })
+    end
   end
 
   private
 
-  def safe
-    f = File.open("/tmp/0lck/#{@name}.txt", File::RDWR | File::CREAT, 0o644)
+  def exclusive
+    f = File.open(@repo.lock, File::RDWR | File::CREAT, 0o644)
     Timeout.timeout(10) do
       f.flock(File::LOCK_EX)
-      sleep(5.seconds) # to make sure Git repo is up to date
+      sleep(5) unless ENV['RACK_ENV'] == 'test'
       run
       f.close
     end
   end
 
   def run
-    cfg = Config.new.yaml
-    repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
-    repo.push(@sha)
-    puzzles = Puzzles.new(
-      repo,
+    @repo.push
+    Puzzles.new(
+      @repo,
       SafeStorage.new(
-        S3.new(
-          "#{name}.xml",
-          cfg['s3']['bucket'],
-          cfg['s3']['region'],
-          cfg['s3']['key'],
-          cfg['s3']['secret']
-        )
+        @storage
       )
-    )
-    puzzles.deploy(
-      GithubTickets.new(
-        name,
-        cfg['github']['login'],
-        cfg['github']['pwd']
-      )
-    )
+    ).deploy(@tickets)
   end
 end
