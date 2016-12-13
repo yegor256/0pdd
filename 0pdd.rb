@@ -45,6 +45,15 @@ get '/p' do
   'this is not implemented yet'
 end
 
+# @todo #3:20min For some reason, at the moment of this PUSH event arrival
+#  the repository is not ready yet and we don't have the current version
+#  of it. Let's introduce some delay or some other method, so that we
+#  can wait until the repo is in proper state.
+# @todo #2:30min At the moment we're not thread-safe. If two PUSH events
+#  arrive at the same time we will/may have troubles with concurrent
+#  modification of S3 objects and Git repository. Let's introduce some
+#  queing system, which will put all requests into a pipeline and proceed
+#  them one by one.
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(request.body.read)

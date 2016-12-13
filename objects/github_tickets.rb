@@ -39,10 +39,13 @@ class GithubTickets
 #{puzzle.xpath('lines').text}: \
 #{puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')}",
       "The puzzle `#{puzzle.xpath('id').text}` \
-in `#{puzzle.xpath('file').text}` \
+in `#{puzzle.xpath('file').text}` (lines #{puzzle.xpath('lines').text}) \
 has to be resolved: #{puzzle.xpath('body').text}. \
 The puzzle was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
+\n\n\
+Estimate: #{puzzle.xpath('estimate').text} minutes, \
+Role: #{puzzle.xpath('role').text}.\
 \n\n\
 If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
