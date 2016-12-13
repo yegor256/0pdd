@@ -38,6 +38,9 @@ get '/version' do
 end
 
 get '/p' do
+  # @todo #15:30min This feature is not implemented now and it makes it
+  #  very difficult to track the status of puzzles in a repo. Let's
+  #  add this simple converter from XML to HTML (through XSLT).
   'this is not implemented yet'
 end
 
