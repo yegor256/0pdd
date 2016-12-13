@@ -31,6 +31,9 @@ require_relative 's3'
 #
 # One job.
 #
+# @todo #13:30min We may lose the moment of update and forget to create
+#  an issue or close it. For many reasons that may happen. No matter why,
+#  we have to do the second check once in a while and update GitHub issues.
 class Job
   def initialize(repo, storage, tickets)
     @repo = repo
