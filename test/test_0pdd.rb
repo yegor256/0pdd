@@ -53,4 +53,10 @@ class AppTest < Test::Unit::TestCase
     assert last_response.ok?
     assert last_response.body.include?('thanks')
   end
+
+  def test_renders_html_puzzles
+    get '/p?name=teamed/est'
+    assert last_response.ok?
+    assert !Nokogiri::HTML(last_response.body).xpath('//html').empty?
+  end
 end

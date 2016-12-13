@@ -35,7 +35,7 @@ require_relative '../objects/safe_storage'
 class TestPuzzles < Test::Unit::TestCase
   def test_all_xml
     Dir.mktmpdir 'test' do |d|
-      test_xml(d, 'aggregates-many.xml')
+      test_xml(d, 'simple.xml')
       test_xml(d, 'closes-one-puzzle.xml')
     end
   end
@@ -43,7 +43,7 @@ class TestPuzzles < Test::Unit::TestCase
   def test_xml(dir, name)
     xml = File.open("test-assets/puzzles/#{name}") { |f| Nokogiri::XML(f) }
     storage = SafeStorage.new(
-      fake_storage(
+      FakeStorage.new(
         dir,
         Nokogiri.XML(xml.xpath('/test/before/puzzles')[0].to_s)
       )
@@ -51,7 +51,7 @@ class TestPuzzles < Test::Unit::TestCase
     repo = OpenStruct.new(
       xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s)
     )
-    tickets = fake_tickets
+    tickets = FakeTickets.new
     Puzzles.new(repo, storage).deploy(tickets)
     xml.xpath('/test/assertions/xpath/text()').each do |xpath|
       after = storage.load

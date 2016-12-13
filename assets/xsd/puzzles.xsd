@@ -96,7 +96,8 @@
             <xs:sequence>
                 <xs:element name="puzzle" type="puzzle" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
-            <xs:attribute name="date" use="optional" type="xs:dateTime"/>
+            <xs:attribute name="date" use="required" type="xs:dateTime"/>
+            <xs:attribute name="version" use="required" type="xs:string"/>
         </xs:complexType>
         <xs:unique name="puzzleId">
             <xs:selector xpath=".//puzzle" />

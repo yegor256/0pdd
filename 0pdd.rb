@@ -20,10 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'haml'
 require 'json'
+require 'ostruct'
 require 'sinatra'
 require 'sass'
-require 'haml'
 
 require_relative 'version'
 require_relative 'objects/config'
@@ -42,10 +43,21 @@ get '/version' do
 end
 
 get '/p' do
-  # @todo #15:30min This feature is not implemented now and it makes it
-  #  very difficult to track the status of puzzles in a repo. Let's
-  #  add this simple converter from XML to HTML (through XSLT).
-  'this is not implemented yet'
+  name = params[:name]
+  cfg = Config.new.yaml
+  if ENV['RACK_ENV'] == 'test'
+    repo = OpenStruct.new(
+      xml: Nokogiri.XML(
+        Nokogiri.XML(IO.read('test-assets/puzzles/simple.xml')).xpath(
+          '/test/before/puzzles'
+        )[0].to_s
+      )
+    )
+  else
+    repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
+  end
+  repo.push
+  Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(repo.xml)
 end
 
 post '/hook/github' do

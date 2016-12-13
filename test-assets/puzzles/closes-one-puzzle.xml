@@ -3,7 +3,7 @@
         <puzzles date="2016-12-10T16:26:36Z"/>
     </snapshot>
     <before>
-        <puzzles>
+        <puzzles date="2016-12-03T16:26:36Z" version="0.1">
             <puzzle alive="true">
                 <issue>100</issue>
                 <ticket>23</ticket>
