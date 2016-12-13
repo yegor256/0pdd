@@ -70,7 +70,7 @@
                         <xsl:text>color:gray;</xsl:text>
                     </xsl:attribute>
                 </xsl:if>
-                <xsl:apply-templates select="id" name="fonted"/>
+                <xsl:apply-templates select="id" mode="fonted"/>
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="file"/>
                 <xsl:text>:</xsl:text>
@@ -86,17 +86,17 @@
             </xsl:if>
         </div>
     </xsl:template>
-    <xsl:template match="id" name="fonted">
+    <xsl:template match="id" mode="fonted">
         <xsl:choose>
             <xsl:when test="../@alive='true'">
-                <strong><xsl:apply-templates select="." name="linked"/></strong>
+                <strong><xsl:apply-templates select="." mode="linked"/></strong>
             </xsl:when>
             <xsl:otherwise>
-                <strike><xsl:apply-templates select="." name="linked"/></strike>
+                <strike><xsl:apply-templates select="." mode="linked"/></strike>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match="id" name="linked">
+    <xsl:template match="id" mode="linked">
         <xsl:choose>
             <xsl:when test="@href">
                 <a href="{@href}"><xsl:value-of select="."/></a>
