@@ -86,8 +86,8 @@ class TestPuzzles < Test::Unit::TestCase
         '123'
       end
 
-      def close(ticket)
-        @closed << ticket
+      def close(puzzle)
+        @closed << puzzle.xpath('id').text
       end
     end.new
   end

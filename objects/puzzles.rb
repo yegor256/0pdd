@@ -79,7 +79,7 @@ class Puzzles
     Nokogiri::XSLT(File.read('assets/xsl/to-close.xsl'))
       .transform(xml)
       .xpath('//puzzle')
-      .each { |p| tickets.close(p.xpath('issue')[0].text) }
+      .each { |p| tickets.close(p) }
     xml
   end
 end

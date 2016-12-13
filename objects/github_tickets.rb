@@ -38,7 +38,8 @@ class GithubTickets
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: \
 #{puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')}",
-      "Puzzle `#{puzzle.xpath('id').text}` in `#{puzzle.xpath('file').text}` \
+      "The puzzle `#{puzzle.xpath('id').text}` \
+in `#{puzzle.xpath('file').text}` \
 has to be resolved: #{puzzle.xpath('body').text}. \
 The puzzle was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
@@ -52,9 +53,15 @@ removed from the source code."
     ticket
   end
 
-  def close(ticket)
-    client.close_issue(@repo, ticket)
-    puts "GitHub issue #{@repo}:#{ticket} closed"
+  def close(puzzle)
+    issue = puzzle.xpath('issue').text
+    client.close_issue(@repo, issue)
+    client.add_comment(
+      @repo, issue,
+      "The puzzle #{puzzle.xpath('id').text} has disappeared from the \
+source code, that's why I closed this issue."
+    )
+    puts "GitHub issue #{@repo}:#{issue} closed"
   end
 
   private
