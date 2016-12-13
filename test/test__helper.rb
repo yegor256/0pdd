@@ -28,7 +28,7 @@ ENV['RACK_ENV'] = 'test'
 
 class FakeStorage
   def initialize(
-    dir,
+    dir = Dir.mktmpdir,
     xml = '<puzzles date="2016-12-10T16:26:36Z" version="0.1"/>'
   )
     @file = File.join(dir, 'storage.xml')

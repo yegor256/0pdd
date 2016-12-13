@@ -44,20 +44,19 @@ end
 
 get '/p' do
   name = params[:name]
-  cfg = Config.new.yaml
   if ENV['RACK_ENV'] == 'test'
-    repo = OpenStruct.new(
-      xml: Nokogiri.XML(
-        Nokogiri.XML(IO.read('test-assets/puzzles/simple.xml')).xpath(
-          '/test/before/puzzles'
-        )[0].to_s
-      )
-    )
+    storage = FakeStorage.new
   else
-    repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
+    cfg = Config.new.yaml
+    storage = S3.new(
+      "#{name}.xml",
+      cfg['s3']['bucket'],
+      cfg['s3']['region'],
+      cfg['s3']['key'],
+      cfg['s3']['secret']
+    )
   end
-  repo.push
-  Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(repo.xml)
+  Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(storage.load)
 end
 
 post '/hook/github' do
