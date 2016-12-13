@@ -69,7 +69,7 @@
                         <xsl:text>color:gray;</xsl:text>
                     </xsl:attribute>
                 </xsl:if>
-                <xsl:apply-templates select="id"/>
+                <xsl:apply-templates select="id" name="fonted"/>
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="file"/>
                 <xsl:text>:</xsl:text>
@@ -85,7 +85,7 @@
             </xsl:if>
         </div>
     </xsl:template>
-    <xsl:template match="id">
+    <xsl:template match="id" name="fonted">
         <xsl:choose>
             <xsl:when test="../@alive='true'">
                 <strong><xsl:apply-templates select="." name="linked"/></strong>
