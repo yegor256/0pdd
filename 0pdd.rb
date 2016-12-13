@@ -85,6 +85,13 @@ get '/css/*.css' do
   sass file.to_sym, views: "#{settings.root}/assets/sass"
 end
 
+not_found do
+  status 404
+  haml '404', layout: :layout, locals: { ver: VERSION }
+end
+
+private
+
 def storage(name)
   if ENV['RACK_ENV'] == 'test'
     FakeStorage.new

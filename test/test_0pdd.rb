@@ -44,6 +44,11 @@ class AppTest < Test::Unit::TestCase
     assert(last_response.body.include?('Hello, world'))
   end
 
+  def test_renders_page_not_found
+    get('/the-url-that-is-absent')
+    assert(last_response.status == 404)
+  end
+
   def test_it_understands_push_from_github
     post(
       '/hook/github',
