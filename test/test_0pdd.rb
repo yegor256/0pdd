@@ -64,4 +64,14 @@ class AppTest < Test::Unit::TestCase
       "broken HTML: #{html}"
     )
   end
+
+  def test_renders_svg_puzzles
+    get('/svg?name=teamed/est')
+    assert(last_response.ok?)
+    svg = last_response.body
+    assert(
+      svg.include?('<svg '),
+      "broken SVG: #{svg}"
+    )
+  end
 end

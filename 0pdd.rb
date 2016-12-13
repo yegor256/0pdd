@@ -45,20 +45,16 @@ end
 get '/p' do
   content_type 'text/xml'
   name = params[:name]
-  if ENV['RACK_ENV'] == 'test'
-    storage = FakeStorage.new
-  else
-    cfg = Config.new.yaml
-    storage = S3.new(
-      "#{name}.xml",
-      cfg['s3']['bucket'],
-      cfg['s3']['region'],
-      cfg['s3']['key'],
-      cfg['s3']['secret']
-    )
-  end
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
-    storage.load
+    storage(name).load
+  ).to_s
+end
+
+get '/svg' do
+  content_type 'image/svg+xml'
+  name = params[:name]
+  Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
+    storage(name).load
   ).to_s
 end
 
@@ -71,13 +67,7 @@ post '/hook/github' do
   unless ENV['RACK_ENV'] == 'test'
     Job.new(
       GitRepo.new(name: name, id_rsa: cfg['id_rsa']),
-      S3.new(
-        "#{name}.xml",
-        cfg['s3']['bucket'],
-        cfg['s3']['region'],
-        cfg['s3']['key'],
-        cfg['s3']['secret']
-      ),
+      storage(name),
       GithubTickets.new(
         name,
         cfg['github']['login'],
@@ -93,4 +83,19 @@ get '/css/*.css' do
   content_type 'text/css', charset: 'utf-8'
   file = params[:splat].first
   sass file.to_sym, views: "#{settings.root}/assets/sass"
+end
+
+def storage(name)
+  if ENV['RACK_ENV'] == 'test'
+    FakeStorage.new
+  else
+    cfg = Config.new.yaml
+    S3.new(
+      "#{name}.xml",
+      cfg['s3']['bucket'],
+      cfg['s3']['region'],
+      cfg['s3']['key'],
+      cfg['s3']['secret']
+    )
+  end
 end
