@@ -46,7 +46,7 @@ class GitRepo
 
   def xml
     tmp = Tempfile.new('pdd.xml')
-    Exec.new("cd #{@path} && pdd -f #{tmp.path}").run
+    Exec.new("cd #{@path} && pdd -q -f #{tmp.path}").run
     Nokogiri::XML(File.open(tmp))
   end
 
