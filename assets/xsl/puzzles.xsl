@@ -63,18 +63,21 @@
     </xsl:template>
     <xsl:template match="puzzle">
         <div>
-            <xsl:if test="not(issue)">
-                <xsl:attribute name="style">
-                    <xsl:text>margin-top: .5em; margin-bottom: .5em;</xsl:text>
-                </xsl:attribute>
-            </xsl:if>
-            <xsl:apply-templates select="id"/>
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="estimate"/>
-            <xsl:text>min </xsl:text>
-            <xsl:value-of select="file"/>
-            <xsl:text>:</xsl:text>
-            <xsl:value-of select="lines"/>
+            <span>
+                <xsl:if test="@alive = 'false'">
+                    <xsl:attribute name="style">
+                        <xsl:text>color:gray;</xsl:text>
+                    </xsl:attribute>
+                </xsl:if>
+                <xsl:apply-templates select="id"/>
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="file"/>
+                <xsl:text>:</xsl:text>
+                <xsl:value-of select="lines"/>
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="estimate"/>
+                <xsl:text>min </xsl:text>
+            </span>
             <xsl:if test="children/puzzle">
                 <div style="margin-left: 2em;">
                     <xsl:apply-templates select="children/puzzle"/>
