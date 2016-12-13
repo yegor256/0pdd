@@ -66,7 +66,7 @@ removed from the source code."
     client.close_issue(@repo, issue)
     client.add_comment(
       @repo, issue,
-      "The puzzle #{puzzle.xpath('id').text} has disappeared from the \
+      "The puzzle `#{puzzle.xpath('id').text}` has disappeared from the \
 source code, that's why I closed this issue."
     )
     puts "GitHub issue #{@repo}:#{issue} closed"
