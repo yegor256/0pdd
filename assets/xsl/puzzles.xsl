@@ -26,25 +26,35 @@
     <xsl:template match="/puzzles">
         <html>
             <head>
-                <title>puzzles</title>
+                <meta charset="UTF-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <meta name="description" content="puzzles"/>
                 <meta name="keywords" content="puzzles"/>
                 <meta name="author" content="0pdd.com"/>
+                <title>puzzles</title>
+                <link type="text/css" href="/css/main.css" rel="stylesheet"/>
+                <link rel="shortcut icon" href="https://avatars2.githubusercontent.com/u/24456188"/>
             </head>
             <body>
                 <div style="padding: 15px;">
-                    <h1>Puzzles</h1>
                     <p>
-                        <xsl:text>Updated on </xsl:text>
-                        <xsl:value-of select="@date"/>
-                        <xsl:text> by </xsl:text>
-                        <xsl:value-of select="@version"/>
+                        <img class="logo" src="https://avatars2.githubusercontent.com/u/24456188"/>
                     </p>
                     <p>
-                        <xsl:text>Total: </xsl:text>
+                        <xsl:text>Updated by </xsl:text>
+                        <a href="http://www.0pdd.com">
+                            <xsl:text>0pdd v</xsl:text>
+                            <xsl:value-of select="@version"/>
+                        </a>
+                        <xsl:text> on </xsl:text>
+                        <xsl:value-of select="@date"/>
+                        <xsl:text>.</xsl:text>
+                    </p>
+                    <p>
                         <xsl:value-of select="count(//puzzle)"/>
-                        <xsl:text>, alive: </xsl:text>
+                        <xsl:text> total, </xsl:text>
                         <xsl:value-of select="count(//puzzle[@alive='true'])"/>
+                        <xsl:text> alive.</xsl:text>
                     </p>
                     <xsl:apply-templates select="puzzle"/>
                 </div>
@@ -53,21 +63,26 @@
     </xsl:template>
     <xsl:template match="puzzle">
         <div>
-            <xsl:attribute name="style">
-                <xsl:text>margin-left: 2em;</xsl:text>
-                <xsl:if test="not(issue)">
+            <xsl:if test="not(issue)">
+                <xsl:attribute name="style">
                     <xsl:text>margin-top: .5em; margin-bottom: .5em;</xsl:text>
-                </xsl:if>
-            </xsl:attribute>
-            <xsl:apply-templates select="@id"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates select="id"/>
             <xsl:text> </xsl:text>
             <xsl:value-of select="estimate"/>
-            <xsl:text> </xsl:text>
+            <xsl:text>min </xsl:text>
             <xsl:value-of select="file"/>
-            <xsl:apply-templates select="children/puzzle"/>
+            <xsl:text>:</xsl:text>
+            <xsl:value-of select="lines"/>
+            <xsl:if test="children/puzzle">
+                <div style="margin-left: 2em;">
+                    <xsl:apply-templates select="children/puzzle"/>
+                </div>
+            </xsl:if>
         </div>
     </xsl:template>
-    <xsl:template match="@id[../children/puzzle/issue]">
+    <xsl:template match="id[../children/puzzle/issue]">
         <a>
             <xsl:attribute name="href">
                 <xsl:value-of select="../children/puzzle[last()]/issue"/>
@@ -75,7 +90,7 @@
             <xsl:call-template name="empty" />
         </a>
     </xsl:template>
-    <xsl:template match="@id" name="empty">
+    <xsl:template match="id" name="empty">
         <xsl:choose>
             <xsl:when test="../@alive='true'">
                 <strong><xsl:value-of select="."/></strong>
