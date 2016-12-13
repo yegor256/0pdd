@@ -49,11 +49,11 @@ class Job
   private
 
   def exclusive
-    sleep(5) unless ENV['RACK_ENV'] == 'test'
+    sleep(15) unless ENV['RACK_ENV'] == 'test'
     lock = @repo.lock
     FileUtils.mkdir_p(File.dirname(lock))
     f = File.open(lock, File::RDWR | File::CREAT, 0o644)
-    Timeout.timeout(10) do
+    Timeout.timeout(15) do
       f.flock(File::LOCK_EX)
       run
       f.close
