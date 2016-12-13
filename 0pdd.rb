@@ -30,10 +30,6 @@ require_relative 'version'
 require_relative 'objects/config'
 require_relative 'objects/job'
 
-# @todo #15:30min We don't have an SVG badge for GitHub, which will
-#  show how many puzzles we have at the moment in the repo. Let's
-#  create it, in SVG format (and maybe in PNG too).
-
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
 end
