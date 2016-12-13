@@ -41,9 +41,6 @@ get '/version' do
 end
 
 get '/p' do
-  # @todo #3:30min Let's implement this entry point, where
-  #  we will render all puzzles we have for a particular
-  #  project. Let's not forget about security too.
   'not implemented yet'
 end
 
