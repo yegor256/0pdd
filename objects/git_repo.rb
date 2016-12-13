@@ -46,10 +46,10 @@ class GitRepo
     Nokogiri::XML(File.open(tmp))
   end
 
-  def push
+  def push(sha = 'HEAD')
     prepare
     if File.exist?(@path)
-      pull
+      pull(sha)
     else
       clone
     end
@@ -65,11 +65,12 @@ class GitRepo
     ).run
   end
 
-  def pull
+  def pull(sha = 'HEAD')
+    raise 'SHA can\'t be nil' if sha.nil?
     Exec.new(
       'git',
       "--git-dir=#{@path}/.git",
-      'pull',
+      'fetch origin refs/heads/master',
       '--quiet'
     ).run
   end

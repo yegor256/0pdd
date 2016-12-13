@@ -31,9 +31,9 @@ class Exec
   end
 
   def run
-    system(@cmd)
+    stdout = system(@cmd)
     status = $CHILD_STATUS.to_i
-    return if status.zero?
+    return stdout if status.zero?
     puts @cmd
     raise "Exit code (#{status}) is not zero"
   end

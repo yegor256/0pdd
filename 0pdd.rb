@@ -62,7 +62,7 @@ post '/hook/github' do
   cfg = Config.new.yaml
   if cfg['testing_mode'].nil?
     repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
-    repo.push
+    repo.push(json['after'])
     puzzles = Puzzles.new(
       repo,
       SafeStorage.new(
