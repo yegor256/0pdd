@@ -27,11 +27,7 @@ require 'haml'
 
 require_relative 'version'
 require_relative 'objects/config'
-require_relative 'objects/git_repo'
-require_relative 'objects/github_tickets'
-require_relative 'objects/puzzles'
-require_relative 'objects/safe_storage'
-require_relative 'objects/s3'
+require_relative 'objects/job'
 
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
@@ -61,27 +57,7 @@ post '/hook/github' do
   name = json['repository']['full_name']
   cfg = Config.new.yaml
   if cfg['testing_mode'].nil?
-    repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
-    repo.push(json['after'])
-    puzzles = Puzzles.new(
-      repo,
-      SafeStorage.new(
-        S3.new(
-          "#{name}.xml",
-          cfg['s3']['bucket'],
-          cfg['s3']['region'],
-          cfg['s3']['key'],
-          cfg['s3']['secret']
-        )
-      )
-    )
-    puzzles.deploy(
-      GithubTickets.new(
-        name,
-        cfg['github']['login'],
-        cfg['github']['pwd']
-      )
-    )
+    Job.new(name, json['after']).proceed
     puts "GitHub hook from #{name}"
   else
     puts "Nothing to do for #{name}, it's a testing mode"
