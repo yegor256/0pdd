@@ -30,6 +30,7 @@ require_relative 'objects/config'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
 require_relative 'objects/puzzles'
+require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
 get '/' do
@@ -54,12 +55,14 @@ post '/hook/github' do
     repo.push
     puzzles = Puzzles.new(
       repo,
-      S3.new(
-        "#{name}.xml",
-        cfg['s3']['bucket'],
-        cfg['s3']['region'],
-        cfg['s3']['key'],
-        cfg['s3']['secret']
+      SafeStorage.new(
+        S3.new(
+          "#{name}.xml",
+          cfg['s3']['bucket'],
+          cfg['s3']['region'],
+          cfg['s3']['key'],
+          cfg['s3']['secret']
+        )
       )
     )
     puzzles.deploy(

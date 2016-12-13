@@ -26,6 +26,7 @@ require 'test/unit'
 require 'tmpdir'
 require_relative '../objects/git_repo'
 require_relative '../objects/puzzles'
+require_relative '../objects/safe_storage'
 
 # Puzzles test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -41,9 +42,11 @@ class TestPuzzles < Test::Unit::TestCase
 
   def test_xml(dir, name)
     xml = File.open("test-assets/puzzles/#{name}") { |f| Nokogiri::XML(f) }
-    storage = fake_storage(
-      dir,
-      Nokogiri.XML(xml.xpath('/test/before/puzzles')[0].to_s)
+    storage = SafeStorage.new(
+      fake_storage(
+        dir,
+        Nokogiri.XML(xml.xpath('/test/before/puzzles')[0].to_s)
+      )
     )
     repo = OpenStruct.new(
       xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s)

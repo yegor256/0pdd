@@ -4,8 +4,8 @@ AllCops:
     - 'assets/**/*'
   DisplayCopNames: true
 
-MethodLength:
-  Max: 30
+Metrics/MethodLength:
+  Max: 50
 Metrics/ClassLength:
   Max: 150
 Metrics/AbcSize:
