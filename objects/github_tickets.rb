@@ -38,7 +38,7 @@ class GithubTickets
     #  of cutting the text at the hard limit (40 chars) we have to cut
     #  it at the end of the word, staying closer to the limit.
     title = puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')
-    ticket = client.create_issue(
+    json = client.create_issue(
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: #{title}",
@@ -56,9 +56,9 @@ If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
 the problem is fixed and the text of the puzzle is \
 removed from the source code."
-    )['number']
-    puts "GitHub issue #{@repo}:#{ticket} submitted"
-    ticket
+    )
+    puts "GitHub issue #{@repo}:#{json['number']} submitted"
+    { number: json['number'], href: json['html_url'] }
   end
 
   def close(puzzle)

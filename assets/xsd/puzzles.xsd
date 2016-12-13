@@ -31,11 +31,13 @@
                 </xs:simpleType>
             </xs:element>
             <xs:element name="issue" minOccurs="0">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:minLength value="1"/>
-                    </xs:restriction>
-                </xs:simpleType>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="href" type="xs:string" use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
             </xs:element>
             <xs:element name="body" minOccurs="0">
                 <xs:simpleType>

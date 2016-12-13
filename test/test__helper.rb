@@ -53,7 +53,7 @@ class FakeTickets
 
   def submit(puzzle)
     @submitted << puzzle.xpath('id').text
-    '123'
+    { number: '123', href: 'http://0pdd.com' }
   end
 
   def close(puzzle)

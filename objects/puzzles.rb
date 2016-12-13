@@ -74,8 +74,9 @@ class Puzzles
       .xpath('//puzzle')
       .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
       .each do |p|
-        xml.xpath("//extra[id='#{p[:id]}']")[0]
-          .add_child("<issue>#{p[:issue]}</issue>")
+        xml.xpath("//extra[id='#{p[:id]}']")[0].add_child(
+          "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
+        )
       end
     xml
   end

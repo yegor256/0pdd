@@ -85,21 +85,23 @@
             </xsl:if>
         </div>
     </xsl:template>
-    <xsl:template match="id[../children/puzzle/issue]">
-        <a>
-            <xsl:attribute name="href">
-                <xsl:value-of select="../children/puzzle[last()]/issue"/>
-            </xsl:attribute>
-            <xsl:call-template name="empty" />
-        </a>
-    </xsl:template>
-    <xsl:template match="id" name="empty">
+    <xsl:template match="id">
         <xsl:choose>
             <xsl:when test="../@alive='true'">
-                <strong><xsl:value-of select="."/></strong>
+                <strong><xsl:apply-templates select="." name="linked"/></strong>
             </xsl:when>
             <xsl:otherwise>
-                <strike><xsl:value-of select="."/></strike>
+                <strike><xsl:apply-templates select="." name="linked"/></strike>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template match="id" name="linked">
+        <xsl:choose>
+            <xsl:when test="@href">
+                <a href="{@href}"><xsl:value-of select="."/></a>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="."/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
