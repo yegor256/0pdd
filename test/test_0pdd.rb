@@ -69,6 +69,7 @@ class AppTest < Test::Unit::TestCase
     get('/svg?name=teamed/est')
     assert(last_response.ok?)
     svg = last_response.body
+    IO.write('/tmp/0pdd-button.svg', svg)
     assert(
       svg.include?('<svg '),
       "broken SVG: #{svg}"
