@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'timeout'
 require_relative 'config'
 require_relative 'git_repo'
 require_relative 'github_tickets'
@@ -37,6 +38,26 @@ class Job
   end
 
   def proceed
+    Process.detach(
+      fork do
+        exclusive
+      end
+    )
+  end
+
+  private
+
+  def safe
+    f = File.open("/tmp/0lck/#{@name}.txt", File::RDWR | File::CREAT, 0o644)
+    Timeout.timeout(10) do
+      f.flock(File::LOCK_EX)
+      sleep(5.seconds) # to make sure Git repo is up to date
+      run
+      f.close
+    end
+  end
+
+  def run
     cfg = Config.new.yaml
     repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
     repo.push(@sha)
