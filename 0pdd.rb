@@ -83,7 +83,7 @@ end
 
 not_found do
   status 404
-  haml '404', layout: :layout, locals: { ver: VERSION }
+  haml :not_found, layout: :layout, locals: { ver: VERSION }
 end
 
 private
