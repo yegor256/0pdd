@@ -73,7 +73,7 @@ class GitRepo
     Exec.new(
       'git',
       "--git-dir=#{@path}/.git",
-      'fetch origin refs/heads/master',
+      'pull',
       '--quiet'
     ).run
   end
