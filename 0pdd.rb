@@ -30,6 +30,10 @@ require_relative 'version'
 require_relative 'objects/config'
 require_relative 'objects/job'
 
+# @todo #3:15min Page not found is not implemented. When I open a URL
+#  that doesn't exist I see a default sinatra "not found" page, which
+#  is annoying.
+
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
 end
