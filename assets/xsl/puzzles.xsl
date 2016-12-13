@@ -98,8 +98,8 @@
     </xsl:template>
     <xsl:template match="id" mode="linked">
         <xsl:choose>
-            <xsl:when test="@href">
-                <a href="{@href}"><xsl:value-of select="."/></a>
+            <xsl:when test="../issue/@href">
+                <a href="{../issue/@href}"><xsl:value-of select="."/></a>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="."/>
