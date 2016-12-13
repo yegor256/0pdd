@@ -41,7 +41,7 @@ get '/version' do
 end
 
 get '/p' do
-  'not implemented yet'
+  'this is not implemented yet'
 end
 
 post '/hook/github' do
