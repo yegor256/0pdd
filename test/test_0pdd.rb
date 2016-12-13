@@ -57,8 +57,11 @@ class AppTest < Test::Unit::TestCase
   def test_renders_html_puzzles
     get('/p?name=teamed/est')
     assert(last_response.ok?)
-    html = Nokogiri::HTML(last_response.body)
-    assert(!html.xpath('//html').empty?)
-    assert(html.to_s.include?('<html'), "broken HTML: #{html}")
+    html = last_response.body
+    assert(
+      html.include?('<html') &&
+        html.include?('<title>'),
+      "broken HTML: #{html}"
+    )
   end
 end

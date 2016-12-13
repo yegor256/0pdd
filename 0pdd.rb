@@ -43,6 +43,7 @@ get '/version' do
 end
 
 get '/p' do
+  content_type 'text/xml'
   name = params[:name]
   if ENV['RACK_ENV'] == 'test'
     storage = FakeStorage.new
@@ -56,7 +57,9 @@ get '/p' do
       cfg['s3']['secret']
     )
   end
-  Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(storage.load)
+  Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
+    storage.load
+  ).to_s
 end
 
 post '/hook/github' do
