@@ -22,6 +22,7 @@
 
 require 'aws-sdk'
 require 'nokogiri'
+require_relative '../version'
 
 #
 # S3 storage.
@@ -41,7 +42,7 @@ class S3
         puts "S3 #{data.size} from #{@object.bucket_name}/#{@object.key}"
         data
       else
-        '<puzzles/>'
+        "<puzzles date='#{Time.now.iso8601}' version='#{VERSION}'/>"
       end
     )
   end
