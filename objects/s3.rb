@@ -42,6 +42,7 @@ class S3
         puts "S3 #{data.size} from #{@object.bucket_name}/#{@object.key}"
         data
       else
+        puts "Empty puzzles for #{@object.bucket_name}/#{@object.key}"
         "<puzzles date='#{Time.now.iso8601}' version='#{VERSION}'/>"
       end
     )
@@ -50,6 +51,7 @@ class S3
   def save(xml)
     data = xml.to_s
     @object.put(body: data)
-    puts "S3 #{data.size} to #{@object.bucket_name}/#{@object.key}"
+    puts "S3 #{data.size} to #{@object.bucket_name}/#{@object.key} \
+(#{xml.xpath('//puzzle').size} puzzles)"
   end
 end
