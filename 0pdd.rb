@@ -46,6 +46,7 @@ get '/p' do
 end
 
 get '/svg' do
+  response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
   name = params[:name]
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
