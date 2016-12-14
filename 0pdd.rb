@@ -87,12 +87,12 @@ not_found do
 end
 
 error do
+  status 503
   haml(
     :error,
     layout: :layout,
     locals: { ver: VERSION, error: env['sinatra.error'].message }
   )
-  'Sorry there was a nasty error - ' + env['sinatra.error'].message
 end
 
 private
