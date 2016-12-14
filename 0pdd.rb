@@ -86,6 +86,15 @@ not_found do
   haml :not_found, layout: :layout, locals: { ver: VERSION }
 end
 
+error do
+  haml(
+    :error,
+    layout: :layout,
+    locals: { ver: VERSION, error: env['sinatra.error'].message }
+  )
+  'Sorry there was a nasty error - ' + env['sinatra.error'].message
+end
+
 private
 
 def storage(name)
