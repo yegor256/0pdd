@@ -39,7 +39,6 @@ get '/version' do
 end
 
 get '/p' do
-  content_type 'text/xml'
   name = params[:name]
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     storage(name).load
