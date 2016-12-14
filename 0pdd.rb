@@ -41,7 +41,7 @@ end
 get '/p' do
   name = params[:name]
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
-    storage(name).load
+    storage(name).load, ['project', name]
   ).to_s
 end
 
@@ -49,7 +49,7 @@ get '/svg' do
   content_type 'image/svg+xml'
   name = params[:name]
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
-    storage(name).load
+    storage(name).load, ['project', name]
   ).to_s
 end
 

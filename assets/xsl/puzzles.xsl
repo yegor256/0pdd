@@ -23,15 +23,16 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
     <xsl:output method="xml" omit-xml-declaration="yes"/>
+    <xsl:param name="project"/>
     <xsl:template match="/puzzles">
         <html>
             <head>
                 <meta charset="UTF-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                <meta name="description" content="puzzles"/>
-                <meta name="keywords" content="puzzles"/>
+                <meta name="description" content="{$project}"/>
+                <meta name="keywords" content="{$project}"/>
                 <meta name="author" content="0pdd.com"/>
-                <title>puzzles</title>
+                <title><xsl:value-of select="$project"/></title>
                 <link type="text/css" href="/css/main.css" rel="stylesheet"/>
                 <link rel="shortcut icon" href="https://avatars2.githubusercontent.com/u/24456188"/>
             </head>
@@ -41,7 +42,19 @@
                         <img class="logo" src="https://avatars2.githubusercontent.com/u/24456188"/>
                     </p>
                     <p>
-                        <xsl:text>Updated by </xsl:text>
+                        <img src="/svg?name={$project}"/>
+                    </p>
+                    <p>
+                        <xsl:value-of select="count(//puzzle[@alive='true'])"/>
+                        <xsl:text> alive, </xsl:text>
+                        <xsl:value-of select="count(//puzzle)"/>
+                        <xsl:text> total.</xsl:text>
+                    </p>
+                    <xsl:apply-templates select="puzzle"/>
+                    <p>
+                        <xsl:text>Project "</xsl:text>
+                        <xsl:value-of select="$project"/>
+                        <xsl:text>" updated by </xsl:text>
                         <a href="http://www.0pdd.com">
                             <xsl:text>0pdd</xsl:text>
                         </a>
@@ -51,13 +64,6 @@
                         <xsl:value-of select="@date"/>
                         <xsl:text>.</xsl:text>
                     </p>
-                    <p>
-                        <xsl:value-of select="count(//puzzle)"/>
-                        <xsl:text> total, </xsl:text>
-                        <xsl:value-of select="count(//puzzle[@alive='true'])"/>
-                        <xsl:text> alive.</xsl:text>
-                    </p>
-                    <xsl:apply-templates select="puzzle"/>
                 </div>
             </body>
         </html>
