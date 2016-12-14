@@ -37,7 +37,7 @@ class TestJob < Test::Unit::TestCase
     Dir.mktmpdir 'test' do |d|
       Job.new(
         FakeRepo.new,
-        FakeStorage.new(d),
+        SafeStorage.new(FakeStorage.new(d)),
         FakeTickets.new
       ).proceed
     end

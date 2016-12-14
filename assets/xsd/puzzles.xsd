@@ -23,14 +23,14 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:complexType name="puzzle">
         <xs:all>
-            <xs:element name="id" minOccurs="0">
+            <xs:element name="id" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:pattern value="[a-zA-Z0-9\-]+-[a-f0-9]{8}"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="issue" minOccurs="0">
+            <xs:element name="issue" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
@@ -39,51 +39,51 @@
                     </xs:simpleContent>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="body" minOccurs="0">
+            <xs:element name="body" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:minLength value="1"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="lines" minOccurs="0">
+            <xs:element name="lines" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:pattern value="[0-9]+-[0-9]+"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="file" minOccurs="0">
+            <xs:element name="file" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:pattern value=".+"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="estimate" minOccurs="0">
+            <xs:element name="estimate" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:integer">
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="ticket" minOccurs="0">
+            <xs:element name="ticket" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:pattern value="[a-zA-Z0-9\-]+"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="role" minOccurs="0">
+            <xs:element name="role" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:pattern value="[A-Z]+"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="author" minOccurs="0" type="xs:string"/>
-            <xs:element name="email" minOccurs="0" type="xs:string"/>
-            <xs:element name="time" minOccurs="0" type="xs:dateTime"/>
-            <xs:element name="children" minOccurs="0">
+            <xs:element name="author" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="email" minOccurs="1" maxOccurs="1" type="xs:string"/>
+            <xs:element name="time" minOccurs="1" maxOccurs="1" type="xs:dateTime"/>
+            <xs:element name="children" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="puzzle" type="puzzle" minOccurs="0" maxOccurs="unbounded" />

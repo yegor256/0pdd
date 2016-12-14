@@ -66,11 +66,6 @@ class Job
 
   def run
     @repo.push
-    Puzzles.new(
-      @repo,
-      SafeStorage.new(
-        @storage
-      )
-    ).deploy(@tickets)
+    Puzzles.new(@repo, @storage).deploy(@tickets)
   end
 end
