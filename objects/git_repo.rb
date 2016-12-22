@@ -48,7 +48,7 @@ class GitRepo
   def config
     f = File.join(@path, '.0pdd.yml')
     if File.exist?(f)
-      puts "#{@name} YAML config found: #{File.size(f)} bytes"
+      puts "#{File.basename(f)} found in #{@name}: #{File.size(f)} bytes"
       YAML.load(File.open(f))
     else
       {}
