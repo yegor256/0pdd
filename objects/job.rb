@@ -72,7 +72,7 @@ class Job
     yaml = @repo.config
     if yaml['errors']
       yaml['errors'].each do |email|
-        Mail.deliver do
+        mail = Mail.new do
           from '0pdd <no-reply@0pdd.com>'
           to email
           subject "#{@name}: puzzles discovery problem"
@@ -82,6 +82,8 @@ There is a problem in #{@name}:\n\n\
 Sorry,\n\
 0pdd.com"
         end
+        mail.delivery_method :sendmail
+        mail.deliver
       end
       puts
     end
