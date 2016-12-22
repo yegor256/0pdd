@@ -1,7 +1,7 @@
 assets:
-  config.yml: teamed/home#assets/0pdd/config.yml
-  id_rsa: teamed/home#assets/heroku-key
-  id_rsa.pub: teamed/home#assets/heroku-key.pub
+  config.yml: zerocracy/home#assets/0pdd/config.yml
+  id_rsa: zerocracy/home#assets/heroku-key
+  id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 release:
   script: |-
     sudo bundle install
