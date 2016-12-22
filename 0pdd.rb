@@ -33,6 +33,9 @@ require 'sass'
 require_relative 'version'
 require_relative 'objects/config'
 require_relative 'objects/job'
+require_relative 'objects/job_detached'
+require_relative 'objects/job_emailed'
+require_relative 'objects/git_repo'
 
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
