@@ -28,7 +28,6 @@ require 'mail'
 class JobEmailed
   def initialize(name, repo, config, job)
     @name = name
-    puts "name: #{@name}"
     @repo = repo
     @job = job
     return unless config['smtp']
@@ -51,6 +50,7 @@ class JobEmailed
     trace = e.message + "\n\n" + e.backtrace.join("\n")
     yaml = @repo.config
     if yaml['errors']
+      puts "name: #{@name}"
       yaml['errors'].each do |email|
         mail = Mail.new do
           from '0pdd <no-reply@0pdd.com>'
