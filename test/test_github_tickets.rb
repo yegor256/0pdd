@@ -31,10 +31,11 @@ require_relative '../objects/github_tickets'
 # License:: MIT
 class TestGithubTickets < Test::Unit::TestCase
   def test_closes_tickets
-    tickets = GithubTickets.new(
-      'yegor256/0pdd', 'login', 'pwd',
+    sources = Object.new
+    def sources.config
       YAML.load("alerts:\n  github:\n    - yegor256\n    - davvd")
-    )
+    end
+    tickets = GithubTickets.new('yegor256/0pdd', 'login', 'pwd', sources)
     tickets.close(Nokogiri::XML('<puzzle><issue>1</issue></puzzle>'))
   end
 end

@@ -26,11 +26,11 @@ require 'octokit'
 # Tickets in Github
 #
 class GithubTickets
-  def initialize(repo, login, pwd, config = {})
+  def initialize(repo, login, pwd, sources)
     @repo = repo
     @login = login
     @pwd = pwd
-    @config = config
+    @sources = sources
   end
 
   def submit(puzzle)
@@ -86,8 +86,9 @@ source code, that's why I closed this issue." +
   private
 
   def users
-    if @config['alerts'] && @config['alerts']['github']
-      @config['alerts']['github']
+    yaml = @sources.config
+    if yaml['alerts'] && yaml['alerts']['github']
+      yaml['alerts']['github']
         .map(&:strip)
         .map(&:downcase)
         .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
