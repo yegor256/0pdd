@@ -47,7 +47,7 @@ class JobEmailed
   def proceed
     @job.proceed
   rescue Exception => e
-    trace = e.backtrace.join("\n")
+    trace = e.message + "\n\n" + e.backtrace.join("\n")
     yaml = @repo.config
     if yaml['errors']
       yaml['errors'].each do |email|
