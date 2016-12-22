@@ -20,14 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'fileutils'
 require 'mail'
-require 'timeout'
-require_relative 'git_repo'
-require_relative 'github_tickets'
 require_relative 'puzzles'
-require_relative 'safe_storage'
-require_relative 's3'
 
 #
 # One job.
@@ -37,60 +31,13 @@ require_relative 's3'
 #  we have to do the second check once in a while and update GitHub issues.
 #  Maybe every hour or so.
 class Job
-  def initialize(name, repo, storage, tickets)
-    @name = name
+  def initialize(repo, storage, tickets)
     @repo = repo
     @storage = storage
     @tickets = tickets
   end
 
   def proceed
-    if ENV['RACK_ENV'] == 'test'
-      exclusive
-    else
-      Process.detach(fork { exclusive })
-    end
-  end
-
-  private
-
-  def exclusive
-    lock = @repo.lock
-    FileUtils.mkdir_p(File.dirname(lock))
-    f = File.open(lock, File::RDWR | File::CREAT, 0o644)
-    Timeout.timeout(15) do
-      f.flock(File::LOCK_EX)
-      emailed
-      f.close
-    end
-    File.delete(lock)
-  end
-
-  def emailed
-    run
-  rescue Exception => e
-    yaml = @repo.config
-    if yaml['errors']
-      yaml['errors'].each do |email|
-        mail = Mail.new do
-          from '0pdd <no-reply@0pdd.com>'
-          to email
-          subject "#{@name}: puzzles discovery problem"
-          body "Hi,\n\n\
-There is a problem in #{@name}:\n\n\
-#{e.backtrace}\n\n\
-Sorry,\n\
-0pdd.com"
-        end
-        mail.delivery_method :sendmail
-        mail.deliver
-      end
-      puts
-    end
-    raise e
-  end
-
-  def run
     @repo.push
     Puzzles.new(@repo, @storage).deploy(@tickets)
   end

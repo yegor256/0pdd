@@ -20,24 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'coveralls'
+require 'test/unit'
+require_relative '../objects/job_detached'
 
-if Gem.win_platform? then
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-    SimpleCov::Formatter::HTMLFormatter
-  ]
-  SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/features/"
-  end
-else
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-    SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
-  ]
-  SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/features/"
-    minimum_coverage 30
+# JobDetached test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016 Yegor Bugayenko
+# License:: MIT
+class TestJobDetached < Test::Unit::TestCase
+  def test_simple_scenario
+    job = Object.new
+    def job.proceed
+      # nothing
+    end
+    JobDetached.new(
+      FakeRepo.new, job
+    ).proceed
   end
 end

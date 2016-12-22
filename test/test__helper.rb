@@ -66,6 +66,10 @@ class FakeRepo
     Tempfile.new('0pdd-lock')
   end
 
+  def config
+    {}
+  end
+
   def xml
     Nokogiri::XML('<puzzles date="2016-12-10T16:26:36Z"/>')
   end
