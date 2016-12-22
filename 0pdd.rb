@@ -20,6 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# @todo #31:15min This is just a test puzzle 3.
+#  This is just a test puzzle 3.
+#  This is just a test puzzle 3.
+#  This is just a test puzzle 3.
+
 require 'haml'
 require 'json'
 require 'ostruct'
