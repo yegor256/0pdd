@@ -30,6 +30,10 @@ require_relative 'version'
 require_relative 'objects/config'
 require_relative 'objects/job'
 
+# @todo #1:15min Let's create robots.txt entry point with an
+#  an empty content. Should be pretty easy. Maybe there will
+#  be some other static resources, let's add them too.
+
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
 end
