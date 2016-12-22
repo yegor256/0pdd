@@ -88,7 +88,7 @@ source code, that's why I closed this issue." +
   def users
     if @config['alerts'] && @config['alerts']['github']
       @config['alerts']['github']
-        .map(&:trim)
+        .map(&:strip)
         .map(&:downcase)
         .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
         .map { |n| n[0..64] }
@@ -99,6 +99,18 @@ source code, that's why I closed this issue." +
   end
 
   def client
-    Octokit::Client.new(login: @login, password: @pwd)
+    if ENV['RACK_ENV'] == 'test'
+      client = Object.new
+      def client.close_issue(_, _)
+        # nothing to do here
+      end
+
+      def client.add_comment(_, _, _)
+        # nothing to do here
+      end
+      client
+    else
+      Octokit::Client.new(login: @login, password: @pwd)
+    end
   end
 end
