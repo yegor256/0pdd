@@ -78,7 +78,7 @@ class Job
           subject "#{@name}: puzzles discovery problem"
           body "Hi,\n\n\
 There is a problem in #{@name}:\n\n\
-#{exception.backtrace}\n\n\
+#{e.backtrace}\n\n\
 Sorry,\n\
 0pdd.com"
         end
