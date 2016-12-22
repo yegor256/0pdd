@@ -55,6 +55,14 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
+  def test_fetch_config
+    Dir.mktmpdir 'test' do |d|
+      repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: git(d))
+      repo.push
+      assert(repo.config['foo'])
+    end
+  end
+
   private
 
   def git(dir)
@@ -67,6 +75,8 @@ class TestGitRepo < Test::Unit::TestCase
       git config user.name test
       echo 'hello, world!' > test.txt
       git add test.txt
+      echo 'foo: hello' > .0pdd.yml
+      git add .0pdd.yml
       git commit -am 'add line'
     ")
     'file://' + File.join(dir, 'repo')
