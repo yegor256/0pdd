@@ -47,6 +47,7 @@ class JobEmailed
   def proceed
     @job.proceed
   rescue Exception => e
+    trace = e.backtrace.join("\n")
     yaml = @repo.config
     if yaml['errors']
       yaml['errors'].each do |email|
@@ -58,7 +59,7 @@ class JobEmailed
             content_type 'text/plain; charset=UTF-8'
             body "Hi,\n\n\
 There is a problem in #{@name}:\n\n\
-#{e.backtrace}\n\n\
+#{trace}\n\n\
 Sorry,\n\
 0pdd"
           end
@@ -66,7 +67,7 @@ Sorry,\n\
             content_type 'text/html; charset=UTF-8'
             body "<html><body><p>Hi,</p>
               <p>There is a problem in #{@name}:</p>
-              <pre>#{e.backtrace}</pre>
+              <pre>#{trace}</pre>
               <p>Sorry,<br/><a href='http://www.0pdd.com'>0pdd</a></p>"
           end
         end
