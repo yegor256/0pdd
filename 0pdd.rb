@@ -20,6 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# @todo #1:30min We lose errors when they happen with the source
+#  code. They just drop into the log and that's it. Instead, we must
+#  email them to the repository owner or a predefined email from .0pdd.yml
+
 require 'haml'
 require 'json'
 require 'ostruct'
