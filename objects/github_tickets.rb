@@ -61,18 +61,10 @@ removed from the source code."
     )
     issue = json['number']
     puts "GitHub issue #{@repo}:#{issue} submitted"
-    if config['alerts'] && config['alerts']['github']
+    unless users.empty?
       client.add_comment(
-        @repo,
-        issue,
-        config['alerts']['github']
-          .map(&:trim)
-          .map(&:downcase)
-          .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
-          .map { |n| n[0..64] }
-          .map { |n| "@#{n}" }
-          .join(' ') +
-        ' please pay attention to this new issue.'
+        @repo, issue,
+        users.join(' ') + ' please pay attention to this new issue.'
       )
     end
     { number: issue, href: json['html_url'] }
@@ -82,14 +74,36 @@ removed from the source code."
     issue = puzzle.xpath('issue').text
     client.close_issue(@repo, issue)
     client.add_comment(
-      @repo, issue,
+      @repo,
+      issue,
       "The puzzle `#{puzzle.xpath('id').text}` has disappeared from the \
-source code, that's why I closed this issue."
+source code, that's why I closed this issue." +
+      if users.empty?
+        client.add_comment(
+          @repo, issue,
+          ' CC: ' + users.join(' ')
+        )
+      else
+        ''
+      end
     )
     puts "GitHub issue #{@repo}:#{issue} closed"
   end
 
   private
+
+  def users
+    if config['alerts'] && config['alerts']['github']
+      config['alerts']['github']
+        .map(&:trim)
+        .map(&:downcase)
+        .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
+        .map { |n| n[0..64] }
+        .map { |n| "@#{n}" }
+    else
+      []
+    end
+  end
 
   def client
     Octokit::Client.new(login: @login, password: @pwd)
