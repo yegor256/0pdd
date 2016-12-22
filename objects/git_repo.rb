@@ -51,6 +51,7 @@ class GitRepo
       puts "#{@name} YAML config found: #{File.size(f)}"
       YAML.load(File.open(f))
     else
+      Exec.new("cd #{@path} && ls -al").run
       {}
     end
   end
