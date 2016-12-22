@@ -4,6 +4,8 @@ AllCops:
     - 'assets/**/*'
   DisplayCopNames: true
 
+Lint/RescueException:
+  Enabled: false
 Metrics/MethodLength:
   Max: 50
 Metrics/ClassLength:

@@ -36,6 +36,7 @@ class TestJob < Test::Unit::TestCase
   def test_simple_scenario
     Dir.mktmpdir 'test' do |d|
       Job.new(
+        'yegor256/0pdd',
         FakeRepo.new,
         SafeStorage.new(FakeStorage.new(d)),
         FakeTickets.new

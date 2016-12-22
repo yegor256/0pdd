@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'fileutils'
+require 'mail'
 require 'timeout'
 require_relative 'git_repo'
 require_relative 'github_tickets'
@@ -36,7 +37,8 @@ require_relative 's3'
 #  we have to do the second check once in a while and update GitHub issues.
 #  Maybe every hour or so.
 class Job
-  def initialize(repo, storage, tickets)
+  def initialize(name, repo, storage, tickets)
+    @name = name
     @repo = repo
     @storage = storage
     @tickets = tickets
@@ -58,10 +60,32 @@ class Job
     f = File.open(lock, File::RDWR | File::CREAT, 0o644)
     Timeout.timeout(15) do
       f.flock(File::LOCK_EX)
-      run
+      emailed
       f.close
     end
     File.delete(lock)
+  end
+
+  def emailed
+    run
+  rescue Exception => e
+    yaml = @repo.config
+    if yaml['errors']
+      yaml['errors'].each do |email|
+        Mail.deliver do
+          from '0pdd <no-reply@0pdd.com>'
+          to email
+          subject "#{@name}: puzzles discovery problem"
+          body "Hi,\n\n\
+There is a problem in #{@name}:\n\n\
+#{exception.backtrace}\n\n\
+Sorry,\n\
+0pdd.com"
+        end
+      end
+      puts
+    end
+    raise e
   end
 
   def run

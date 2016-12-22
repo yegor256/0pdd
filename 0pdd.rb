@@ -71,6 +71,7 @@ post '/hook/github' do
   unless ENV['RACK_ENV'] == 'test'
     repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
     Job.new(
+      name,
       repo,
       storage(name),
       GithubTickets.new(
