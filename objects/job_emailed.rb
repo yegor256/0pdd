@@ -60,6 +60,7 @@ class JobEmailed
             body "Hi,\n\n\
 There is a problem in #{@name}:\n\n\
 #{trace}\n\n\
+If you think it's our bug, please forward this email to yegor@0pdd.com.
 Sorry,\n\
 0pdd"
           end
@@ -68,6 +69,8 @@ Sorry,\n\
             body "<html><body><p>Hi,</p>
               <p>There is a problem in #{@name}:</p>
               <pre>#{trace}</pre>
+              <p>If you think it's our bug, please forward this email
+              to <a href='mailto:yegor@0pdd.com'>yegor@0pdd.com</a>. Thanks.</p>
               <p>Sorry,<br/><a href='http://www.0pdd.com'>0pdd</a></p>"
           end
         end
