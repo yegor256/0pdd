@@ -60,13 +60,13 @@ the problem is fixed and the text of the puzzle is \
 removed from the source code."
     )
     issue = json['number']
-    puts "GitHub issue #{@repo}:#{issue} submitted"
     unless users.empty?
       client.add_comment(
         @repo, issue,
         users.join(' ') + ' please pay attention to this new issue.'
       )
     end
+    puts "GitHub issue #{@repo}:#{issue} submitted: #{users}"
     { number: issue, href: json['html_url'] }
   end
 
@@ -80,7 +80,7 @@ removed from the source code."
 source code, that's why I closed this issue." +
       (users.empty? ? '' : ' CC: ' + users.join(' '))
     )
-    puts "GitHub issue #{@repo}:#{issue} closed"
+    puts "GitHub issue #{@repo}:#{issue} closed: #{users}"
   end
 
   private
