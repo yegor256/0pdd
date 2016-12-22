@@ -28,6 +28,7 @@ require 'mail'
 class JobEmailed
   def initialize(name, repo, config, job)
     @name = name
+    puts "name: #{@name}"
     @repo = repo
     @job = job
     return unless config['smtp']
@@ -57,7 +58,7 @@ class JobEmailed
           subject "#{@name}: puzzles discovery problem"
           text_part do
             content_type 'text/plain; charset=UTF-8'
-            body "Hi,\n\n\
+            body "Hey,\n\n\
 There is a problem in #{@name}:\n\n\
 #{trace}\n\n\
 If you think it's our bug, please forward this email to yegor@0pdd.com.
@@ -66,7 +67,7 @@ Sorry,\n\
           end
           html_part do
             content_type 'text/html; charset=UTF-8'
-            body "<html><body><p>Hi,</p>
+            body "<html><body><p>Hey,</p>
               <p>There is a problem in #{@name}:</p>
               <pre>#{trace}</pre>
               <p>If you think it's our bug, please forward this email

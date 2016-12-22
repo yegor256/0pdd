@@ -35,6 +35,6 @@ class Exec
     status = $CHILD_STATUS.to_i
     return stdout if status.zero?
     puts @cmd
-    raise "#{@cmd}: #{status} (not zero): #{stdout}"
+    raise "#{@cmd}: #{status} (not zero):\n#{stdout}"
   end
 end
