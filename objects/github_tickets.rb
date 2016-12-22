@@ -61,11 +61,11 @@ removed from the source code."
     )
     issue = json['number']
     puts "GitHub issue #{@repo}:#{issue} submitted"
-    if config['alerts'] && config['alerts']['message']
+    if config['alerts'] && config['alerts']['github']
       client.add_comment(
         @repo,
         issue,
-        config['alerts']['message']
+        config['alerts']['github']
           .map(&:trim)
           .map(&:downcase)
           .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
