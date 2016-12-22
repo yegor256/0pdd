@@ -78,7 +78,7 @@ removed from the source code."
       issue,
       "The puzzle `#{puzzle.xpath('id').text}` has disappeared from the \
 source code, that's why I closed this issue." +
-      (users.empty? ? '' : ' CC: ' + users.join(' '))
+      (users.empty? ? '' : ' //cc ' + users.join(' '))
     )
     puts "GitHub issue #{@repo}:#{issue} closed: #{users}"
   end
