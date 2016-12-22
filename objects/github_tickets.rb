@@ -78,14 +78,7 @@ removed from the source code."
       issue,
       "The puzzle `#{puzzle.xpath('id').text}` has disappeared from the \
 source code, that's why I closed this issue." +
-      if users.empty?
-        client.add_comment(
-          @repo, issue,
-          ' CC: ' + users.join(' ')
-        )
-      else
-        ''
-      end
+      (users.empty? ? '' : ' CC: ' + users.join(' '))
     )
     puts "GitHub issue #{@repo}:#{issue} closed"
   end
