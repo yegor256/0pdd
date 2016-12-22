@@ -86,8 +86,8 @@ source code, that's why I closed this issue." +
   private
 
   def users
-    if config['alerts'] && config['alerts']['github']
-      config['alerts']['github']
+    if @config['alerts'] && @config['alerts']['github']
+      @config['alerts']['github']
         .map(&:trim)
         .map(&:downcase)
         .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
