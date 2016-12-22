@@ -30,6 +30,10 @@ require_relative 'version'
 require_relative 'objects/config'
 require_relative 'objects/job'
 
+# @todo #31:15min This puzzle is just a test. It has to prove that
+#  the system works just well. Right after that I will remove it and it has
+#  to be removed from Github.
+
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
 end

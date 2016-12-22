@@ -45,7 +45,7 @@ class GitRepo
   end
 
   def config
-    f = File.join(@path, '.0pdd')
+    f = File.join(@path, '.0pdd.yml')
     File.exist?(f) ? YAML.load(File.open(f)) : {}
   end
 
