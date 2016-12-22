@@ -36,7 +36,9 @@ require_relative 'objects/job'
 require_relative 'objects/job_detached'
 require_relative 'objects/job_emailed'
 require_relative 'objects/git_repo'
+require_relative 'objects/github_tickets'
 require_relative 'objects/safe_storage'
+require_relative 'objects/s3'
 
 get '/' do
   haml :index, layout: :layout, locals: { ver: VERSION }
