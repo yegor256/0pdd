@@ -47,19 +47,19 @@ class JobEmailed
   def proceed
     @job.proceed
   rescue Exception => e
-    trace = e.message + "\n\n" + e.backtrace.join("\n")
     yaml = @repo.config
     if yaml['errors']
-      puts "name: #{@name}"
+      trace = e.message + "\n\n" + e.backtrace.join("\n")
+      name = @name
       yaml['errors'].each do |email|
         mail = Mail.new do
           from '0pdd <no-reply@0pdd.com>'
           to email
-          subject "#{@name}: puzzles discovery problem"
+          subject "#{name}: puzzles discovery problem"
           text_part do
             content_type 'text/plain; charset=UTF-8'
             body "Hey,\n\n\
-There is a problem in #{@name}:\n\n\
+There is a problem in #{name}:\n\n\
 #{trace}\n\n\
 If you think it's our bug, please forward this email to yegor@0pdd.com.
 Sorry,\n\
@@ -68,7 +68,7 @@ Sorry,\n\
           html_part do
             content_type 'text/html; charset=UTF-8'
             body "<html><body><p>Hey,</p>
-              <p>There is a problem in #{@name}:</p>
+              <p>There is a problem in #{name}:</p>
               <pre>#{trace}</pre>
               <p>If you think it's our bug, please forward this email
               to <a href='mailto:yegor@0pdd.com'>yegor@0pdd.com</a>. Thanks.</p>
