@@ -44,6 +44,11 @@ class GitRepo
     "/tmp/0pdd-locks/#{@name}.txt"
   end
 
+  def config
+    f = File.join(@path, '.0pdd')
+    File.exist?(f) ? YAML.load(File.open(f)) : {}
+  end
+
   def xml
     tmp = Tempfile.new('pdd.xml')
     Exec.new("cd #{@path} && pdd -q -f #{tmp.path}").run

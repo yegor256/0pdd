@@ -61,13 +61,15 @@ post '/hook/github' do
   name = json['repository']['full_name']
   cfg = Config.new.yaml
   unless ENV['RACK_ENV'] == 'test'
+    repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
     Job.new(
-      GitRepo.new(name: name, id_rsa: cfg['id_rsa']),
+      repo,
       storage(name),
       GithubTickets.new(
         name,
         cfg['github']['login'],
-        cfg['github']['pwd']
+        cfg['github']['pwd'],
+        repo.config
       )
     ).proceed
     puts "GitHub hook from #{name}"

@@ -26,10 +26,11 @@ require 'octokit'
 # Tickets in Github
 #
 class GithubTickets
-  def initialize(repo, login, pwd)
+  def initialize(repo, login, pwd, config = {})
     @repo = repo
     @login = login
     @pwd = pwd
+    @config = config
   end
 
   def submit(puzzle)
@@ -58,8 +59,23 @@ submit new tickets instead. The task will be \"done\" when \
 the problem is fixed and the text of the puzzle is \
 removed from the source code."
     )
-    puts "GitHub issue #{@repo}:#{json['number']} submitted"
-    { number: json['number'], href: json['html_url'] }
+    issue = json['number']
+    puts "GitHub issue #{@repo}:#{issue} submitted"
+    if config['alerts'] && config['alerts']['message']
+      client.add_comment(
+        @repo,
+        issue,
+        config['alerts']['message']
+          .map(&:trim)
+          .map(&:downcase)
+          .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
+          .map { |n| n[0..64] }
+          .map { |n| "@#{n}" }
+          .join(' ') +
+        ' please pay attention to this new issue.'
+      )
+    end
+    { number: issue, href: json['html_url'] }
   end
 
   def close(puzzle)
