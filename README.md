@@ -40,8 +40,8 @@ of your own repository):
 ## How to configure?
 
 The only way to configure 0pdd is to add `.0pdd.yml` file to the
-root directory of your `master` branch. It has to be a
-[YAML](https://en.wikipedia.org/wiki/YAML) file with the following
+root directory of your `master` branch (see [this one](https://github.com/yegor256/0pdd/blob/master/.0pdd.yml) as a live example).
+It has to be a [YAML](https://en.wikipedia.org/wiki/YAML) file with the following
 optional parameters inside:
 
 ```yaml
