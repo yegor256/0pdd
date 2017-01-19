@@ -28,6 +28,15 @@ to the source code (format it [right](https://github.com/teamed/pdd)).
 Then, `git push` something and see what happens. You should see a new
 issue created in your repository by [@0pdd](https://github.com/0pdd).
 
+Don't forget to add that cute little badge to your `README.md`, just
+like we did here in this repo (see above). The Markdown you need
+will look like this (replace `yegor256/0pdd` with GitHub coordinates
+of your own repository):
+
+```markdown
+[![PDD status](http://www.0pdd.com/svg?name=yegor256/0pdd)](http://www.0pdd.com/p?name=yegor256/0pdd)
+```
+
 ## How to configure?
 
 The only way to configure 0pdd is to add `.0pdd.yml` file to the
