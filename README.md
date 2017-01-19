@@ -28,6 +28,31 @@ to the source code (format it [right](https://github.com/teamed/pdd)).
 Then, `git push` something and see what happens. You should see a new
 issue created in your repository by [@0pdd](https://github.com/0pdd).
 
+## How to configure?
+
+The only way to configure 0pdd is to add `.0pdd.yml` file to the
+root directory of your `master` branch. It has to be a
+[YAML](https://en.wikipedia.org/wiki/YAML) file with the following
+optional parameters inside:
+
+```yaml
+errors:
+  - yegor256@gmail.com
+alerts:
+  github:
+    - yegor256
+```
+
+Section `errors` allows you to specify a list of email addresses which will
+receive notifications when PDD processing fails for your repo. It's
+a very useful feature, since ~sometimes~ very often programmers make
+mistakes in PDD puzzle formatting. We would recommend you use this feature.
+
+Section `alerts` allows you to specify users that will be notified when
+new PDD puzzles show us. By default we will just submit GitHub tickets
+and that's it. If you add `github` subsection there, you can list GitHub
+users who will be notified.
+
 ## How to contribute?
 
 Just submit a pull request. Make sure `rake` passes.
