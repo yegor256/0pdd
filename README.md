@@ -54,7 +54,7 @@ alerts:
 
 Section `errors` allows you to specify a list of email addresses which will
 receive notifications when PDD processing fails for your repo. It's
-a very useful feature, since ~sometimes~ very often programmers make
+a very useful feature, since very often programmers make
 mistakes in PDD puzzle formatting. We would recommend you use this feature.
 
 Section `alerts` allows you to specify users that will be notified when
