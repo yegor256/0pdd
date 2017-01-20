@@ -38,7 +38,7 @@ class GithubTickets
     #  primitive and doesn't produce readable texts very often. Instead
     #  of cutting the text at the hard limit (40 chars) we have to cut
     #  it at the end of the word, staying closer to the limit.
-    title = puzzle.xpath('body').text.gsub(/^(.{40,}?).*$/m, '\1...')
+    title = truncate(puzzle.xpath('body').text)
     json = client.create_issue(
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
@@ -97,6 +97,14 @@ source code, that's why I closed this issue." +
     else
       []
     end
+  end
+
+  def truncate(text, limit = 40, separator = '...')
+    return text if limit >= text.length
+
+    length_with_room_for_omission = limit - separator.length
+    stop = text.rindex(' ', length_with_room_for_omission) || 0
+    "#{text[0...stop]}#{separator}"
   end
 
   def client
