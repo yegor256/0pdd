@@ -55,6 +55,10 @@ get '/p' do
   ).to_s
 end
 
+get '/xml' do
+  storage(params[:name]).load
+end
+
 get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'

@@ -52,6 +52,13 @@
                     </p>
                     <xsl:apply-templates select="puzzle"/>
                     <p>
+                        <xsl:text>Download </xsl:text>
+                        <a href="/xml?name={$project}">
+                            <xsl:text>XML</xsl:text>
+                        </a>
+                        <xsl:text>.</xsl:text>
+                    </p>
+                    <p>
                         <xsl:text>Project "</xsl:text>
                         <xsl:value-of select="$project"/>
                         <xsl:text>" updated by </xsl:text>
