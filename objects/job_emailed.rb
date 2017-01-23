@@ -48,36 +48,36 @@ class JobEmailed
     @job.proceed
   rescue Exception => e
     yaml = @repo.config
-    if yaml['errors']
-      trace = e.message + "\n\n" + e.backtrace.join("\n")
-      name = @name
-      yaml['errors'].each do |email|
-        mail = Mail.new do
-          from '0pdd <no-reply@0pdd.com>'
-          to email
-          subject "#{name}: puzzles discovery problem"
-          text_part do
-            content_type 'text/plain; charset=UTF-8'
-            body "Hey,\n\n\
+    emails = yaml['errors'] ? yaml['errors'] : []
+    emails << 'admin@0pdd.com'
+    trace = e.message + "\n\n" + e.backtrace.join("\n")
+    name = @name
+    emails.each do |email|
+      mail = Mail.new do
+        from '0pdd <no-reply@0pdd.com>'
+        to email
+        subject "#{name}: puzzles discovery problem"
+        text_part do
+          content_type 'text/plain; charset=UTF-8'
+          body "Hey,\n\n\
 There is a problem in #{name}:\n\n\
 #{trace}\n\n\
 If you think it's our bug, please forward this email to yegor@0pdd.com.
 Sorry,\n\
 0pdd"
-          end
-          html_part do
-            content_type 'text/html; charset=UTF-8'
-            body "<html><body><p>Hey,</p>
-              <p>There is a problem in #{name}:</p>
-              <pre>#{trace}</pre>
-              <p>If you think it's our bug, please forward this email
-              to <a href='mailto:yegor@0pdd.com'>yegor@0pdd.com</a>. Thanks.</p>
-              <p>Sorry,<br/><a href='http://www.0pdd.com'>0pdd</a></p>"
-          end
         end
-        mail.deliver!
-        puts "email sent to #{email}"
+        html_part do
+          content_type 'text/html; charset=UTF-8'
+          body "<html><body><p>Hey,</p>
+            <p>There is a problem in #{name}:</p>
+            <pre>#{trace}</pre>
+            <p>If you think it's our bug, please forward this email
+            to <a href='mailto:yegor@0pdd.com'>yegor@0pdd.com</a>. Thanks.</p>
+            <p>Sorry,<br/><a href='http://www.0pdd.com'>0pdd</a></p>"
+        end
       end
+      mail.deliver!
+      puts "email sent to #{email}"
     end
     raise e
   end
