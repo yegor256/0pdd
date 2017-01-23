@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ruby '2.2.2'
+ruby '2.3.3'
 source 'https://rubygems.org'
 
 gem 'aws-sdk', '2.6.35'
@@ -30,7 +30,7 @@ gem 'mail', '2.6.4'
 gem 'nokogiri', '1.6.8.1'
 gem 'octokit', '4.6.2'
 gem 'pdd', '0.17.1'
-gem 'rack', '1.6.5'
+gem 'rack', '~> 1.5'
 gem 'rake', '12.0.0', require: false
 gem 'rspec-rails', '3.5.2', require: false
 gem 'rubocop', '0.46.0', require: false
