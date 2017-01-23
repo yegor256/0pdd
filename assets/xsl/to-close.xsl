@@ -27,7 +27,7 @@
     <xsl:key name="extras" match="//extra" use="id"/>
     <xsl:template match="/puzzles">
         <xsl:copy>
-            <xsl:apply-templates select="//puzzle[@alive='true' and not(key('extras',id))]"/>
+            <xsl:apply-templates select="//puzzle[@alive='true' and not(key('extras',id)) and issue!='unknown']"/>
         </xsl:copy>
     </xsl:template>
     <xsl:template match="node()|@*">

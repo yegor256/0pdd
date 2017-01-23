@@ -37,6 +37,7 @@ class TestPuzzles < Test::Unit::TestCase
     Dir.mktmpdir 'test' do |d|
       test_xml(d, 'simple.xml')
       test_xml(d, 'closes-one-puzzle.xml')
+      test_xml(d, 'ignores-unknown-issues.xml')
     end
   end
 
@@ -70,6 +71,12 @@ class TestPuzzles < Test::Unit::TestCase
       assert(
         tickets.closed.include?(ticket.to_s),
         "ticket #{ticket} was not closed: #{tickets.closed}"
+      )
+    end
+    tickets.closed.each do |ticket|
+      assert(
+        !xml.xpath("/test/close[ticket='#{ticket}']").empty?,
+        "ticket #{ticket} was closed by mistake"
       )
     end
   end
