@@ -56,7 +56,8 @@ get '/p' do
 end
 
 get '/xml' do
-  storage(params[:name]).load
+  content_type 'text/xml'
+  storage(params[:name]).load.to_s
 end
 
 get '/svg' do

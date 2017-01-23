@@ -57,7 +57,7 @@ class AppTest < Test::Unit::TestCase
   def test_it_understands_push_from_github
     post(
       '/hook/github',
-      '{"repository":{"full_name":"teamed/pdd"}, "ref":"refs/heads/master"}',
+      '{"repository":{"full_name":"yegor256/pdd"}, "ref":"refs/heads/master"}',
       'CONTENT_TYPE' => 'application/json'
     )
     assert(last_response.ok?)
@@ -65,7 +65,7 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_renders_html_puzzles
-    get('/p?name=teamed/est')
+    get('/p?name=yegor256/pdd')
     assert(last_response.ok?)
     html = last_response.body
     assert(
@@ -76,13 +76,23 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_renders_svg_puzzles
-    get('/svg?name=teamed/est')
+    get('/svg?name=yegor256/pdd')
     assert(last_response.ok?)
     svg = last_response.body
     IO.write('/tmp/0pdd-button.svg', svg)
     assert(
       svg.include?('<svg '),
       "broken SVG: #{svg}"
+    )
+  end
+
+  def test_renders_xml_puzzles
+    get('/xml?name=yegor256/pdd')
+    assert(last_response.ok?)
+    xml = last_response.body
+    assert(
+      xml.include?('<puzzles '),
+      "broken XML: #{xml}"
     )
   end
 end
