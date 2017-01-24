@@ -100,11 +100,12 @@ source code, that's why I closed this issue." +
   end
 
   def truncate(text, limit = 40, separator = '...')
-    return text if limit >= text.length
-
-    length_with_room_for_omission = limit - separator.length
-    stop = text.rindex(' ', length_with_room_for_omission) || 0
-    "#{text[0...stop]}#{separator}"
+    unless limit >= text.length
+      length_with_room_for_omission = limit - separator.length
+      stop = text.rindex(' ', length_with_room_for_omission) || 0
+      text = "#{text[0...stop]}#{separator}"
+    end
+    text
   end
 
   def client
