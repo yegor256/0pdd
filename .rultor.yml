@@ -31,4 +31,7 @@ architect:
 - yegor256
 merge:
   commanders: []
+  script: |-
+    sudo bundle install
+    rake
 deploy: {}
