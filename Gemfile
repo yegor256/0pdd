@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ruby '2.3.3'
 source 'https://rubygems.org'
 
 gem 'aws-sdk', '2.6.35'
