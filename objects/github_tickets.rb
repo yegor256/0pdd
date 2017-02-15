@@ -51,7 +51,7 @@ class GithubTickets
 #{puzzle.xpath('lines').text}: #{title}",
       "The puzzle `#{puzzle.xpath('id').text}` \
 in [`#{puzzle.xpath('file').text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text)}) \
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
 (lines #{puzzle.xpath('lines').text}) \
 has to be resolved: #{puzzle.xpath('body').text}\
 \n\n\
