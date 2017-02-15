@@ -84,6 +84,9 @@ class Puzzles
     xml
   end
 
+  # @todo #41:30min Let's post notification messages to tickets where
+  #  other puzzles were waiting for the resolution of this one. Let's update
+  #  them with a summary information of what is left.
   def close(xml, tickets)
     Nokogiri::XSLT(File.read('assets/xsl/to-close.xsl'))
       .transform(xml)
