@@ -37,14 +37,17 @@ class Puzzles
     #  be much better to check whether any modifications have been made
     #  and skip that SAVE() operation.
     @storage.save(
-      group(
-        close(
-          submit(
-            join(@storage.load, @repo.xml),
+      update_all(
+        group(
+          close(
+            submit(
+              join(@storage.load, @repo.xml),
+              tickets
+            ),
             tickets
-          ),
-          tickets
-        )
+          )
+        ),
+        tickets
       )
     )
   end
@@ -86,6 +89,21 @@ class Puzzles
       .transform(xml)
       .xpath('//puzzle')
       .each { |p| tickets.close(p) }
+    xml
+  end
+
+  def update_all(xml, tickets)
+    if tickets.safe
+      xml.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
+        .each { |p| tickets.close(p) }
+      xml.xpath('//puzzle[@alive="true" and not(issue)]')
+        .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
+        .each do |p|
+          xml.xpath("//puzzle[id='#{p[:id]}']")[0].add_child(
+            "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
+          )
+        end
+    end
     xml
   end
 end

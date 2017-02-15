@@ -24,6 +24,7 @@ require 'octokit'
 
 #
 # Tickets in Github
+# API: http://octokit.github.io/octokit.rb/method_list.html
 #
 class GithubTickets
   def initialize(repo, login, pwd, sources)
@@ -31,6 +32,11 @@ class GithubTickets
     @login = login
     @pwd = pwd
     @sources = sources
+  end
+
+  # Is it safe to do something right now or it's better to wait a bit?
+  def safe
+    client.rate_limit.remaining > 2000
   end
 
   def submit(puzzle)
@@ -72,6 +78,7 @@ removed from the source code."
 
   def close(puzzle)
     issue = puzzle.xpath('issue').text
+    return if client.issue(@repo, issue)['state'] == 'closed'
     client.close_issue(@repo, issue)
     client.add_comment(
       @repo,
@@ -112,6 +119,10 @@ source code, that's why I closed this issue." +
   def client
     if ENV['RACK_ENV'] == 'test'
       client = Object.new
+      def client.issue(_, _)
+        { 'state' => 'open' }
+      end
+
       def client.close_issue(_, _)
         # nothing to do here
       end

@@ -23,5 +23,7 @@
         <xpath>/puzzles[@date='2016-12-10T16:26:36Z']</xpath>
     </assertions>
     <submit/>
-    <close/>
+    <close>
+        <ticket></ticket>
+    </close>
 </test>
