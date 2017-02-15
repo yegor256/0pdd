@@ -50,11 +50,12 @@ class GithubTickets
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: #{title}",
       "The puzzle `#{puzzle.xpath('id').text}` \
-in `#{puzzle.xpath('file').text}` (lines #{puzzle.xpath('lines').text}) \
+in [`#{puzzle.xpath('file').text}`](\
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text)}) \
+(lines #{puzzle.xpath('lines').text}) \
 has to be resolved: #{puzzle.xpath('body').text}\
 \n\n\
-The [puzzle](http://www.yegor256.com/2009/03/04/pdd.html) \
-was created by #{puzzle.xpath('author').text} on \
+The puzzle was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
 \n\n\
 Estimate: #{puzzle.xpath('estimate').text} minutes, \
@@ -63,7 +64,8 @@ role: #{puzzle.xpath('role').text}.\
 If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
 the problem is fixed and the text of the puzzle is \
-removed from the source code."
+removed from the source code. Here is more about \
+[PDD](http://www.yegor256.com/2009/03/04/pdd.html)."
     )
     issue = json['number']
     unless users.empty?
