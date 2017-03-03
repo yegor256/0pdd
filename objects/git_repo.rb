@@ -84,8 +84,9 @@ class GitRepo
   def pull
     Exec.new(
       "cd #{@path}",
-      '&& git reset --hard --quiet &&',
-      'git pull --quiet'
+      '&& git reset --hard --quiet',
+      '&& git clean --force -d',
+      '&& git pull --quiet'
     ).run
   end
 
