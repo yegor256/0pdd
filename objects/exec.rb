@@ -31,7 +31,7 @@ class Exec
   end
 
   def run
-    stdout = `#{@cmd}`
+    stdout = `(#{@cmd}) 2>&1`
     status = $CHILD_STATUS.to_i
     return stdout if status.zero?
     puts @cmd
