@@ -46,7 +46,7 @@ class AppTest < Test::Unit::TestCase
   def test_it_renders_home_page
     get('/')
     assert(last_response.ok?)
-    assert(last_response.body.include?('Hello, world'))
+    assert(last_response.body.include?('0pdd'))
   end
 
   def test_renders_page_not_found
