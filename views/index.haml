@@ -1,2 +1,19 @@
-%p
-  Hello, world!
+%div.center
+  %p
+    %a{:href => '/'}
+      %img.logo{:src => 'https://avatars2.githubusercontent.com/u/24456188'}
+  %p
+    %a{:href => 'http://www.yegor256.com/2009/03/04/pdd.html'} PDD
+    puzzles collector.
+  %p
+    Made by
+    = succeed "." do
+      %a{:href => 'http://www.yegor256.com'} @yegor256
+  %p
+    %a{:href => 'http://www.sixnines.io/h/574a'}
+      %img{:src => 'http://www.sixnines.io/b/574a'}
+  %p
+    %a{:href => 'https://github.com/yegor256/0pdd'}
+      %img{:src => 'https://img.shields.io/github/stars/yegor256/0pdd.svg'}
+  %p
+    =ver

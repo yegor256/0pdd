@@ -8,25 +8,7 @@
     %link{:type => 'text/css', :href => url('css/main.css'), :rel => 'stylesheet'}
     %link{:rel => 'shortcut icon', :href => 'https://avatars2.githubusercontent.com/u/24456188'}
   %body
-    %p
-      %a{:href => '/'}
-        %img.logo{:src => 'https://avatars2.githubusercontent.com/u/24456188'}
-    %p
-      %a{:href => 'http://www.yegor256.com/2009/03/04/pdd.html'} PDD
-      puzzles collector.
     =yield
-    %p
-      Made by
-      = succeed "." do
-        %a{:href => 'http://www.yegor256.com'} @yegor256
-    %p
-      Version
-      = succeed "." do
-        =ver
-    %p
-      It is open source, please
-      = succeed "." do
-        %a{:href => 'https://github.com/yegor256/0pdd'} contribute
     :javascript
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

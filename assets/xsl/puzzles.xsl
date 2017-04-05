@@ -37,41 +37,39 @@
                 <link rel="shortcut icon" href="https://avatars2.githubusercontent.com/u/24456188"/>
             </head>
             <body>
-                <div style="padding: 15px;">
-                    <p>
-                        <img class="logo" src="https://avatars2.githubusercontent.com/u/24456188"/>
-                    </p>
-                    <p>
-                        <img src="/svg?name={$project}"/>
-                    </p>
-                    <p>
-                        <xsl:value-of select="count(//puzzle[@alive='true'])"/>
-                        <xsl:text> alive, </xsl:text>
-                        <xsl:value-of select="count(//puzzle)"/>
-                        <xsl:text> total.</xsl:text>
-                    </p>
-                    <xsl:apply-templates select="puzzle"/>
-                    <p>
-                        <xsl:text>Download </xsl:text>
-                        <a href="/xml?name={$project}">
-                            <xsl:text>XML</xsl:text>
-                        </a>
-                        <xsl:text>.</xsl:text>
-                    </p>
-                    <p>
-                        <xsl:text>Project "</xsl:text>
-                        <xsl:value-of select="$project"/>
-                        <xsl:text>" updated by </xsl:text>
-                        <a href="http://www.0pdd.com">
-                            <xsl:text>0pdd</xsl:text>
-                        </a>
-                        <xsl:text> v</xsl:text>
-                        <xsl:value-of select="@version"/>
-                        <xsl:text> on </xsl:text>
-                        <xsl:value-of select="@date"/>
-                        <xsl:text>.</xsl:text>
-                    </p>
-                </div>
+                <p>
+                    <img class="logo" src="https://avatars2.githubusercontent.com/u/24456188"/>
+                </p>
+                <p>
+                    <img src="/svg?name={$project}"/>
+                </p>
+                <p>
+                    <xsl:value-of select="count(//puzzle[@alive='true'])"/>
+                    <xsl:text> alive, </xsl:text>
+                    <xsl:value-of select="count(//puzzle)"/>
+                    <xsl:text> total.</xsl:text>
+                </p>
+                <xsl:apply-templates select="puzzle"/>
+                <p>
+                    <xsl:text>Download </xsl:text>
+                    <a href="/xml?name={$project}">
+                        <xsl:text>XML</xsl:text>
+                    </a>
+                    <xsl:text>.</xsl:text>
+                </p>
+                <p>
+                    <xsl:text>Project "</xsl:text>
+                    <xsl:value-of select="$project"/>
+                    <xsl:text>" updated by </xsl:text>
+                    <a href="http://www.0pdd.com">
+                        <xsl:text>0pdd</xsl:text>
+                    </a>
+                    <xsl:text> v</xsl:text>
+                    <xsl:value-of select="@version"/>
+                    <xsl:text> on </xsl:text>
+                    <xsl:value-of select="@date"/>
+                    <xsl:text>.</xsl:text>
+                </p>
             </body>
         </html>
     </xsl:template>
