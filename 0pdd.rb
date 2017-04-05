@@ -40,7 +40,8 @@ require_relative 'objects/s3'
 get '/' do
   haml :index, layout: :layout, locals: {
     ver: VERSION,
-    tail: `uniq /tmp/0pdd-done.txt | tail -10`.split("\n").reject(&:empty?)
+    tail: `sort /tmp/0pdd-done.txt | uniq | tail -10`.split("\n")
+      .reject(&:empty?)
   }
 end
 
