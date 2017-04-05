@@ -31,13 +31,17 @@ require_relative 'objects/config'
 require_relative 'objects/job'
 require_relative 'objects/job_detached'
 require_relative 'objects/job_emailed'
+require_relative 'objects/job_recorded'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
 require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
 get '/' do
-  haml :index, layout: :layout, locals: { ver: VERSION }
+  haml :index, layout: :layout, locals: {
+    ver: VERSION,
+    tail: `tail -10 /tmp/0pdd-done.txt`.split("\n").reject(&:empty?)
+  }
 end
 
 get '/robots.txt' do
@@ -82,18 +86,21 @@ post '/hook/github' do
     repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
     JobDetached.new(
       repo,
-      JobEmailed.new(
+      JobRecorded.new(
         name,
-        repo,
-        cfg,
-        Job.new(
+        JobEmailed.new(
+          name,
           repo,
-          storage(name),
-          GithubTickets.new(
-            name,
-            cfg['github']['login'],
-            cfg['github']['pwd'],
-            repo
+          cfg,
+          Job.new(
+            repo,
+            storage(name),
+            GithubTickets.new(
+              name,
+              cfg['github']['login'],
+              cfg['github']['pwd'],
+              repo
+            )
           )
         )
       )
