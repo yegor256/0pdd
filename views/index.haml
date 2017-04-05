@@ -5,11 +5,12 @@
   %p
     %a{:href => 'http://www.yegor256.com/2009/03/04/pdd.html'} PDD
     puzzles collector.
-  %p
-    Recent commits:
-    - tail.each do |r|
-      %a{:href => 'https://github.com/' + r}
-        =r
+  - if !tail.empty?
+    %p
+      Recent commits:
+      - tail.each do |r|
+        %a{:href => 'https://github.com/' + r}
+          =r
   %p
     Made by
     = succeed "." do
