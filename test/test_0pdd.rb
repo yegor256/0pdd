@@ -61,7 +61,7 @@ class AppTest < Test::Unit::TestCase
       'CONTENT_TYPE' => 'application/json'
     )
     assert(last_response.ok?)
-    assert(last_response.body.include?('thanks'))
+    assert(last_response.body.include?('Thanks'))
   end
 
   def test_renders_html_puzzles

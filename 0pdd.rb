@@ -100,7 +100,7 @@ post '/hook/github' do
     ).proceed
     puts "GitHub hook from #{name}"
   end
-  "thanks #{name}"
+  "Thanks #{name}"
 end
 
 get '/css/*.css' do
