@@ -8,7 +8,9 @@
   - if !tail.empty?
     %p
       Recent commits:
-      - tail.each do |r|
+      - tail.each_with_index do |r, i|
+        - if i > 0
+          =','
         %a{:href => 'https://github.com/' + r}
           =r
   %p
