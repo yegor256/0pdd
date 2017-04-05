@@ -79,6 +79,7 @@ get '/svg' do
 end
 
 get '/ping-github' do
+  cfg = Config.new.yaml
   client = Octokit::Client.new(
     login: cfg['github']['login'],
     password: cfg['github']['pwd']
