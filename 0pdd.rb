@@ -90,8 +90,6 @@ get '/ping-github' do
     puts "GitHub notification in #{n['repository']['full_name']}: #{reason}"
     if reason == 'invitation'
       client.user_repository_invitations.each do |i|
-        puts "Invitation ##{i['id']}"
-        puts i
         client.accept_repository_invitation(i['id'])
       end
     end
