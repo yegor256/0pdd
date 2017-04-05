@@ -11,7 +11,7 @@
       - tail.each_with_index do |r, i|
         - if i > 0
           =','
-        =link_to r, 'https://github.com/' + r
+        %a{:href => 'https://github.com/' + r}>= r
   %p
     Made by
     = succeed "." do
