@@ -25,6 +25,7 @@ require 'json'
 require 'ostruct'
 require 'sinatra'
 require 'sass'
+require 'octokit'
 
 require_relative 'version'
 require_relative 'objects/config'
@@ -75,6 +76,26 @@ get '/svg' do
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
     storage(name).load, ['project', "'#{name}'"]
   ).to_s
+end
+
+get '/ping-github' do
+  client = Octokit::Client.new(
+    login: cfg['github']['login'],
+    password: cfg['github']['pwd']
+  )
+  last = nil
+  client.notifications.each do |n|
+    repo = n['repository']['full_name']
+    reason = n['reason']
+    puts "GitHub notification in #{repo}: #{reason}"
+    if reason == 'invitation'
+      client.repository_invitations(repo).each do |i|
+        client.accept_repository_invitation(i['id'])
+      end
+    end
+    last = n['last_read_at']
+  end
+  client.mark_notifications_as_read(last_read_at: time) unless last.nil?
 end
 
 post '/hook/github' do
