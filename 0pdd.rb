@@ -146,10 +146,14 @@ end
 
 error do
   status 503
+  e = env['sinatra.error']
   haml(
     :error,
     layout: :layout,
-    locals: { ver: VERSION, error: env['sinatra.error'].message }
+    locals: {
+      ver: VERSION,
+      error: "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+    }
   )
 end
 
