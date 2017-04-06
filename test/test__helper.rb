@@ -57,11 +57,13 @@ class FakeTickets
 
   def submit(puzzle)
     @submitted << puzzle.xpath('id').text
+    puts "Fake issue submitted for #{puzzle.xpath('id').text}"
     { number: '123', href: 'http://0pdd.com' }
   end
 
   def close(puzzle)
     @closed << puzzle.xpath('id').text
+    puts "Fake issue closed for #{puzzle.xpath('id').text}"
   end
 end
 

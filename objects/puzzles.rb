@@ -102,6 +102,7 @@ class Puzzles
       xml.xpath('//puzzle[@alive="true" and not(issue)]')
         .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
         .each do |p|
+          puts 'a'
           xml.xpath("//puzzle[id='#{p[:id]}']")[0].add_child(
             "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
           )
