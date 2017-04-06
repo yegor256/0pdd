@@ -24,6 +24,9 @@ require 'octokit'
 
 #
 # Tickets that never throw exceptions.
+# @todo #40:30min Would be great to make sure the exceptions that we swallow
+#  here are also emailed to the admin, in order not to be lost. Let's
+#  do it as soon as possible.
 #
 class SafeTickets
   def initialize(tickets)
