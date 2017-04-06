@@ -127,13 +127,16 @@ get '/ping-github' do
       client.user_repository_invitations.each do |i|
         client.accept_repository_invitation(i['id'])
       end
+      puts "Invitation accepted to #{repo}"
     end
     if reason == 'mention'
+      issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
       client.add_comment(
         repo,
-        n['subject']['url'].gsub(%r{^.+/issues/}, ''),
+        issue,
         "I see you're talking about me, but I can't reply, I'm not a chat bot"
       )
+      puts "Replied to mention in #{repo}##{issue}"
     end
     last = n['last_read_at']
   end
