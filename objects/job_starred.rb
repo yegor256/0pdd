@@ -32,7 +32,8 @@ class JobStarred
   end
 
   def proceed
-    @job.proceed
+    output = @job.proceed
     @github.star(@name)
+    output
   end
 end
