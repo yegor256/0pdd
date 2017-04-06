@@ -150,7 +150,7 @@ post '/hook/github' do
             repo,
             storage(name),
             EmailedTickets.new(
-              repo,
+              name,
               GithubTickets.new(
                 name,
                 settings.config['github']['login'],
