@@ -13,6 +13,8 @@
 
 ## What does it do?
 
+Read this blog post first: [PDD in Action](http://www.yegor256.com/2017/04/05/pdd-in-action.html)
+
 [0pdd.com](http://www.0pdd.com) is a hosted service that
 finds new "puzzles" in your repository and posts them as GitHub
 issues. To start using it just create a
