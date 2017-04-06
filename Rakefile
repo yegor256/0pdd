@@ -43,6 +43,10 @@ RuboCop::RakeTask.new(:rubocop) do |task|
   task.requires << 'rubocop-rspec'
 end
 
+task :run do
+  `RACK_ENV=test ruby ./0pdd.rb`
+end
+
 task :copyright do
   sh "grep -q -r '#{Date.today.strftime('%Y')}' \
     --include '*.rb' \

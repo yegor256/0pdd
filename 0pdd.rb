@@ -74,6 +74,7 @@ configure do
     end
   end
   set :github, if ENV['RACK_ENV'] == 'test'
+    require_relative 'test/test__helper'
     FakeGithub.new
   else
     Octokit::Client.new(
