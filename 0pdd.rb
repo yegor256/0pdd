@@ -165,7 +165,7 @@ post '/hook/github' do
       JobCommitErrors.new(
         name,
         settings.github,
-        json['head'],
+        json['head_commit']['id'],
         JobEmailed.new(
           name,
           repo,
