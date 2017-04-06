@@ -48,7 +48,7 @@ class JobEmailed
         text_part do
           content_type 'text/plain; charset=UTF-8'
           body "Hey,\n\n\
-There is a problem in #{name}:\n\n\
+There is a problem in https://github.com/#{name}:\n\n\
 #{trace}\n\n\
 If you think it's our bug, please forward this email to yegor@0pdd.com.
 Sorry,\n\
@@ -57,7 +57,8 @@ Sorry,\n\
         html_part do
           content_type 'text/html; charset=UTF-8'
           body "<html><body><p>Hey,</p>
-            <p>There is a problem in #{name}:</p>
+            <p>There is a problem in
+            <a href='https://github.com/#{name}'>#{name}</a>:</p>
             <pre>#{trace}</pre>
             <p>If you think it's our bug, please forward this email
             to <a href='mailto:yegor@0pdd.com'>yegor@0pdd.com</a>. Thanks.</p>

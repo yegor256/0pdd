@@ -80,43 +80,4 @@ class TestPuzzles < Test::Unit::TestCase
       )
     end
   end
-
-  private
-
-  def fake_tickets
-    Class.new do
-      attr_reader :submitted, :closed
-      def initialize
-        @submitted = []
-        @closed = []
-      end
-
-      def submit(puzzle)
-        @submitted << puzzle.xpath('id').text
-        '123'
-      end
-
-      def close(puzzle)
-        @closed << puzzle.xpath('id').text
-      end
-    end.new
-  end
-
-  def fake_storage(dir, xml)
-    storage = Class.new do
-      def initialize(dir)
-        @file = File.join(dir, 'storage.xml')
-      end
-
-      def load
-        Nokogiri.XML(IO.read(@file))
-      end
-
-      def save(xml)
-        IO.write(@file, xml.to_s)
-      end
-    end.new(dir)
-    storage.save(xml)
-    storage
-  end
 end
