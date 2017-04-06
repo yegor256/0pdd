@@ -22,9 +22,6 @@
 
 #
 # Tickets that email when submitted or closed.
-# @todo #26:30min Let's implement a unit test for this class, using
-#  some SMTP stubbing engine, to catch the emails it is sending. We must
-#  be sure that the functionality works.
 #
 class EmailedTickets
   def initialize(repo, tickets)
