@@ -49,11 +49,12 @@ Issue #{done[:href]} opened.\n\n\
 ID: #{puzzle.xpath('id').text}\n\
 File: #{puzzle.xpath('file').text}\n\
 Lines: #{puzzle.xpath('lines').text}\n\
-Body: #{puzzle.xpath('body').text}\n\
+Here: https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}\
+#L#{puzzle.xpath('lines').text}\n\
 Author: #{puzzle.xpath('author').text}\n\
 Time: #{puzzle.xpath('time').text}\n\
-File: #{puzzle.xpath('role').text}\n\
-\n\
+Role: #{puzzle.xpath('role').text}\n\n\
+Body: #{puzzle.xpath('body').text}\n\n\
 Thanks,\n\
 0pdd"
       end
@@ -62,19 +63,22 @@ Thanks,\n\
   end
 
   def close(puzzle)
-    @tickets.close(puzzle)
-    issue = puzzle.xpath('issue').text
-    Mail.new do
-      from '0pdd <no-reply@0pdd.com>'
-      to 'admin@0pdd.com'
-      subject "#{@repo}##{issue} closed"
-      text_part do
-        content_type 'text/plain; charset=UTF-8'
-        body "Hey,\n\n\
-Issue https://github.com/#{@repo}/issues/#{issue} closed.\n\n\
-Thanks,\n\
-0pdd"
-      end
-    end.deliver!
+    done @tickets.close(puzzle)
+    if done
+      issue = puzzle.xpath('issue').text
+      Mail.new do
+        from '0pdd <no-reply@0pdd.com>'
+        to 'admin@0pdd.com'
+        subject "#{@repo}##{issue} closed"
+        text_part do
+          content_type 'text/plain; charset=UTF-8'
+          body "Hey,\n\n\
+  Issue https://github.com/#{@repo}/issues/#{issue} closed.\n\n\
+  Thanks,\n\
+  0pdd"
+        end
+      end.deliver!
+    end
+    done
   end
 end

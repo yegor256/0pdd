@@ -80,7 +80,7 @@ removed from the source code. Here is more about \
 
   def close(puzzle)
     issue = puzzle.xpath('issue').text
-    return if client.issue(@repo, issue)['state'] == 'closed'
+    return false if client.issue(@repo, issue)['state'] == 'closed'
     client.close_issue(@repo, issue)
     client.add_comment(
       @repo,
@@ -90,6 +90,7 @@ source code, that's why I closed this issue." +
       (users.empty? ? '' : ' //cc ' + users.join(' '))
     )
     puts "GitHub issue #{@repo}:#{issue} closed: #{users}"
+    true
   end
 
   private
