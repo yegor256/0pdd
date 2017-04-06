@@ -37,9 +37,9 @@ require_relative '../objects/safe_storage'
 class TestPuzzles < Test::Unit::TestCase
   def test_all_xml
     Dir.mktmpdir 'test' do |d|
-      # test_xml(d, 'simple.xml')
-      # test_xml(d, 'closes-one-puzzle.xml')
-      # test_xml(d, 'ignores-unknown-issues.xml')
+      test_xml(d, 'simple.xml')
+      test_xml(d, 'closes-one-puzzle.xml')
+      test_xml(d, 'ignores-unknown-issues.xml')
       test_xml(d, 'submits-old-puzzles.xml')
     end
   end

@@ -99,11 +99,12 @@ class Puzzles
     if tickets.safe
       xml.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
         .each { |p| tickets.close(p) }
-      xml.xpath('//puzzle[@alive="true" and not(issue)]')
+      xml.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
         .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
         .each do |p|
-          puts 'a'
-          xml.xpath("//puzzle[id='#{p[:id]}']")[0].add_child(
+          node = xml.xpath("//puzzle[id='#{p[:id]}']")[0]
+          node.search('issue').remove
+          node.add_child(
             "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
           )
         end
