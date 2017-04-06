@@ -40,7 +40,7 @@ require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
 configure do
-  cfg = File.join(File.dirname(__FILE__), '../config.yml')
+  cfg = File.join(File.dirname(__FILE__), 'config.yml')
   config = if File.exist?(cfg)
     YAML.load(File.open(cfg))
   else
