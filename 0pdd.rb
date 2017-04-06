@@ -121,11 +121,19 @@ get '/ping-github' do
   last = nil
   client.notifications.each do |n|
     reason = n['reason']
-    puts "GitHub notification in #{n['repository']['full_name']}: #{reason}"
+    repo = n['repository']['full_name']
+    puts "GitHub notification in #{repo}: #{reason}"
     if reason == 'invitation'
       client.user_repository_invitations.each do |i|
         client.accept_repository_invitation(i['id'])
       end
+    end
+    if reason == 'mention'
+      client.add_comment(
+        repo,
+        n['subject']['url'].gsub(%r{^.+/issues/}, ''),
+        "I see you're talking about me, but I can't reply, I'm not a chat bot"
+      )
     end
     last = n['last_read_at']
   end
