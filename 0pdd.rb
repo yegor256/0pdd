@@ -123,30 +123,32 @@ end
 
 get '/ping-github' do
   last = nil
-  settings.github.notifications.each do |n|
+  gh = settings.github
+  gh.notifications.each do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
     puts "GitHub notification in #{repo}: #{reason}"
     if reason == 'invitation'
-      settings.github.user_repository_invitations.each do |i|
-        settings.github.accept_repository_invitation(i['id'])
+      gh.user_repository_invitations.each do |i|
+        gh.accept_repository_invitation(i['id'])
       end
       puts "Invitation accepted to #{repo}"
     end
     if reason == 'mention'
       issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
-      settings.github.add_comment(
-        repo,
-        issue,
-        "I see you're talking about me, but I can't reply, I'm not a chat bot."
-      )
-      puts "Replied to mention in #{repo}##{issue}"
+      comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '')
+      unless gh.issue_comment(repo, comment)['user']['login'] == gh.login
+        gh.add_comment(
+          repo,
+          issue,
+          "I see you're talking about me; I can't reply, I'm not a chat bot."
+        )
+        puts "Replied to mention in #{repo}##{issue}"
+      end
     end
     last = n['last_read_at']
   end
-  unless last.nil?
-    settings.github.mark_notifications_as_read(last_read_at: last)
-  end
+  gh.mark_notifications_as_read(last_read_at: last) unless last.nil?
 end
 
 post '/hook/github' do
