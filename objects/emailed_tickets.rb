@@ -60,7 +60,7 @@ Thanks,\n\
   end
 
   def close(puzzle)
-    done @tickets.close(puzzle)
+    done = @tickets.close(puzzle)
     if done
       issue = puzzle.xpath('issue').text
       Mail.new do
