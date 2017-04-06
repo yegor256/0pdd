@@ -134,7 +134,7 @@ get '/ping-github' do
       client.add_comment(
         repo,
         issue,
-        "I see you're talking about me, but I can't reply, I'm not a chat bot"
+        "I see you're talking about me, but I can't reply, I'm not a chat bot."
       )
       puts "Replied to mention in #{repo}##{issue}"
     end
