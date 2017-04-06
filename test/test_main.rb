@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ENV['RACK_ENV'] = 'test'
-
 require 'test/unit'
 require 'rack/test'
 require_relative '../0pdd'

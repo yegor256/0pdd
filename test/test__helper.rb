@@ -82,3 +82,17 @@ class FakeRepo
     # nothing here
   end
 end
+
+class FakeGithub
+  def issue(_, _)
+    { 'state' => 'open' }
+  end
+
+  def close_issue(_, _)
+    # nothing to do here
+  end
+
+  def add_comment(_, _, _)
+    # nothing to do here
+  end
+end

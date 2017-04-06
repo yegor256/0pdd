@@ -71,6 +71,14 @@ configure do
       )
     end
   end
+  set :github, if ENV['RACK_ENV'] == 'test'
+    FakeGithub.new
+  else
+    Octokit::Client.new(
+      login: settings.config['github']['login'],
+      password: settings.config['github']['pwd']
+    )
+  end
 end
 
 get '/' do
@@ -114,24 +122,20 @@ get '/svg' do
 end
 
 get '/ping-github' do
-  client = Octokit::Client.new(
-    login: settings.config['github']['login'],
-    password: settings.config['github']['pwd']
-  )
   last = nil
-  client.notifications.each do |n|
+  settings.github.notifications.each do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
     puts "GitHub notification in #{repo}: #{reason}"
     if reason == 'invitation'
-      client.user_repository_invitations.each do |i|
-        client.accept_repository_invitation(i['id'])
+      settings.github.user_repository_invitations.each do |i|
+        settings.github.accept_repository_invitation(i['id'])
       end
       puts "Invitation accepted to #{repo}"
     end
     if reason == 'mention'
       issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
-      client.add_comment(
+      settings.github.add_comment(
         repo,
         issue,
         "I see you're talking about me, but I can't reply, I'm not a chat bot."
@@ -140,7 +144,9 @@ get '/ping-github' do
     end
     last = n['last_read_at']
   end
-  client.mark_notifications_as_read(last_read_at: last) unless last.nil?
+  unless last.nil?
+    settings.github.mark_notifications_as_read(last_read_at: last)
+  end
 end
 
 post '/hook/github' do
@@ -154,19 +160,22 @@ post '/hook/github' do
       repo,
       JobRecorded.new(
         name,
-        JobEmailed.new(
+        JobStarred.new(
           name,
-          repo,
-          Job.new(
+          settings.github,
+          JobEmailed.new(
+            name,
             repo,
-            storage(name),
-            EmailedTickets.new(
-              name,
-              GithubTickets.new(
+            Job.new(
+              repo,
+              storage(name),
+              EmailedTickets.new(
                 name,
-                settings.config['github']['login'],
-                settings.config['github']['pwd'],
-                repo
+                GithubTickets.new(
+                  name,
+                  settings.github,
+                  repo
+                )
               )
             )
           )

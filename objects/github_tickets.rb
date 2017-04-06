@@ -23,20 +23,19 @@
 require 'octokit'
 
 #
-# Tickets in Github
+# Tickets in Github.
 # API: http://octokit.github.io/octokit.rb/method_list.html
 #
 class GithubTickets
-  def initialize(repo, login, pwd, sources)
+  def initialize(repo, github, sources)
     @repo = repo
-    @login = login
-    @pwd = pwd
+    @github = github
     @sources = sources
   end
 
   # Is it safe to do something right now or it's better to wait a bit?
   def safe
-    client.rate_limit.remaining > 2000
+    @github.rate_limit.remaining > 2000
   end
 
   def submit(puzzle)
@@ -45,7 +44,7 @@ class GithubTickets
     #  of cutting the text at the hard limit (40 chars) we have to cut
     #  it at the end of the word, staying closer to the limit.
     title = truncate(puzzle.xpath('body').text)
-    json = client.create_issue(
+    json = @github.create_issue(
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: #{title}",
@@ -69,7 +68,7 @@ removed from the source code. Here is more about \
     )
     issue = json['number']
     unless users.empty?
-      client.add_comment(
+      @github.add_comment(
         @repo, issue,
         users.join(' ') + ' please pay attention to this new issue.'
       )
@@ -80,9 +79,9 @@ removed from the source code. Here is more about \
 
   def close(puzzle)
     issue = puzzle.xpath('issue').text
-    return false if client.issue(@repo, issue)['state'] == 'closed'
-    client.close_issue(@repo, issue)
-    client.add_comment(
+    return false if @github.issue(@repo, issue)['state'] == 'closed'
+    @github.close_issue(@repo, issue)
+    @github.add_comment(
       @repo,
       issue,
       "The puzzle `#{puzzle.xpath('id').text}` has disappeared from the \
@@ -116,26 +115,6 @@ source code, that's why I closed this issue." +
       "#{text[0...stop]}#{separator}"
     else
       text
-    end
-  end
-
-  def client
-    if ENV['RACK_ENV'] == 'test'
-      client = Object.new
-      def client.issue(_, _)
-        { 'state' => 'open' }
-      end
-
-      def client.close_issue(_, _)
-        # nothing to do here
-      end
-
-      def client.add_comment(_, _, _)
-        # nothing to do here
-      end
-      client
-    else
-      Octokit::Client.new(login: @login, password: @pwd)
     end
   end
 end
