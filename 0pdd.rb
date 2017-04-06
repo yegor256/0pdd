@@ -40,10 +40,7 @@ require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
 configure do
-  cfg = File.join(File.dirname(__FILE__), 'config.yml')
-  config = if File.exist?(cfg)
-    YAML.load(File.open(cfg))
-  else
+  config = if ENV['RACK_ENV'] == 'test'
     {
       'github' => {
         'login' => '0pdd',
@@ -57,6 +54,8 @@ configure do
       },
       'id_rsa' => ''
     }
+  else
+    YAML.load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
   end
   set :config, config
   if config['smtp']
