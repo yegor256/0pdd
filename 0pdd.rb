@@ -102,8 +102,9 @@ end
 
 get '/p' do
   name = params[:name]
+  xml = storage(name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
-    storage(name).load, ['project', "'#{name}'"]
+    xml, ['project', "'#{name}'", 'length', xml.to_s.length.to_s]
   ).to_s
 end
 

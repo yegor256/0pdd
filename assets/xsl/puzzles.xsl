@@ -24,6 +24,7 @@
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
     <xsl:output method="xml" omit-xml-declaration="yes"/>
     <xsl:param name="project"/>
+    <xsl:param name="length"/>
     <xsl:template match="/puzzles">
         <html>
             <head>
@@ -55,7 +56,9 @@
                     <a href="/xml?name={$project}">
                         <xsl:text>XML</xsl:text>
                     </a>
-                    <xsl:text>.</xsl:text>
+                    <xsl:text> (</xsl:text>
+                    <xsl:value-of select="format-number($length div 1024, '#.0')"/>
+                    <xsl:text> Kb).</xsl:text>
                 </p>
                 <p>
                     <xsl:text>Project "</xsl:text>
