@@ -46,7 +46,7 @@ configure do
     {
       'github' => {
         'login' => '0pdd',
-        'pwd' => '--secret--'
+        'pwd' => '--the-secret--'
       },
       's3' => {
         'region' => '?',
