@@ -38,13 +38,15 @@ class Puzzles
     #  and skip that SAVE() operation.
     @storage.save(
       update_all(
-        group(
-          close(
-            submit(
-              join(@storage.load, @repo.xml),
+        saved(
+          group(
+            close(
+              submit(
+                join(@storage.load, @repo.xml),
+                tickets
+              ),
               tickets
-            ),
-            tickets
+            )
           )
         ),
         tickets
@@ -53,6 +55,11 @@ class Puzzles
   end
 
   private
+
+  def saved(xml)
+    @storage.save(xml)
+    xml
+  end
 
   def join(before, snapshot)
     target = before.xpath('/puzzles')[0]
@@ -107,6 +114,7 @@ class Puzzles
           node.add_child(
             "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
           )
+          saved(xml)
         end
     end
     xml
