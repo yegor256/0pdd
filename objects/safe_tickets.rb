@@ -24,9 +24,6 @@ require 'octokit'
 
 #
 # Tickets that never throw exceptions.
-# @todo #40:30min Would be great to make sure the exceptions that we swallow
-#  here are also emailed to the admin, in order not to be lost. Let's
-#  do it as soon as possible.
 #
 class SafeTickets
   def initialize(tickets)
@@ -40,12 +37,21 @@ class SafeTickets
   def submit(puzzle)
     @tickets.submit(puzzle)
   rescue Exception => e
-    puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+    email(e)
   end
 
   def close(puzzle)
     @tickets.close(puzzle)
   rescue Exception => e
+    email(e)
+  end
+
+  private
+
+  def email(e)
+    # @todo #64:30min Let's implement the emailing of the exception. Somehow
+    #  we need to encapsulate the email client and format the exception
+    #  backtrace to make it look nice.
     puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
   end
 end
