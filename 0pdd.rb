@@ -34,6 +34,7 @@ require_relative 'objects/job_detached'
 require_relative 'objects/job_emailed'
 require_relative 'objects/job_recorded'
 require_relative 'objects/job_starred'
+require_relative 'objects/job_commiterrors'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
 require_relative 'objects/emailed_tickets'
@@ -161,23 +162,28 @@ post '/hook/github' do
     repo = GitRepo.new(name: name, id_rsa: settings.config['id_rsa'])
     JobDetached.new(
       repo,
-      JobRecorded.new(
+      JobCommitErrors.new(
         name,
-        JobStarred.new(
+        settings.github,
+        json['head'],
+        JobEmailed.new(
           name,
-          settings.github,
-          JobEmailed.new(
+          repo,
+          JobRecorded.new(
             name,
-            repo,
-            Job.new(
-              repo,
-              storage(name),
-              EmailedTickets.new(
-                name,
-                GithubTickets.new(
+            JobStarred.new(
+              name,
+              settings.github,
+              Job.new(
+                repo,
+                storage(name),
+                EmailedTickets.new(
                   name,
-                  settings.github,
-                  repo
+                  GithubTickets.new(
+                    name,
+                    settings.github,
+                    repo
+                  )
                 )
               )
             )
