@@ -35,11 +35,12 @@ class JobCommitErrors
   def proceed
     @job.proceed
   rescue Exception => e
-    @github.create_commit_comment(
+    done = @github.create_commit_comment(
       @name, @commit,
       "I wasn't able to retrieve PDD puzzles from the code base:\n\n\
 ```\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
     )
+    puts "Comment posted about an error: #{done['html_url']}"
     raise e
   end
 end
