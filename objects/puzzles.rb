@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'nokogiri'
+require_relative 'safe_tickets'
 
 #
 # Puzzles in XML/S3
@@ -40,8 +41,8 @@ class Puzzles
       update_all(
         saved(
           group(
-            close(
-              submit(
+            submit(
+              close(
                 join(@storage.load, @repo.xml),
                 tickets
               ),
@@ -49,7 +50,7 @@ class Puzzles
             )
           )
         ),
-        tickets
+        SafeTickets.new(tickets)
       )
     )
   end
@@ -108,6 +109,7 @@ class Puzzles
         .each { |p| tickets.close(p) }
       xml.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
         .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
+        .reject(&:nil?)
         .each do |p|
           node = xml.xpath("//puzzle[id='#{p[:id]}']")[0]
           node.search('issue').remove
