@@ -24,7 +24,6 @@ require 'fileutils'
 require 'pdd'
 require 'tempfile'
 require 'yaml'
-require_relative 'config'
 require_relative 'exec'
 
 #

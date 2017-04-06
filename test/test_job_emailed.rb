@@ -34,9 +34,6 @@ class TestJobEmailed < Test::Unit::TestCase
       # nothing
     end
     repo = FakeRepo.new
-    yaml = {}
-    JobEmailed.new(
-      'yegor256/0pdd', repo, yaml, job
-    ).proceed
+    JobEmailed.new('yegor256/0pdd', repo, job).proceed
   end
 end

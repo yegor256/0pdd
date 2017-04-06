@@ -4,6 +4,12 @@ AllCops:
     - 'assets/**/*'
   DisplayCopNames: true
 
+Style/IndentationWidth:
+  Enabled: false
+Style/ElseAlignment:
+  Enabled: false
+Lint/EndAlignment:
+  Enabled: false
 Lint/RescueException:
   Enabled: false
 Metrics/MethodLength:

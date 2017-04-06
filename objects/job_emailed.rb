@@ -26,22 +26,10 @@ require 'mail'
 # Job that emails if exception occurs.
 #
 class JobEmailed
-  def initialize(name, repo, config, job)
+  def initialize(name, repo, job)
     @name = name
     @repo = repo
     @job = job
-    return unless config['smtp']
-    Mail.defaults do
-      delivery_method(
-        :smtp,
-        address: config['smtp']['host'],
-        port: config['smtp']['port'],
-        user_name: config['smtp']['user'],
-        password: config['smtp']['password'],
-        domain: '0pdd.com',
-        enable_starttls_auto: true
-      )
-    end
   end
 
   def proceed

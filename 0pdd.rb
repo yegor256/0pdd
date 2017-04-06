@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'mail'
 require 'haml'
 require 'json'
 require 'ostruct'
@@ -28,15 +29,50 @@ require 'sass'
 require 'octokit'
 
 require_relative 'version'
-require_relative 'objects/config'
 require_relative 'objects/job'
 require_relative 'objects/job_detached'
 require_relative 'objects/job_emailed'
 require_relative 'objects/job_recorded'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
+require_relative 'objects/emailed_tickets'
 require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
+
+configure do
+  cfg = File.join(File.dirname(__FILE__), '../config.yml')
+  config = if File.exist?(cfg)
+    YAML.load(File.open(cfg))
+  else
+    {
+      'github' => {
+        'login' => '0pdd',
+        'pwd' => '--secret--'
+      },
+      's3' => {
+        'region' => '?',
+        'bucket' => '?',
+        'key' => '?',
+        'secret' => '?'
+      },
+      'id_rsa' => ''
+    }
+  end
+  set :config, config
+  if config['smtp']
+    Mail.defaults do
+      delivery_method(
+        :smtp,
+        address: config['smtp']['host'],
+        port: config['smtp']['port'],
+        user_name: config['smtp']['user'],
+        password: config['smtp']['password'],
+        domain: '0pdd.com',
+        enable_starttls_auto: true
+      )
+    end
+  end
+end
 
 get '/' do
   haml :index, layout: :layout, locals: {
@@ -79,10 +115,9 @@ get '/svg' do
 end
 
 get '/ping-github' do
-  cfg = Config.new.yaml
   client = Octokit::Client.new(
-    login: cfg['github']['login'],
-    password: cfg['github']['pwd']
+    login: settings.config['github']['login'],
+    password: settings.config['github']['pwd']
   )
   last = nil
   client.notifications.each do |n|
@@ -103,9 +138,8 @@ post '/hook/github' do
   json = JSON.parse(request.body.read)
   return unless json['ref'] == 'refs/heads/master'
   name = json['repository']['full_name']
-  cfg = Config.new.yaml
   unless ENV['RACK_ENV'] == 'test'
-    repo = GitRepo.new(name: name, id_rsa: cfg['id_rsa'])
+    repo = GitRepo.new(name: name, id_rsa: settings.config['id_rsa'])
     JobDetached.new(
       repo,
       JobRecorded.new(
@@ -113,15 +147,17 @@ post '/hook/github' do
         JobEmailed.new(
           name,
           repo,
-          cfg,
           Job.new(
             repo,
             storage(name),
-            GithubTickets.new(
-              name,
-              cfg['github']['login'],
-              cfg['github']['pwd'],
-              repo
+            EmailedTickets.new(
+              repo,
+              GithubTickets.new(
+                name,
+                settings.config['github']['login'],
+                settings.config['github']['pwd'],
+                repo
+              )
             )
           )
         )
@@ -163,13 +199,12 @@ def storage(name)
     if ENV['RACK_ENV'] == 'test'
       FakeStorage.new
     else
-      cfg = Config.new.yaml
       S3.new(
         "#{name}.xml",
-        cfg['s3']['bucket'],
-        cfg['s3']['region'],
-        cfg['s3']['key'],
-        cfg['s3']['secret']
+        settings.config['s3']['bucket'],
+        settings.config['s3']['region'],
+        settings.config['s3']['key'],
+        settings.config['s3']['secret']
       )
     end
   )
