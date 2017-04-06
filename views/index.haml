@@ -8,7 +8,7 @@
   - if !tail.empty?
     %p
       Recent commits:
-      !='&nbsp;'
+      %br
       - tail.each_with_index do |r, i|
         %span
           %a{:href => 'https://github.com/' + r}>= r
