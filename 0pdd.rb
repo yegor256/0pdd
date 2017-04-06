@@ -140,7 +140,7 @@ get '/ping-github' do
     end
     last = n['last_read_at']
   end
-  client.mark_notifications_as_read(last_read_at: time) unless last.nil?
+  client.mark_notifications_as_read(last_read_at: last) unless last.nil?
 end
 
 post '/hook/github' do
