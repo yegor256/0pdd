@@ -35,10 +35,11 @@ class EmailedTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
+    r = @repo
     Mail.new do
       from '0pdd <no-reply@0pdd.com>'
       to 'admin@0pdd.com'
-      subject "#{@repo}##{done[:number]} opened"
+      subject "#{r}##{done[:number]} opened"
       text_part do
         content_type 'text/plain; charset=UTF-8'
         body "Hey,\n\n\
@@ -46,7 +47,7 @@ Issue #{done[:href]} opened.\n\n\
 ID: #{puzzle.xpath('id').text}\n\
 File: #{puzzle.xpath('file').text}\n\
 Lines: #{puzzle.xpath('lines').text}\n\
-Here: https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}\
+Here: https://github.com/#{r}/blob/master/#{puzzle.xpath('file').text}\
 #L#{puzzle.xpath('lines').text}\n\
 Author: #{puzzle.xpath('author').text}\n\
 Time: #{puzzle.xpath('time').text}\n\
@@ -62,17 +63,18 @@ Thanks,\n\
   def close(puzzle)
     done = @tickets.close(puzzle)
     if done
+      r = @repo
       issue = puzzle.xpath('issue').text
       Mail.new do
         from '0pdd <no-reply@0pdd.com>'
         to 'admin@0pdd.com'
-        subject "#{@repo}##{issue} closed"
+        subject "#{r}##{issue} closed"
         text_part do
           content_type 'text/plain; charset=UTF-8'
           body "Hey,\n\n\
-  Issue https://github.com/#{@repo}/issues/#{issue} closed.\n\n\
-  Thanks,\n\
-  0pdd"
+Issue https://github.com/#{r}/issues/#{issue} closed.\n\n\
+Thanks,\n\
+0pdd"
         end
       end.deliver!
     end
