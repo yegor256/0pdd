@@ -10,7 +10,8 @@
       Recent commits:
       !='&nbsp;'
       - tail.each_with_index do |r, i|
-        %a{:href => 'https://github.com/' + r}>= r
+        %span
+          %a{:href => 'https://github.com/' + r}>= r
   %p
     Made by
     %a{:href => 'http://www.yegor256.com'} @yegor256
