@@ -98,14 +98,16 @@ class GitRepo
     priv = "#{dir}/id_rsa"
     IO.write(priv, @id_rsa) unless @id_rsa.empty?
     Exec.new(
-      'set -x;',
-      'set -e;',
-      'echo "Host *" > ~/.ssh/config;',
-      'echo "  StrictHostKeyChecking no" >> ~/.ssh/config;',
-      'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config;',
-      'chmod -R 600 ~/.ssh/*',
-      'git config --global user.email "git@0pdd.com"',
-      'git config --global user.name "0pdd"'
+      [
+        'set -x',
+        'set -e',
+        'echo "Host *" > ~/.ssh/config',
+        'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
+        'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config',
+        'chmod -R 600 ~/.ssh/*',
+        'git config --global user.email "git@0pdd.com"',
+        'git config --global user.name "0pdd"'
+        ].join(';')
     ).run
   end
 end
