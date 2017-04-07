@@ -37,8 +37,8 @@ class Puzzles
     #  document back to storage, even when it was not really modified. Would
     #  be much better to check whether any modifications have been made
     #  and skip that SAVE() operation.
-    @storage.save(
-      update_all(
+    saved(
+      covered(
         saved(
           group(
             submit(
@@ -103,7 +103,7 @@ class Puzzles
     xml
   end
 
-  def update_all(xml, tickets)
+  def covered(xml, tickets)
     if tickets.safe
       xml.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
         .each { |p| tickets.close(p) }
