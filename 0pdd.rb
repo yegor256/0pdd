@@ -141,11 +141,13 @@ get '/ping-github' do
     if reason == 'mention'
       issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
       comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '')
-      unless gh.issue_comment(repo, comment)['user']['login'] == gh.login
+      body = gh.issue_comment(repo, comment)['body']
+      if body.include?("@#{gh.login}")
         gh.add_comment(
           repo,
           issue,
-          "I see you're talking about me; I can't reply, I'm not a chat bot."
+          "> #{body.gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
+I see you're talking about me; I can't reply, I'm not a chat bot."
         )
         puts "Replied to mention in #{repo}##{issue}"
       end
