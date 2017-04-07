@@ -107,7 +107,7 @@ class GitRepo
         'chmod -R 600 ~/.ssh/*',
         'git config --global user.email "git@0pdd.com"',
         'git config --global user.name "0pdd"'
-        ].join(';')
+      ].join(';')
     ).run
   end
 end
