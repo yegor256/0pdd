@@ -103,7 +103,9 @@ class GitRepo
       'echo "Host *" > ~/.ssh/config;',
       'echo "  StrictHostKeyChecking no" >> ~/.ssh/config;',
       'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config;',
-      'chmod -R 600 ~/.ssh/*'
+      'chmod -R 600 ~/.ssh/*',
+      'git config --global user.email "git@0pdd.com"',
+      'git config --global user.name "0pdd"'
     ).run
   end
 end
