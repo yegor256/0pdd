@@ -28,7 +28,7 @@ gem 'haml', '4.0.7'
 gem 'mail', '2.6.4'
 gem 'nokogiri', '1.6.8.1'
 gem 'octokit', '4.6.2'
-gem 'pdd', '0.17.2'
+gem 'pdd'
 gem 'rack', '~> 1.5'
 gem 'rack-test', '0.6.3'
 gem 'rake', '12.0.0', require: false
