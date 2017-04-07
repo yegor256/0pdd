@@ -71,6 +71,8 @@ class TestGitRepo < Test::Unit::TestCase
       cd '#{dir}'
       git init repo
       cd repo
+      git config user.email git@0pdd.com
+      git config user.name 0pdd
       echo 'hello, world!' > test.txt
       git add test.txt
       echo 'foo: hello' > .0pdd.yml
