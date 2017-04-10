@@ -87,8 +87,11 @@ end
 get '/' do
   haml :index, layout: :layout, locals: {
     ver: VERSION,
-    tail: `sort /tmp/0pdd-done.txt | uniq | tail -10`.split("\n")
-      .reject(&:empty?)
+    tail: %x(
+        (sort /tmp/0pdd-done.txt 2>/dev/null || echo '')
+        | uniq
+        | tail -10
+      ).split("\n").reject(&:empty?)
   }
 end
 
@@ -126,7 +129,6 @@ get '/svg' do
 end
 
 get '/ping-github' do
-  last = nil
   gh = settings.github
   gh.notifications.each do |n|
     reason = n['reason']
@@ -153,9 +155,8 @@ I see you're talking about me; I can't reply, I'm not a chat bot."
         puts "Replied to mention in #{repo}##{issue}"
       end
     end
-    last = n['last_read_at']
+    gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
   end
-  gh.mark_notifications_as_read(last_read_at: last) unless last.nil?
 end
 
 post '/hook/github' do

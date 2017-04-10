@@ -4,6 +4,8 @@ AllCops:
     - 'assets/**/*'
   DisplayCopNames: true
 
+Style/CommandLiteral:
+  Enabled: false
 Style/IndentationWidth:
   Enabled: false
 Style/ElseAlignment:
