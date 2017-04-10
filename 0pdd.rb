@@ -149,7 +149,7 @@ get '/ping-github' do
         gh.add_comment(
           repo,
           issue,
-          "> #{body.gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
+          "> #{body.gsub(/\s+/, ' ').gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
 I see you're talking about me; I can't reply, I'm not a chat bot."
         )
         puts "Replied to mention in #{repo}##{issue}"
