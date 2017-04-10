@@ -87,11 +87,11 @@ end
 get '/' do
   haml :index, layout: :layout, locals: {
     ver: VERSION,
-    tail: %x(
-        (sort /tmp/0pdd-done.txt 2>/dev/null || echo '')
-        | uniq
-        | tail -10
-      ).split("\n").reject(&:empty?)
+    tail: Exec.new(
+      "(sort /tmp/0pdd-done.txt 2>/dev/null || echo '')\
+      | uniq\
+      | tail -10"
+    ).run.split("\n").reject(&:empty?)
   }
 end
 
