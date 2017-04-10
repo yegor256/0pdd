@@ -129,8 +129,9 @@ get '/svg' do
 end
 
 get '/ping-github' do
+  content_type 'text/plain'
   gh = settings.github
-  gh.notifications.each do |n|
+  gh.notifications.map do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
     puts "GitHub notification in #{repo}: #{reason}"
@@ -156,7 +157,8 @@ I see you're talking about me; I can't reply, I'm not a chat bot."
       end
     end
     gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
-  end
+    "#{repo}: #{reason}"
+  end.join("\n")
 end
 
 post '/hook/github' do
