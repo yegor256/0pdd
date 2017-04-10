@@ -151,7 +151,7 @@ get '/ping-github' do
           repo,
           issue,
           "> #{body.gsub(/\s+/, ' ').gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
-I see you're talking about me; I can't reply, I'm not a chat bot."
+I see you're talking to me, but I can't reply since I'm not a chat bot."
         )
         puts "Replied to mention in #{repo}##{issue}"
       end
