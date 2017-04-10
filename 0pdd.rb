@@ -158,7 +158,7 @@ I see you're talking about me; I can't reply, I'm not a chat bot."
     end
     gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
     "#{repo}: #{reason}"
-  end.join("\n")
+  end.join("\n") + "\n"
 end
 
 post '/hook/github' do
