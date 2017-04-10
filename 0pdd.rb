@@ -138,20 +138,20 @@ get '/ping-github' do
       end
       puts "Invitation accepted to #{repo}"
     end
-    if reason == 'mention'
-      issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
-      comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '')
-      body = gh.issue_comment(repo, comment)['body']
-      if body.include?("@#{gh.login}")
-        gh.add_comment(
-          repo,
-          issue,
-          "> #{body.gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
-I see you're talking about me; I can't reply, I'm not a chat bot."
-        )
-        puts "Replied to mention in #{repo}##{issue}"
-      end
-    end
+#     if reason == 'mention'
+#       issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
+#       comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '')
+#       body = gh.issue_comment(repo, comment)['body']
+#       if body.include?("@#{gh.login}")
+#         gh.add_comment(
+#           repo,
+#           issue,
+#           "> #{body.gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
+# I see you're talking about me; I can't reply, I'm not a chat bot."
+#         )
+#         puts "Replied to mention in #{repo}##{issue}"
+#       end
+#     end
     last = n['last_read_at']
   end
   gh.mark_notifications_as_read(last_read_at: last) unless last.nil?
