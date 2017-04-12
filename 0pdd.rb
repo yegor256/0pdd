@@ -153,7 +153,7 @@ get '/ping-github' do
           "> #{body.gsub(/\s+/, ' ').gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
 I see you're talking to me, but I can't reply since I'm not a chat bot."
         )
-        puts "Replied to mention in #{repo}##{issue}"
+        puts "Replied to #{repo}##{issue}"
       end
     end
     gh.mark_notifications_as_read(last_read_at: n['last_read_at'])

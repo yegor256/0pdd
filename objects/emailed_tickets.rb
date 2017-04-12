@@ -48,7 +48,7 @@ ID: #{puzzle.xpath('id').text}\n\
 File: #{puzzle.xpath('file').text}\n\
 Lines: #{puzzle.xpath('lines').text}\n\
 Here: https://github.com/#{r}/blob/master/#{puzzle.xpath('file').text}\
-#L#{puzzle.xpath('lines').text}\n\
+##{puzzle.xpath('lines').text.gsub(/(\d+)/, 'L\1')}\n\
 Author: #{puzzle.xpath('author').text}\n\
 Time: #{puzzle.xpath('time').text}\n\
 Role: #{puzzle.xpath('role').text}\n\n\
