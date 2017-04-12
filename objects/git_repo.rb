@@ -89,8 +89,8 @@ class GitRepo
       '&& git merge ' +
         [
           '--allow-unrelated-histories',
-          '--strategy-option'
-        ].join(' ') + ' theirs origin/master'
+          '--strategy-option theirs'
+        ].join(' ') + ' origin/master'
     ).run
   end
 
