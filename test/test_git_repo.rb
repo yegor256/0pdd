@@ -38,7 +38,7 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
-  def test_pull_after_change
+  def test_merge_unrelated_histories
     Dir.mktmpdir 'test' do |d|
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
