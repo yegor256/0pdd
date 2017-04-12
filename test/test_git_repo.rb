@@ -31,10 +31,32 @@ require_relative '../objects/git_repo'
 class TestGitRepo < Test::Unit::TestCase
   def test_clone_and_pull
     Dir.mktmpdir 'test' do |d|
-      repo = GitRepo.new(name: 'teamed/pdd', dir: d, uri: git(d))
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d))
       repo.clone
       repo.pull
-      assert(File.exist?(File.join(d, 'teamed/pdd/.git')))
+      assert(File.exist?(File.join(d, 'yegor256/pdd/.git')))
+    end
+  end
+
+  def test_pull_after_change
+    Dir.mktmpdir 'test' do |d|
+      dir = 'repo'
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      repo.clone
+      repo.pull
+      Exec.new("
+        set -e
+        cd '#{d}'
+        cd '#{dir}'
+        git checkout -b temp
+        git branch -D master
+        git checkout --orphan master
+        echo 'hello, dude!' > test.txt
+        git add test.txt
+        git commit -am 'new master'
+      ").run
+      repo.pull
+      assert(File.exist?(File.join(d, 'yegor256/pdd/.git')))
     end
   end
 
@@ -65,12 +87,12 @@ class TestGitRepo < Test::Unit::TestCase
 
   private
 
-  def git(dir)
-    raise unless system("
+  def git(dir, subdir = 'repo')
+    Exec.new("
       set -e
       cd '#{dir}'
-      git init repo
-      cd repo
+      git init #{subdir}
+      cd #{subdir}
       git config user.email git@0pdd.com
       git config user.name 0pdd
       echo 'hello, world!' > test.txt
@@ -78,7 +100,7 @@ class TestGitRepo < Test::Unit::TestCase
       echo 'foo: hello' > .0pdd.yml
       git add .0pdd.yml
       git commit -am 'add line'
-    ")
-    'file://' + File.join(dir, 'repo')
+    ").run
+    'file://' + File.join(dir, subdir)
   end
 end
