@@ -51,12 +51,12 @@ class TestGitRepo < Test::Unit::TestCase
         git checkout -b temp
         git branch -D master
         git checkout --orphan master
-        echo 'hello, dude!' > test.txt
-        git add test.txt
+        echo 'hello, dude!' > new.txt
+        git add new.txt
         git commit -am 'new master'
       ").run
       repo.pull
-      assert(File.exist?(File.join(d, 'yegor256/pdd/.git')))
+      assert(File.exist?(File.join(d, 'yegor256/pdd/new.txt')))
     end
   end
 
