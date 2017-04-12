@@ -86,7 +86,7 @@ class GitRepo
       '&& git reset --hard --quiet',
       '&& git clean --force -d',
       '&& git fetch --quiet',
-      '&& git rebase origin/master'
+      '&& git rebase --strategy-option=theirs origin/master'
     ).run
   end
 
