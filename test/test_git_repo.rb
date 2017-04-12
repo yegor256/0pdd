@@ -60,6 +60,25 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
+  def test_merge_after_ammend
+    Dir.mktmpdir 'test' do |d|
+      dir = 'repo'
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      repo.clone
+      repo.pull
+      Exec.new("
+        set -e
+        cd '#{d}'
+        cd '#{dir}'
+        echo 'hello, dude!' > test.txt
+        git add test.txt
+        git commit --amend --message 'new fix'
+      ").run
+      repo.pull
+      assert(File.exist?(File.join(d, 'yegor256/pdd/test.txt')))
+    end
+  end
+
   def test_push
     Dir.mktmpdir 'test' do |d|
       repo = GitRepo.new(name: 'teamed/est', dir: d, uri: git(d))
