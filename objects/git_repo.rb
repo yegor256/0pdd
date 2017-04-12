@@ -85,7 +85,8 @@ class GitRepo
       "cd #{@path}",
       '&& git reset --hard --quiet',
       '&& git clean --force -d',
-      '&& git pull --quiet'
+      '&& git fetch --quiet',
+      '&& git merge origin/master'
     ).run
   end
 
