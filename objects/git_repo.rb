@@ -86,11 +86,7 @@ class GitRepo
       '&& git reset --hard --quiet',
       '&& git clean --force -d',
       '&& git fetch --quiet',
-      '&& git merge ' +
-        [
-          '--allow-unrelated-histories',
-          '--strategy-option theirs'
-        ].join(' ') + ' origin/master'
+      '&& git rebase origin/master'
     ).run
   end
 
