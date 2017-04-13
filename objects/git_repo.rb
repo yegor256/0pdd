@@ -82,11 +82,14 @@ class GitRepo
 
   def pull
     Exec.new(
-      "cd #{@path}",
-      '&& git reset --hard --quiet',
-      '&& git clean --force -d',
-      '&& git fetch --quiet',
-      '&& git rebase --strategy-option=theirs origin/master'
+      [
+        "cd #{@path}",
+        'git reset --hard --quiet',
+        'git clean --force -d',
+        'git fetch --quiet',
+        'git rebase --abort || true',
+        'git rebase --strategy-option=theirs origin/master'
+      ].join(' && ')
     ).run
   end
 
