@@ -79,6 +79,26 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
+  # def test_merge_after_force_push
+  #   Dir.mktmpdir 'test' do |d|
+  #     dir = 'repo'
+  #     repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+  #     repo.clone
+  #     repo.pull
+  #     Exec.new("
+  #       set -e
+  #       cd '#{d}'
+  #       cd '#{dir}'
+  #       git reset HEAD~1
+  #       echo 'hello, dude!' > test.txt
+  #       git add test.txt
+  #       git commit --amend --message 'new fix'
+  #     ").run
+  #     repo.pull
+  #     assert(File.exist?(File.join(d, 'yegor256/pdd/test.txt')))
+  #   end
+  # end
+
   def test_push
     Dir.mktmpdir 'test' do |d|
       repo = GitRepo.new(name: 'teamed/est', dir: d, uri: git(d))
@@ -116,6 +136,7 @@ class TestGitRepo < Test::Unit::TestCase
       git config user.name 0pdd
       echo 'hello, world!' > test.txt
       git add test.txt
+      git commit -am 'add file'
       echo 'foo: hello' > .0pdd.yml
       git add .0pdd.yml
       git commit -am 'add line'
