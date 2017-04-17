@@ -9,7 +9,7 @@
                 <ticket>23</ticket>
                 <estimate>15</estimate>
                 <role>IMP</role>
-                <id>23-ae347a22</id>
+                <id>TEST-ae347a22</id>
                 <lines>11-18</lines>
                 <body>Some other text of the other puzzle.</body>
                 <file>readme.txt</file>
@@ -24,10 +24,10 @@
         <xpath>/puzzles[count(//puzzle)=1]</xpath>
         <xpath>/puzzles[count(//puzzle[@alive='true'])=0]</xpath>
         <xpath>/puzzles[count(//puzzle[@alive='false'])=1]</xpath>
-        <xpath>//puzzle[id='23-ae347a22' and @alive='false']</xpath>
+        <xpath>//puzzle[id='TEST-ae347a22' and @alive='false']</xpath>
     </assertions>
     <submit/>
     <close>
-        <ticket>23-ae347a22</ticket>
+        <ticket>TEST-ae347a22</ticket>
     </close>
 </test>
