@@ -125,7 +125,10 @@ class GitRepo
         'set -o pipefail',
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
-        'then echo "Git is too old: ${GIT}"; exit -1',
+        'then echo "Git is too old: ${GIT}"',
+        'sudo add-apt-repository -y ppa:git-core/ppa',
+        'sudo apt-get update -y',
+        'sudo apt-get install -y git',
         'fi',
         'git config --global user.email "git@0pdd.com"',
         'git config --global user.name "0pdd"'
