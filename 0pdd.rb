@@ -88,6 +88,8 @@ end
 get '/' do
   haml :index, layout: :layout, locals: {
     ver: VERSION,
+    ruby_version: `ruby -e 'print RUBY_VERSION'`,
+    git_version: `git --version | cut -d' ' -f 3`,
     tail: Exec.new(
       "(sort /tmp/0pdd-done.txt 2>/dev/null || echo '')\
       | uniq\
