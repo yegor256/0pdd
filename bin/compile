@@ -15,7 +15,7 @@ mkdir -p "$APT_STATE_DIR/lists/partial"
 
 APT_OPTS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state=$APT_STATE_DIR"
 
-topic "Installing Git 2+"
+echo "Installing Git 2+"
 apt-get $APT_OPTS install -y --force-yes software-properties-common
 add-apt-repository -y ppa:git-core/ppa
 apt-get $APT_OPTS update -y --force-yes
