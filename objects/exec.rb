@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'English'
+require 'open3'
 
 #
 # One command exec
@@ -31,11 +32,12 @@ class Exec
   end
 
   def run
-    stdout = `(#{@cmd}) 2>&1`
-    status = $CHILD_STATUS.to_i
-    puts stdout
-    return stdout if status.zero?
-    puts @cmd
-    raise "#{@cmd}: #{status} (not zero):\n#{stdout}"
+    c = @cmd
+    Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
+      unless thr.value.to_i.zero?
+        raise "#{c}: #{thr.value} (not zero):\n#{stderr.read}\n#{stdout.read}"
+      end
+      stdout.read
+    end
   end
 end
