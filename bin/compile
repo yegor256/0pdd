@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
+# I got it here: https://github.com/heroku/heroku-buildpack-apt/blob/master/bin/compile
 set -x
 set -e
+set -o pipefail
 
-apt-get install -y software-properties-common
+APT_CACHE_DIR="$CACHE_DIR/apt/cache"
+APT_STATE_DIR="$CACHE_DIR/apt/state"
+
+mkdir -p "$APT_CACHE_DIR/archives/partial"
+mkdir -p "$APT_STATE_DIR/lists/partial"
+
+APT_OPTS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state=$APT_STATE_DIR"
+
+topic "Installing Git 2+"
+apt-get $APT_OPTS install -y --force-yes software-properties-common
 add-apt-repository -y ppa:git-core/ppa
-apt-get update -y
-apt-get install -y git
+apt-get $APT_OPTS update -y --force-yes
+apt-get $APT_OPTS install -y --force-yes git
