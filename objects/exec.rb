@@ -33,6 +33,7 @@ class Exec
   def run
     stdout = `(#{@cmd}) 2>&1`
     status = $CHILD_STATUS.to_i
+    puts stdout
     return stdout if status.zero?
     puts @cmd
     raise "#{@cmd}: #{status} (not zero):\n#{stdout}"
