@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 apt-get install -y software-properties-common
 add-apt-repository -y ppa:git-core/ppa
