@@ -1,4 +1,5 @@
 language: ruby
+sudo: required
 rvm:
   - 2.3.3
 cache: bundler
@@ -12,6 +13,9 @@ addons:
       - libmagic-dev
 install:
   - travis_retry bundle update
+  - sudo add-apt-repository ppa:git-core/ppa
+  - sudo apt-get update
+  - sudo apt-get install git
 script:
   - rake
 
