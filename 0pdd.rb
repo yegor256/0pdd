@@ -88,8 +88,11 @@ end
 get '/' do
   haml :index, layout: :layout, locals: {
     ver: VERSION,
-    ruby_version: `ruby -e 'print RUBY_VERSION'`,
-    git_version: `git --version | cut -d' ' -f 3`,
+    # @todo #76:30min Would be better to store these two guys somewhere
+    #  in configuration and re-use on every click. At the moment we
+    #  are making too many unnecessary calls to the operating system.
+    ruby_version: Exec.new('ruby -e "print RUBY_VERSION"').run,
+    git_version: Exec.new('git --version | cut -d" " -f 3').run,
     tail: Exec.new(
       "(sort /tmp/0pdd-done.txt 2>/dev/null || echo '')\
       | uniq\
