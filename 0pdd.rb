@@ -42,7 +42,6 @@ require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
 configure do
-  puts `git --version`
   config = if ENV['RACK_ENV'] == 'test'
     {
       'github' => {

@@ -106,9 +106,6 @@ class GitRepo
     IO.write("#{dir}/id_rsa", @id_rsa) unless @id_rsa.empty?
     Exec.new(
       [
-        'set -x',
-        'set -e',
-        'set -o pipefail',
         'echo "Host *" > ~/.ssh/config',
         'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
         'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config',
@@ -120,9 +117,6 @@ class GitRepo
   def prepare_git
     Exec.new(
       [
-        'set -x',
-        'set -e',
-        'set -o pipefail',
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
         'then echo "Git is too old: ${GIT}"',

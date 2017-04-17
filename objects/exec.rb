@@ -32,7 +32,12 @@ class Exec
   end
 
   def run
-    c = @cmd
+    c = [
+      'set -x',
+      'set -e',
+      'set -o pipefail',
+      @cmd
+    ].join(';')
     Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
       unless thr.value.to_i.zero?
         raise "#{c}: #{thr.value} (not zero):\n#{stderr.read}\n#{stdout.read}"
