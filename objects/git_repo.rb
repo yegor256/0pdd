@@ -109,7 +109,7 @@ class GitRepo
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
         'then echo "Git version is too old: ${GIT}"',
-        'else echo "Git version is OK: ${GIT}"',
+        'else echo "Git version is fresh enough: ${GIT}"',
         'fi',
         'echo "Host *" > ~/.ssh/config',
         'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
