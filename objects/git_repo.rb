@@ -106,6 +106,7 @@ class GitRepo
       [
         'set -x',
         'set -e',
+        'if [[ `git --version` != "git version 2."* ]]; then echo "OLD!"; fi',
         'echo "Host *" > ~/.ssh/config',
         'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
         'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config',
