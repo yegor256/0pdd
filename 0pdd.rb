@@ -41,6 +41,8 @@ require_relative 'objects/emailed_tickets'
 require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
+puts `git --version`
+
 configure do
   config = if ENV['RACK_ENV'] == 'test'
     {
