@@ -121,6 +121,7 @@ class GitRepo
       [
         'set -x',
         'set -e',
+        'set -o pipefail',
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
         'then echo "Git version is too old: ${GIT}"; exit -1',
