@@ -62,7 +62,6 @@ class GitRepo
   end
 
   def push
-    prepare
     if File.exist?(@path)
       pull
     else
@@ -71,6 +70,8 @@ class GitRepo
   end
 
   def clone
+    prepare_key
+    prepare_git
     Exec.new(
       'git clone',
       '--depth=1',
@@ -81,6 +82,8 @@ class GitRepo
   end
 
   def pull
+    prepare_key
+    prepare_git
     Exec.new(
       [
         "cd #{@path}",
@@ -96,7 +99,7 @@ class GitRepo
 
   private
 
-  def prepare
+  def prepare_key
     dir = "#{Dir.home}/.ssh"
     return if File.exist?(dir)
     FileUtils.mkdir_p(dir)
@@ -106,14 +109,23 @@ class GitRepo
       [
         'set -x',
         'set -e',
+        'echo "Host *" > ~/.ssh/config',
+        'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
+        'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config',
+        'chmod -R 600 ~/.ssh/*'
+      ].join(';')
+    ).run
+  end
+
+  def prepare_git
+    Exec.new(
+      [
+        'set -x',
+        'set -e',
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
         'then echo "Git version is too old: ${GIT}"; exit -1',
         'fi',
-        'echo "Host *" > ~/.ssh/config',
-        'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
-        'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config',
-        'chmod -R 600 ~/.ssh/*',
         'git config --global user.email "git@0pdd.com"',
         'git config --global user.name "0pdd"'
       ].join(';')
