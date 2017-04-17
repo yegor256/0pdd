@@ -125,7 +125,7 @@ class GitRepo
         'set -o pipefail',
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
-        'then echo "Git version is too old: ${GIT}"; exit -1',
+        'then echo "Git is too old: ${GIT}"; exit -1',
         'fi',
         'git config --global user.email "git@0pdd.com"',
         'git config --global user.name "0pdd"'
