@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if [ -f "$1/0pdd.rb" ]; then
-  echo "0pdd"
-  exit 0
-else
-  echo "no"
-  exit 1
-fi
