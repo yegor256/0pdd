@@ -126,6 +126,7 @@ class GitRepo
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
         'then echo "Git is too old: ${GIT}"',
+        'apt-get install -y software-properties-common',
         'add-apt-repository -y ppa:git-core/ppa',
         'apt-get update -y',
         'apt-get install -y git',
