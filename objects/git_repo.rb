@@ -133,7 +133,7 @@ class GitRepo
         'git --version',
         'fi',
         'git config --global user.email "server@0pdd.com"',
-        'git config --global user.name "0pdd"'
+        'git config --global user.name "0pdd.com"'
       ].join(';')
     ).run
   end
