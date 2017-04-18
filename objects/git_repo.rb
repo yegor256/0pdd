@@ -69,6 +69,8 @@ class GitRepo
     end
   end
 
+  private
+
   def clone
     prepare_key
     prepare_git
@@ -96,8 +98,6 @@ class GitRepo
       ].join(' && ')
     ).run
   end
-
-  private
 
   def prepare_key
     dir = "#{Dir.home}/.ssh"

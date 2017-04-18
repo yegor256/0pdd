@@ -32,8 +32,8 @@ class TestGitRepo < Test::Unit::TestCase
   def test_clone_and_pull
     Dir.mktmpdir 'test' do |d|
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d))
-      repo.clone
-      repo.pull
+      repo.push
+      repo.push
       assert(File.exist?(File.join(d, 'yegor256/pdd/.git')))
     end
   end
@@ -42,12 +42,11 @@ class TestGitRepo < Test::Unit::TestCase
     Dir.mktmpdir 'test' do |d|
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
-      repo.clone
-      repo.pull
+      repo.push
+      repo.push
       Exec.new("
         set -e
-        cd '#{d}'
-        cd '#{dir}'
+        cd '#{d}/#{dir}'
         git checkout -b temp
         git branch -D master
         git checkout --orphan master
@@ -55,7 +54,7 @@ class TestGitRepo < Test::Unit::TestCase
         git add new.txt
         git commit -am 'new master'
       ").run
-      repo.pull
+      repo.push
       assert(File.exist?(File.join(d, 'yegor256/pdd/new.txt')))
     end
   end
@@ -64,18 +63,17 @@ class TestGitRepo < Test::Unit::TestCase
     Dir.mktmpdir 'test' do |d|
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
-      repo.clone
-      repo.pull
+      repo.push
+      repo.push
       Exec.new("
         set -e
-        cd '#{d}'
-        cd '#{dir}'
-        echo 'hello, dude!' > test.txt
-        git add test.txt
+        cd '#{d}/#{dir}'
+        echo 'hello, dude!' > z.txt
+        git add z.txt
         git commit --amend --message 'new fix'
       ").run
-      repo.pull
-      assert(File.exist?(File.join(d, 'yegor256/pdd/test.txt')))
+      repo.push
+      assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
     end
   end
 
@@ -83,20 +81,20 @@ class TestGitRepo < Test::Unit::TestCase
     Dir.mktmpdir 'test' do |d|
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
-      repo.clone
-      repo.pull
+      repo.push
+      repo.push
       Exec.new("
         set -e
-        cd '#{d}'
-        cd '#{dir}'
-        git reset HEAD~1
+        cd '#{d}/#{dir}'
+        git reset HEAD~3
+        git reset --hard
         git clean -fd
-        echo 'hello, dude!' > test-1.txt
-        git add test-1.txt
-        git commit --message 'new file'
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
       ").run
-      repo.pull
-      assert(File.exist?(File.join(d, 'yegor256/pdd/test.txt')))
+      repo.push
+      assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
     end
   end
 
@@ -135,12 +133,14 @@ class TestGitRepo < Test::Unit::TestCase
       cd #{subdir}
       git config user.email git@0pdd.com
       git config user.name 0pdd
-      echo 'hello, world!' > test.txt
-      git add test.txt
-      git commit -am 'add file'
       echo 'foo: hello' > .0pdd.yml
       git add .0pdd.yml
       git commit -am 'add line'
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
     ").run
     'file://' + File.join(dir, subdir)
   end
