@@ -27,6 +27,7 @@ require 'ostruct'
 require 'sinatra'
 require 'sass'
 require 'octokit'
+require 'tmpdir'
 
 require_relative 'version'
 require_relative 'objects/job'
@@ -84,6 +85,7 @@ configure do
   end
   set :ruby_version, Exec.new('ruby -e "print RUBY_VERSION"').run
   set :git_version, Exec.new('git --version | cut -d" " -f 3').run
+  set :temp_dir, Dir.mktmpdir('0pdd')
 end
 
 get '/' do
@@ -171,7 +173,11 @@ post '/hook/github' do
   return unless json['ref'] == 'refs/heads/master'
   name = json['repository']['full_name']
   unless ENV['RACK_ENV'] == 'test'
-    repo = GitRepo.new(name: name, id_rsa: settings.config['id_rsa'])
+    repo = GitRepo.new(
+      name: name,
+      id_rsa: settings.config['id_rsa'],
+      dir: settings.temp_dir
+    )
     JobDetached.new(
       repo,
       JobCommitErrors.new(

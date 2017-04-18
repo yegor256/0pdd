@@ -22,6 +22,7 @@
 
 require 'fileutils'
 require 'pdd'
+require 'tmpdir'
 require 'tempfile'
 require 'yaml'
 require_relative 'exec'
@@ -31,7 +32,7 @@ require_relative 'exec'
 #
 class GitRepo
   def initialize(
-    name:, dir: '/tmp/0pdd',
+    name:, dir: Dir.mktmpdir('0pdd'),
     uri: "git@github.com:#{name}", id_rsa: ''
   )
     @name = name
