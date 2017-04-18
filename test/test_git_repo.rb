@@ -43,7 +43,6 @@ class TestGitRepo < Test::Unit::TestCase
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
       repo.push
-      repo.push
       Exec.new("
         set -e
         cd '#{d}/#{dir}'
@@ -64,7 +63,6 @@ class TestGitRepo < Test::Unit::TestCase
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
       repo.push
-      repo.push
       Exec.new("
         set -e
         cd '#{d}/#{dir}'
@@ -82,11 +80,10 @@ class TestGitRepo < Test::Unit::TestCase
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
       repo.push
-      repo.push
       Exec.new("
         set -e
         cd '#{d}/#{dir}'
-        git reset HEAD~3
+        git reset HEAD~2
         git reset --hard
         git clean -fd
         echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
@@ -95,6 +92,27 @@ class TestGitRepo < Test::Unit::TestCase
       ").run
       repo.push
       assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
+    end
+  end
+
+  def test_merge_after_complete_new_master
+    Dir.mktmpdir 'test' do |d|
+      dir = 'repo'
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      repo.push
+      Exec.new("
+        set -e
+        cd '#{d}/#{dir}'
+        git checkout -b temp
+        git branch -D master
+        git checkout --orphan master
+        echo 'hello, new!' >> z.txt && git add z.txt && git commit -m ddd
+        echo 'hello, new!' >> z.txt && git add z.txt && git commit -m ddd
+        echo 'hello, new!' >> z2.txt && git add z2.txt && git commit -m ddd
+      ").run
+      repo.push
+      assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
+      assert(File.exist?(File.join(d, 'yegor256/pdd/z2.txt')))
     end
   end
 
