@@ -70,6 +70,14 @@ users who will be notified.
 
 Just submit a pull request. Make sure `rake` passes.
 
+## How to install in Heroku
+
+Don't forget this:
+
+```
+heroku buildpacks:add --index 1 https://github.com/heroku/heroku-buildpack-apt
+```
+
 ## License
 
 (The MIT License)
