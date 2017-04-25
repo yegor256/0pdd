@@ -36,9 +36,11 @@ require_relative 'objects/job_emailed'
 require_relative 'objects/job_recorded'
 require_relative 'objects/job_starred'
 require_relative 'objects/job_commiterrors'
+require_relative 'objects/log'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
 require_relative 'objects/emailed_tickets'
+require_relative 'objects/logged_tickets'
 require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
@@ -83,10 +85,8 @@ configure do
       password: settings.config['github']['pwd']
     )
   end
-  set :dynamo, if ENV['RACK_ENV'] == 'test'
-    nil
-  else
-    Aws::DynamoDB::Client.new(
+  if ENV['RACK_ENV'] != 'test'
+    set :dynamo, Aws::DynamoDB::Client.new(
       region: settings.config['dynamo']['region'],
       access_key_id: settings.config['dynamo']['key'],
       secret_access_key: settings.config['dynamo']['secret']
