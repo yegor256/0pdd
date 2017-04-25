@@ -4,14 +4,14 @@
 %p
   %a{href: "/p?name=#{repo}"}
     = repo
+%p
+  Since
+  = Time.at(since)
 - events = log.list(since)
 - if events.empty?
   %p
     There are no events yet.
 - else
-  %p
-    Since
-    = Time.at(since)
   %pre
     - last = nil
     - events.each do |e|
