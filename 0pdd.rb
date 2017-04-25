@@ -147,7 +147,7 @@ get '/log' do
   haml :log, layout: :layout, locals: {
     repo: repo,
     log: Log.new(settings.dynamo, repo),
-    since: params[:since] ? params[:since].to_i : 0
+    since: params[:since] ? params[:since].to_i : Time.now.to_i
   }
 end
 
