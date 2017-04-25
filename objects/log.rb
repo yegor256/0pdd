@@ -64,11 +64,14 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 25,
       scan_index_forward: false,
+      expression_attribute_names: {
+        '#time' => 'time'
+      },
       expression_attribute_values: {
         ':r' => @repo,
         ':t' => since
       },
-      key_condition_expression: 'repo=:r and time<:t'
+      key_condition_expression: 'repo=:r and #time<:t'
     )
   end
 end

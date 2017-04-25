@@ -124,7 +124,7 @@ get '/p' do
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
     [
-      'version', VERSION,
+      'version', "'#{VERSION}'",
       'project', "'#{name}'",
       'length', xml.to_s.length.to_s
     ]
