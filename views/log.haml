@@ -12,12 +12,11 @@
   %p
     There are no events yet.
 - else
-  %pre
-    - last = nil
-    - events.each do |e|
-      - last = e['time'].to_i
-      = "#{Time.at(e['time'])} #{e['text']}"
-      %br
+  - last = nil
+  - events.each do |e|
+    - last = e['time'].to_i
+    %p
+      = "#{Time.at(e['time']).iso8601}: #{e['text']}"
   - if last
     %p
       %a{href: "/log?name=#{repo}&since=#{last}"}
