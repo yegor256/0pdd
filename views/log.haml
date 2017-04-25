@@ -9,6 +9,9 @@
   %p
     There are no events yet.
 - else
+  %p
+    Since
+    = Time.at(since)
   %pre
     - last = nil
     - events.each do |e|
