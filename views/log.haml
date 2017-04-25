@@ -15,8 +15,9 @@
   %pre
     - last = nil
     - events.each do |e|
-      - last = e['time']
+      - last = e['time'].to_i
       = Time.at(e['time'])
+      = ' '
       = e['text']
       = "\n"
   - if last
