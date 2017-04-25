@@ -52,9 +52,10 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
+        ':r' => @repo,
         ':t' => tag
       },
-      key_condition_expression: 'tag=:t'
+      key_condition_expression: 'repo=:r and tag=:t'
     ).items.empty?
   end
 
