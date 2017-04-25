@@ -34,9 +34,11 @@ class LoggedTickets
   end
 
   def submit(puzzle)
+    tag = "#{puzzle.xpath('id').text}/submit"
+    raise "Tag #{tag} already exists, won't submit again" if @log.exists(tag)
     done = @tickets.submit(puzzle)
     @log.put(
-      "#{puzzle.xpath('id').text}/submit",
+      tag,
       "#{puzzle.xpath('id').text} submitted in issue ##{done[:number]}"
     )
     done
@@ -45,8 +47,10 @@ class LoggedTickets
   def close(puzzle)
     done = @tickets.close(puzzle)
     if done
+      tag = "#{puzzle.xpath('id').text}/closed"
+      raise "Tag #{tag} already exists, won't close again" if @log.exists(tag)
       @log.put(
-        "#{puzzle.xpath('id').text}/closed",
+        tag,
         "#{puzzle.xpath('id').text} closed in issue \
 ##{puzzle.xpath('issue').text}"
       )
