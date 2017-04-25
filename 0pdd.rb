@@ -141,7 +141,8 @@ end
 
 # @todo #80:30min Let's create an integration test for this feature,
 #  with DynamoDB Local. It's important to make sure that log works. Also,
-#  class Log should be used in the test.
+#  class Log should be used in the test. Let's use Maven plugin, like
+#  it's done in yegor256/sixnines GitHub project.
 get '/log' do
   repo = params[:name]
   haml :log, layout: :layout, locals: {
