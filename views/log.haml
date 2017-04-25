@@ -16,10 +16,7 @@
     - last = nil
     - events.each do |e|
       - last = e['time'].to_i
-      = Time.at(e['time'])
-      = ' '
-      = e['text']
-      = "\n"
+      = "#{Time.at(e['time'])} #{e['text']}\n"
   - if last
     %p
       %a{href: "/log?name=#{repo}&since=#{last}"}
