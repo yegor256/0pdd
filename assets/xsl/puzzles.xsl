@@ -23,6 +23,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
     <xsl:output method="xml" omit-xml-declaration="yes"/>
+    <xsl:param name="version"/>
     <xsl:param name="project"/>
     <xsl:param name="length"/>
     <xsl:template match="/puzzles">
@@ -39,7 +40,9 @@
             </head>
             <body>
                 <p>
-                    <img class="logo" src="https://avatars2.githubusercontent.com/u/24456188"/>
+                    <a href="http://www.0pdd.com">
+                        <img class="logo" src="https://avatars2.githubusercontent.com/u/24456188"/>
+                    </a>
                 </p>
                 <p>
                     <img src="/svg?name={$project}"/>
@@ -51,6 +54,13 @@
                     <xsl:text> total.</xsl:text>
                 </p>
                 <xsl:apply-templates select="puzzle"/>
+                <p>
+                    <xsl:text>Full </xsl:text>
+                    <a href="/log?name={$project}">
+                        <xsl:text>log</xsl:text>
+                    </a>
+                    <xsl:text> of recent events.</xsl:text>
+                </p>
                 <p>
                     <xsl:text>Download </xsl:text>
                     <a href="/xml?name={$project}">
@@ -72,6 +82,11 @@
                     <xsl:text> on </xsl:text>
                     <xsl:value-of select="@date"/>
                     <xsl:text>.</xsl:text>
+                </p>
+                <p>
+                    <a href="http://www.0pdd.com">
+                        <xsl:value-of select="$version"/>
+                    </a>
                 </p>
             </body>
         </html>

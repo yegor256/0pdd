@@ -21,6 +21,6 @@ Metrics/ClassLength:
 Metrics/AbcSize:
   Max: 60
 Metrics/BlockLength:
-  Max: 50
+  Max: 100
 Style/MultilineMethodCallIndentation:
   Enabled: false

@@ -1,0 +1,16 @@
+%p
+  %a{:href => '/'}
+    %img.logo{:src => 'https://avatars2.githubusercontent.com/u/24456188'}
+%p
+  = repo
+%pre
+  - last = nil
+  - log.list(page) do |t|
+    - last = t['time']
+    = Time.at(t['time'])
+    = t['text']
+    = "\n"
+- if last
+  %p
+    %a{href: "/log?name=#{repo}&since=#{last}"}
+      = 'more'

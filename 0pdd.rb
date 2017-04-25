@@ -83,6 +83,15 @@ configure do
       password: settings.config['github']['pwd']
     )
   end
+  set :dynamo, if ENV['RACK_ENV'] == 'test'
+    nil
+  else
+    Aws::DynamoDB::Client.new(
+      region: settings.config['dynamo']['region'],
+      access_key_id: settings.config['dynamo']['key'],
+      secret_access_key: settings.config['dynamo']['secret']
+    )
+  end
   set :ruby_version, Exec.new('ruby -e "print RUBY_VERSION"').run
   set :git_version, Exec.new('git --version | cut -d" " -f 3').run
   set :temp_dir, Dir.mktmpdir('0pdd')
@@ -113,7 +122,12 @@ get '/p' do
   name = params[:name]
   xml = storage(name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
-    xml, ['project', "'#{name}'", 'length', xml.to_s.length.to_s]
+    xml,
+    [
+      'version', VERSION,
+      'project', "'#{name}'",
+      'length', xml.to_s.length.to_s
+    ]
   ).to_s
 end
 
@@ -123,6 +137,15 @@ end
 get '/xml' do
   content_type 'text/xml'
   storage(params[:name]).load.to_s
+end
+
+get '/log' do
+  repo = params[:name]
+  haml :log, layout: :layout, locals: {
+    repo: repo,
+    log: Log.new(settings.dynamo, repo),
+    since: params[:since] ? params[:since].to_i : 0
+  }
 end
 
 get '/svg' do
@@ -197,10 +220,13 @@ post '/hook/github' do
                 storage(name),
                 EmailedTickets.new(
                   name,
-                  GithubTickets.new(
-                    name,
-                    settings.github,
-                    repo
+                  LoggedTickets.new(
+                    Log.new(name, settings.dynamo),
+                    GithubTickets.new(
+                      name,
+                      settings.github,
+                      repo
+                    )
                   )
                 )
               )
