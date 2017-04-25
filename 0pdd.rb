@@ -224,7 +224,7 @@ post '/hook/github' do
                 EmailedTickets.new(
                   name,
                   LoggedTickets.new(
-                    Log.new(name, settings.dynamo),
+                    Log.new(settings.dynamo, name),
                     GithubTickets.new(
                       name,
                       settings.github,

@@ -29,8 +29,8 @@ require_relative '../version'
 #
 class Log
   def initialize(aws, repo)
-    @aws = aws
     @repo = repo
+    @aws = aws
   end
 
   def put(tag, text)
