@@ -5,7 +5,7 @@
   = repo
 %pre
   - last = nil
-  - log.list(page) do |t|
+  - log.list(since) do |t|
     - last = t['time']
     = Time.at(t['time'])
     = t['text']
