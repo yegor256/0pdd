@@ -10,7 +10,7 @@
 - else
   %pre
     - last = nil
-    - events do |e|
+    - events.each do |e|
       - last = e['time']
       = Time.at(e['time'])
       = e['text']
