@@ -3,14 +3,19 @@
     %img.logo{:src => 'https://avatars2.githubusercontent.com/u/24456188'}
 %p
   = repo
-%pre
-  - last = nil
-  - log.list(since) do |t|
-    - last = t['time']
-    = Time.at(t['time'])
-    = t['text']
-    = "\n"
-- if last
+- events = log.list(since)
+- if events.empty?
   %p
-    %a{href: "/log?name=#{repo}&since=#{last}"}
-      = 'more'
+    There are no events yet.
+- else
+  %pre
+    - last = nil
+    - events do |e|
+      - last = e['time']
+      = Time.at(e['time'])
+      = e['text']
+      = "\n"
+  - if last
+    %p
+      %a{href: "/log?name=#{repo}&since=#{last}"}
+        = 'more'
