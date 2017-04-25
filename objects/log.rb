@@ -55,7 +55,7 @@ class Log
         ':t' => tag
       },
       key_condition_expression: 'tag=:t'
-    ).empty?
+    ).items.empty?
   end
 
   def list(since = Time.now.to_i)
@@ -72,6 +72,6 @@ class Log
         ':t' => since
       },
       key_condition_expression: 'repo=:r and #time<:t'
-    )
+    ).items
   end
 end
