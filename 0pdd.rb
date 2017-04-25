@@ -139,6 +139,9 @@ get '/xml' do
   storage(params[:name]).load.to_s
 end
 
+# @todo #80:30min Let's create an integration test for this feature,
+#  with DynamoDB Local. It's important to make sure that log works. Also,
+#  class Log should be used in the test.
 get '/log' do
   repo = params[:name]
   haml :log, layout: :layout, locals: {
