@@ -122,9 +122,7 @@ class GitRepo
         'if [[ "${GIT}" != "git version 2."* ]]',
         'then echo "Git is too old: ${GIT}"',
         'exit -1',
-        'fi',
-        'git config --global user.email "server@0pdd.com"',
-        'git config --global user.name "0pdd.com"'
+        'fi'
       ].join(';')
     ).run
     return if ENV['RACK_ENV'] == 'test'
