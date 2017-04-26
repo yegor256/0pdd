@@ -17,5 +17,7 @@ install:
   - sudo apt-get update -y
   - sudo apt-get install -y git
 script:
+  - git config --global user.email "server@0pdd.com"
+  - git config --global user.name "0pdd.com"
   - rake
 
