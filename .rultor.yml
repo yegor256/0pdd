@@ -4,7 +4,7 @@ assets:
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 release:
   script: |-
-    sudo bundle install
+    bundle install
     rake
     cp ../config.yml config.yml
     git remote add heroku git@heroku.com:zeropdd.git
