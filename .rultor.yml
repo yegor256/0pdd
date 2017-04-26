@@ -2,6 +2,9 @@ assets:
   config.yml: zerocracy/home#assets/0pdd/config.yml
   id_rsa: zerocracy/home#assets/heroku-key
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
+install: |-
+  git config --global user.email "server@0pdd.com"
+  git config --global user.name "0pdd.com"
 release:
   script: |-
     bundle install
