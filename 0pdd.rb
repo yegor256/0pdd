@@ -41,6 +41,7 @@ require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
 require_relative 'objects/emailed_tickets'
 require_relative 'objects/logged_tickets'
+require_relative 'objects/commit_tickets'
 require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
@@ -220,12 +221,17 @@ post '/hook/github' do
                 storage(name),
                 EmailedTickets.new(
                   name,
-                  LoggedTickets.new(
-                    Log.new(settings.dynamo, name),
-                    GithubTickets.new(
-                      name,
-                      settings.github,
-                      repo
+                  CommitTickets.new(
+                    name,
+                    settings.github,
+                    json['head_commit']['id'],
+                    LoggedTickets.new(
+                      Log.new(settings.dynamo, name),
+                      GithubTickets.new(
+                        name,
+                        settings.github,
+                        repo
+                      )
                     )
                   )
                 )
