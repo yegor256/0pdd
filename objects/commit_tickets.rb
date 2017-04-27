@@ -51,7 +51,7 @@ as ##{done[:number]}"
       @github.create_commit_comment(
         @repo, @commit,
         "Puzzle `#{puzzle.xpath('id').text}` disappeared, that's why I closed \
-as ##{puzzle.xpath('id').text}"
+as ##{puzzle.xpath('issue').text}"
       )
     end
     done

@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'octokit'
+require 'haml'
 
 #
 # Tickets in Github.
@@ -46,6 +47,7 @@ class GithubTickets
     title = truncate(puzzle.xpath('body').text)
     json = @github.create_issue(
       @repo,
+      haml :submit, locals: {
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: #{title}",
       "The puzzle `#{puzzle.xpath('id').text}` \
@@ -63,8 +65,9 @@ role: #{puzzle.xpath('role').text}.\
 If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
 the problem is fixed and the text of the puzzle is \
-removed from the source code. Here is more about \
-[PDD](http://www.yegor256.com/2009/03/04/pdd.html)."
+_removed_ from the source code. Here is more about \
+[PDD](http://www.yegor256.com/2009/03/04/pdd.html) and
+[about me](http://www.yegor256.com/2017/04/05/pdd-in-action.html)."
     )
     issue = json['number']
     unless users.empty?
