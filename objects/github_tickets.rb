@@ -47,7 +47,6 @@ class GithubTickets
     title = truncate(puzzle.xpath('body').text)
     json = @github.create_issue(
       @repo,
-      haml :submit, locals: {
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: #{title}",
       "The puzzle `#{puzzle.xpath('id').text}` \
