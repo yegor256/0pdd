@@ -161,16 +161,14 @@ end
 get '/ping-github' do
   content_type 'text/plain'
   gh = settings.github
+  gh.user_repository_invitations.each do |i|
+    gh.accept_repository_invitation(i['id'])
+    puts "Invitation #{i['id']} accepted"
+  end
   gh.notifications.map do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
     puts "GitHub notification in #{repo}: #{reason}"
-    if reason == 'invitation'
-      gh.user_repository_invitations.each do |i|
-        gh.accept_repository_invitation(i['id'])
-      end
-      puts "Invitation accepted to #{repo}"
-    end
     if reason == 'mention'
       issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
       comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '')
