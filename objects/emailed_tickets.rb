@@ -51,7 +51,7 @@ Here: https://github.com/#{r}/blob/master/#{puzzle.xpath('file').text}\
 ##{puzzle.xpath('lines').text.gsub(/(\d+)/, 'L\1')}\n\
 Author: #{puzzle.xpath('author').text}\n\
 Time: #{puzzle.xpath('time').text}\n\
-Estimate: #{puzzle.xpath('estimate').text} minutes\n\n\
+Estimate: #{puzzle.xpath('estimate').text} minutes\n\
 Role: #{puzzle.xpath('role').text}\n\n\
 Body: #{puzzle.xpath('body').text}\n\n\
 Thanks,\n\
