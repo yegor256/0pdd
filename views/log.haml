@@ -6,7 +6,7 @@
     = repo
 %p
   Since
-  = Time.at(since)
+  = Time.at(since).iso8601
 - events = log.list(since)
 - if events.empty?
   %p
