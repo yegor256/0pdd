@@ -55,6 +55,9 @@
                 </p>
                 <xsl:apply-templates select="puzzle"/>
                 <p>
+                    <xsl:text>--</xsl:text>
+                </p>
+                <p>
                     <xsl:text>Full </xsl:text>
                     <a href="/log?name={$project}">
                         <xsl:text>log</xsl:text>
