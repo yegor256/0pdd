@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 require 'octokit'
-require 'haml'
 
 #
 # Tickets in Github.
@@ -40,20 +39,15 @@ class GithubTickets
   end
 
   def submit(puzzle)
-    # @todo #3:20min This mechanism of body abbreviation is rather
-    #  primitive and doesn't produce readable texts very often. Instead
-    #  of cutting the text at the hard limit (40 chars) we have to cut
-    #  it at the end of the word, staying closer to the limit.
-    title = truncate(puzzle.xpath('body').text)
     json = @github.create_issue(
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
-#{puzzle.xpath('lines').text}: #{title}",
+#{puzzle.xpath('lines').text}: #{truncate(puzzle.xpath('body').text)}",
       "The puzzle `#{puzzle.xpath('id').text}` \
 in [`#{puzzle.xpath('file').text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
 (lines #{puzzle.xpath('lines').text}) \
-has to be resolved: #{puzzle.xpath('body').text}\
+has to be resolved: \"#{truncate(puzzle.xpath('body').text, 400)}\"\
 \n\n\
 The puzzle was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
@@ -111,12 +105,13 @@ source code, that's why I closed this issue." +
   end
 
   def truncate(text, limit = 40, separator = '...')
-    if limit < text.length
-      length_with_room_for_omission = limit - separator.length
-      stop = text.rindex(' ', length_with_room_for_omission) || 0
+    clean = text.gsub(/\s+/, ' ')
+    if limit < clean.length
+      max = limit - separator.length
+      stop = clean.rindex(' ', max) || 0
       "#{text[0...stop]}#{separator}"
     else
-      text
+      clean
     end
   end
 end
