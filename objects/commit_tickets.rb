@@ -39,8 +39,10 @@ class CommitTickets
     done = @tickets.submit(puzzle)
     @github.create_commit_comment(
       @repo, @commit,
-      "Puzzle `#{puzzle.xpath('id').text}` discovered and submitted \
-as ##{done[:number]}"
+      "Puzzle `#{puzzle.xpath('id').text}` discovered in \
+[`#{puzzle.xpath('file').text}`](\
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
+and submitted as ##{done[:number]}."
     )
     done
   end
@@ -50,8 +52,10 @@ as ##{done[:number]}"
     if done
       @github.create_commit_comment(
         @repo, @commit,
-        "Puzzle `#{puzzle.xpath('id').text}` disappeared, that's why I closed \
-as ##{puzzle.xpath('issue').text}"
+        "Puzzle `#{puzzle.xpath('id').text}` disappeared in \
+[`#{puzzle.xpath('file').text}`](\
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}), \
+that's why I closed ##{puzzle.xpath('issue').text}."
       )
     end
     done
