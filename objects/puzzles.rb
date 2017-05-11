@@ -84,6 +84,8 @@ class Puzzles
       .transform(xml)
       .xpath('//puzzle')
       .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
+      .reject(&:nil?)
+      .reject { |p| p[:issue].nil? }
       .each do |p|
         xml.xpath("//extra[id='#{p[:id]}']")[0].add_child(
           "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
@@ -110,6 +112,7 @@ class Puzzles
       xml.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
         .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
         .reject(&:nil?)
+        .reject { |p| p[:issue].nil? }
         .each do |p|
           node = xml.xpath("//puzzle[id='#{p[:id]}']")[0]
           node.search('issue').remove
