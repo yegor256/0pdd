@@ -49,9 +49,18 @@ class SafeTickets
   private
 
   def email(e)
-    # @todo #64:30min Let's implement the emailing of the exception. Somehow
-    #  we need to encapsulate the email client and format the exception
-    #  backtrace to make it look nice.
+    Mail.new do
+      from '0pdd <no-reply@0pdd.com>'
+      to 'admin@0pdd.com'
+      subject e.message
+      text_part do
+        content_type 'text/plain; charset=UTF-8'
+        body "Hi,\n\n\
+#{e.backtrace.join("\n")}\n\n
+Thanks,\n\
+0pdd"
+      end
+    end.deliver!
     puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
   end
 end
