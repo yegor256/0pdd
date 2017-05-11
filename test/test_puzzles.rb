@@ -44,6 +44,30 @@ class TestPuzzles < Test::Unit::TestCase
     end
   end
 
+  def test_with_broken_tickets
+    tickets = Object.new
+    def tickets.safe
+      true
+    end
+    def tickets.submit(p)
+      nil
+    end
+    xml = File.open("test-assets/puzzles/simple.xml") { |f| Nokogiri::XML(f) }
+    Dir.mktmpdir 'test' do |dir|
+      Puzzles.new(
+        OpenStruct.new(
+          xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s)
+        ),
+        FakeStorage.new(
+          dir,
+          Nokogiri.XML('<puzzles/>')
+        )
+      ).deploy(tickets)
+    end
+  end
+
+  private
+
   def test_xml(dir, name)
     xml = File.open("test-assets/puzzles/#{name}") { |f| Nokogiri::XML(f) }
     storage = SafeStorage.new(
