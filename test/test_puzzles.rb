@@ -49,10 +49,11 @@ class TestPuzzles < Test::Unit::TestCase
     def tickets.safe
       true
     end
-    def tickets.submit(p)
+
+    def tickets.submit(_)
       nil
     end
-    xml = File.open("test-assets/puzzles/simple.xml") { |f| Nokogiri::XML(f) }
+    xml = File.open('test-assets/puzzles/simple.xml') { |f| Nokogiri::XML(f) }
     Dir.mktmpdir 'test' do |dir|
       Puzzles.new(
         OpenStruct.new(
