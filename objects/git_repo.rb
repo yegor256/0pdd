@@ -49,7 +49,7 @@ class GitRepo
     f = File.join(@path, '.0pdd.yml')
     if File.exist?(f)
       puts "#{File.basename(f)} found at #{@name}: #{File.size(f)} bytes"
-      YAML.load(File.open(f))
+      YAML.safe_load(File.open(f))
     else
       {}
     end

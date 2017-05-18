@@ -61,7 +61,7 @@ configure do
       'id_rsa' => ''
     }
   else
-    YAML.load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+    YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
   end
   set :config, config
   if config['smtp']

@@ -33,7 +33,7 @@ class TestGithubTickets < Test::Unit::TestCase
   def test_closes_tickets
     sources = Object.new
     def sources.config
-      YAML.load("alerts:\n  github:\n    - yegor256\n    - davvd")
+      YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
     end
     tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
     tickets.close(Nokogiri::XML('<puzzle><issue>1</issue></puzzle>'))

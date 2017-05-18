@@ -25,7 +25,7 @@ require 'rake'
 require 'rdoc'
 require 'rake/clean'
 
-task default: [:clean, :test, :rubocop, :copyright]
+task default: %i[clean test rubocop copyright]
 
 require 'rake/testtask'
 desc 'Run all unit tests'
