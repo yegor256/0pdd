@@ -50,7 +50,8 @@ class JobEmailed
           body "Hey,\n\n\
 There is a problem in https://github.com/#{name}:\n\n\
 #{trace}\n\n\
-If you think it's our bug, please forward this email to yegor@0pdd.com.
+If you think it's our bug, please submit it to GitHub: \
+https://github.com/yegor256/0pdd/issues\n\n\
 Sorry,\n\
 0pdd"
         end
@@ -60,13 +61,14 @@ Sorry,\n\
             <p>There is a problem in
             <a href='https://github.com/#{name}'>#{name}</a>:</p>
             <pre>#{trace}</pre>
-            <p>If you think it's our bug, please forward this email
-            to <a href='mailto:yegor@0pdd.com'>yegor@0pdd.com</a>. Thanks.</p>
+            <p>If you think it's our bug, please submit it to
+            <a href='https://github.com/yegor256/0pdd/issues'>GitHub</a>.
+            Thanks.</p>
             <p>Sorry,<br/><a href='http://www.0pdd.com'>0pdd</a></p>"
         end
       end
       mail.deliver!
-      puts "email sent to #{email}"
+      puts "Email sent to #{email}"
     end
     raise e
   end
