@@ -1,9 +1,9 @@
 %div.center
   %p
-    %a{:href => '/'}
-      %img.logo{:src => 'https://avatars2.githubusercontent.com/u/24456188'}
+    %a{href:'/'}
+      %img.logo{src:'https://avatars2.githubusercontent.com/u/24456188'}
   %p
-    %a{:href => 'http://www.yegor256.com/2017/04/05/pdd-in-action.html'} PDD
+    %a{href:'http://www.yegor256.com/2017/04/05/pdd-in-action.html'} PDD
     puzzles collector.
   - if !tail.empty?
     %p
@@ -11,19 +11,19 @@
       %br
       - tail.each_with_index do |r, i|
         %span
-          %a{:href => 'https://github.com/' + r}>= r
+          %a{href:'https://github.com/' + r}>= r
   %p
     Made by
-    %a{:href => 'http://www.yegor256.com'} @yegor256
+    %a{href:'http://www.yegor256.com'} @yegor256
     for
     = succeed "." do
-      %a{:href => 'http://www.zerocracy.com'} Zerocracy
+      %a{href:'http://www.zerocracy.com'} Zerocracy
   %p
-    %a{:href => 'http://www.sixnines.io/h/574a'}
-      %img{:src => 'http://www.sixnines.io/b/574a'}
+    %a{href:'http://www.sixnines.io/h/574a'}
+      %img{src:'http://www.sixnines.io/b/574a'}
   %p
-    %a{:href => 'https://github.com/yegor256/0pdd'}
-      %img{:src => 'https://img.shields.io/github/stars/yegor256/0pdd.svg'}
+    %a{href:'https://github.com/yegor256/0pdd'}
+      %img{src:'https://img.shields.io/github/stars/yegor256/0pdd.svg'}
   %p.versions
     %img{:src=>'/images/logo.svg', :alt=>'Currently deployed version'}
     =ver
