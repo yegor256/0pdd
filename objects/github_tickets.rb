@@ -59,7 +59,7 @@ If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
 the problem is fixed and the text of the puzzle is \
 _removed_ from the source code. Here is more about \
-[PDD](http://www.yegor256.com/2009/03/04/pdd.html) and
+[PDD](http://www.yegor256.com/2009/03/04/pdd.html) and \
 [about me](http://www.yegor256.com/2017/04/05/pdd-in-action.html)."
     )
     issue = json['number']
