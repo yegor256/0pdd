@@ -100,6 +100,7 @@ end
 
 get '/' do
   haml :index, layout: :layout, locals: {
+    title: '0pdd',
     ver: VERSION,
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
@@ -144,6 +145,7 @@ get '/log' do
   repo = params[:name]
   haml :log, layout: :layout, locals: {
     ver: VERSION,
+    title: repo,
     repo: repo,
     log: Log.new(settings.dynamo, repo),
     since: params[:since] ? params[:since].to_i : Time.now.to_i
@@ -253,7 +255,10 @@ end
 
 not_found do
   status 404
-  haml :not_found, layout: :layout, locals: { ver: VERSION }
+  haml :not_found, layout: :layout, locals: {
+    ver: VERSION,
+    title: 'Page not found'
+  }
 end
 
 error do
@@ -263,6 +268,7 @@ error do
     :error,
     layout: :layout,
     locals: {
+      title: 'error',
       ver: VERSION,
       error: "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
     }
