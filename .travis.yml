@@ -20,4 +20,6 @@ script:
   - git config --global user.email "server@0pdd.com"
   - git config --global user.name "0pdd.com"
   - rake
+after_success:
+  - "bash <(curl -s https://codecov.io/bash)"
 

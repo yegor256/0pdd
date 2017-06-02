@@ -22,7 +22,7 @@
 source 'https://rubygems.org'
 
 gem 'aws-sdk', '2.9.20'
-gem 'coveralls', '0.8.21', require: false
+gem 'codecov', '0.1.10'
 gem 'haml', '5.0.1'
 gem 'mail', '2.6.5'
 gem 'nokogiri', '1.7.2'
