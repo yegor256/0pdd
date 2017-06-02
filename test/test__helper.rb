@@ -64,6 +64,7 @@ class FakeTickets
   def close(puzzle)
     @closed << puzzle.xpath('id').text
     puts "Fake issue closed for #{puzzle.xpath('id').text}"
+    true
   end
 end
 

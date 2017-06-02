@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require_relative 'truncated'
+
 #
 # Tickets that are logged.
 #
@@ -45,7 +47,9 @@ in GitHub: https://github.com/yegor256/0pdd/issues"
     done = @tickets.submit(puzzle)
     @log.put(
       tag,
-      "#{puzzle.xpath('id').text} submitted in issue ##{done[:number]}"
+      "#{puzzle.xpath('id').text} submitted in issue ##{done[:number]}: \
+\"#{Truncated.new(puzzle.xpath('body').text, 100)}\" \
+at #{puzzle.xpath('file').text}; #{puzzle.xpath('lines').text}"
     )
     done
   end

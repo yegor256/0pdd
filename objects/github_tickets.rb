@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'octokit'
+require_relative 'truncated'
 
 #
 # Tickets in Github.
@@ -42,12 +43,12 @@ class GithubTickets
     json = @github.create_issue(
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
-#{puzzle.xpath('lines').text}: #{truncate(puzzle.xpath('body').text)}",
+#{puzzle.xpath('lines').text}: #{Truncate.new(puzzle.xpath('body').text)}",
       "The puzzle `#{puzzle.xpath('id').text}` \
 in [`#{puzzle.xpath('file').text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
 (lines #{puzzle.xpath('lines').text}) \
-has to be resolved: \"#{truncate(puzzle.xpath('body').text, 400)}\"\
+has to be resolved: \"#{Truncate.new(puzzle.xpath('body').text, 400)}\"\
 \n\n\
 The puzzle was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
@@ -101,17 +102,6 @@ source code, that's why I closed this issue." +
         .map { |n| "@#{n}" }
     else
       []
-    end
-  end
-
-  def truncate(text, limit = 40, separator = '...')
-    clean = text.gsub(/\s+/, ' ')
-    if limit < clean.length
-      max = limit - separator.length
-      stop = clean.rindex(' ', max) || 0
-      "#{text[0...stop]}#{separator}"
-    else
-      clean
     end
   end
 end
