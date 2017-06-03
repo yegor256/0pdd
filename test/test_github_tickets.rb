@@ -42,6 +42,7 @@ class TestGithubTickets < Test::Unit::TestCase
         '<puzzle>
           <id>23-ab536de</id>
           <file>/a/b/c/test.txt</file>
+          <time>01-01-2017</time>
           <body>hey!</body>
           <lines>1-3</lines>
         </puzzle>'

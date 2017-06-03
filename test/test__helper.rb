@@ -101,6 +101,10 @@ class FakeGithub
     # nothing to do here
   end
 
+  def create_issue(_, _, _)
+    { 'number' => 555 }
+  end
+
   def add_comment(_, _, _)
     # nothing to do here
   end
