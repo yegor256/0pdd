@@ -30,11 +30,31 @@ require_relative '../objects/github_tickets'
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
 class TestGithubTickets < Test::Unit::TestCase
+  def test_submits_tickets
+    sources = Object.new
+    def sources.config
+      YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
+    end
+    require_relative 'test__helper'
+    tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
+    tickets.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>23-ab536de</id>
+          <file>/a/b/c/test.txt</file>
+          <body>hey!</body>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+  end
+
   def test_closes_tickets
     sources = Object.new
     def sources.config
       YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
     end
+    require_relative 'test__helper'
     tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
     tickets.close(Nokogiri::XML('<puzzle><issue>1</issue></puzzle>'))
   end
