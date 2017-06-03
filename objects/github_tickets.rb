@@ -43,12 +43,12 @@ class GithubTickets
     json = @github.create_issue(
       @repo,
       "#{File.basename(puzzle.xpath('file').text)}:\
-#{puzzle.xpath('lines').text}: #{Truncate.new(puzzle.xpath('body').text)}",
+#{puzzle.xpath('lines').text}: #{Truncated.new(puzzle.xpath('body').text)}",
       "The puzzle `#{puzzle.xpath('id').text}` \
 in [`#{puzzle.xpath('file').text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
 (lines #{puzzle.xpath('lines').text}) \
-has to be resolved: \"#{Truncate.new(puzzle.xpath('body').text, 400)}\"\
+has to be resolved: \"#{Truncated.new(puzzle.xpath('body').text, 400)}\"\
 \n\n\
 The puzzle was created by #{puzzle.xpath('author').text} on \
 #{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
