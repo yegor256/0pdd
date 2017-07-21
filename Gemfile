@@ -22,21 +22,21 @@
 source 'https://rubygems.org'
 ruby '2.3.3'
 
-gem 'aws-sdk', '2.10.15'
-gem 'codecov', '0.1.10', require: false
+gem 'aws-sdk', '2.9.20'
+gem 'codecov', '0.1.10'
 gem 'haml', '5.0.1'
-gem 'mail', '2.6.6'
-gem 'nokogiri', '1.8.0'
+gem 'mail', '2.6.5'
+gem 'nokogiri', '1.7.2'
 gem 'octokit', '4.7.0'
 gem 'pdd'
-gem 'rack', '~> 2.0'
-gem 'rack-test', '0.7.0', require: false
-gem 'rake', '12.0.0'
+gem 'rack', '~> 1.5'
+gem 'rack-test', '0.6.3'
+gem 'rake', '12.0.0', require: false
 gem 'rspec-rails', '3.6.0', require: false
 gem 'rubocop', '0.48.1', require: false
 gem 'rubocop-rspec', '1.15.1', require: false
 gem 'sass', '3.4.23'
 gem 'sentry-raven', '2.6.0'
-gem 'sinatra', '2.0.0'
+gem 'sinatra', '1.4.7'
 gem 'sprockets', '3.7.1'
-gem 'test-unit', '3.2.5', require: false
+gem 'test-unit', '3.2.3', require: false
