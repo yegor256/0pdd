@@ -30,11 +30,15 @@ gem 'octokit', '4.7.0'
 gem 'pdd'
 gem 'rack', '~> 1.5'
 gem 'rack-test', '0.6.3'
-gem 'rake', '12.0.0', require: false
-gem 'rspec-rails', '3.6.0', require: false
-gem 'rubocop', '0.48.1', require: false
-gem 'rubocop-rspec', '1.15.1', require: false
 gem 'sass', '3.4.23'
+gem 'sentry-raven', '2.5.3'
 gem 'sinatra', '1.4.7'
 gem 'sprockets', '3.7.1'
-gem 'test-unit', '3.2.3', require: false
+
+group :test, :development do
+  gem 'rake', '12.0.0', require: false
+  gem 'rspec-rails', '3.6.0', require: false
+  gem 'rubocop', '0.48.1', require: false
+  gem 'rubocop-rspec', '1.15.1', require: false
+  gem 'test-unit', '3.2.3', require: false
+end

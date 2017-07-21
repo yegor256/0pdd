@@ -26,6 +26,7 @@ require 'json'
 require 'ostruct'
 require 'sinatra'
 require 'sass'
+require 'raven'
 require 'octokit'
 require 'tmpdir'
 
@@ -52,6 +53,7 @@ configure do
         'login' => '0pdd',
         'pwd' => '--the-secret--'
       },
+      'sentry' => '',
       's3' => {
         'region' => '?',
         'bucket' => '?',
@@ -62,6 +64,9 @@ configure do
     }
   else
     YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+  end
+  Raven.configure do |c|
+    c.dsn = config['sentry']
   end
   set :config, config
   if config['smtp']
@@ -264,6 +269,7 @@ end
 error do
   status 503
   e = env['sinatra.error']
+  Raven.capture_exception(e)
   haml(
     :error,
     layout: :layout,

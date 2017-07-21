@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'coveralls'
-
 if Gem.win_platform? then
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
     SimpleCov::Formatter::HTMLFormatter
@@ -33,7 +31,6 @@ if Gem.win_platform? then
 else
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
     SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
   ]
   SimpleCov.start do
     add_filter "/test/"
