@@ -67,6 +67,7 @@ configure do
   end
   Raven.configure do |c|
     c.dsn = config['sentry']
+    c.release = VERSION
   end
   set :config, config
   if config['smtp']
