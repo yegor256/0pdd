@@ -66,6 +66,11 @@ new PDD puzzles show us. By default we will just submit GitHub tickets
 and that's it. If you add `github` subsection there, you can list GitHub
 users who will be notified.
 
+[pdd](https://github.com/yegor256/pdd) is the tool that parses your source
+code files. You can configure its behavior by adding `.pdd` file to the
+root directory of the repository. Take
+[this one](https://github.com/yegor256/0pdd/blob/master/.pdd), as an example.
+
 ## How to contribute?
 
 Just submit a pull request. Make sure `rake` passes.
