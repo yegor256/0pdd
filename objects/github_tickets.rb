@@ -45,6 +45,7 @@ class GithubTickets
       "#{File.basename(puzzle.xpath('file').text)}:\
 #{puzzle.xpath('lines').text}: #{Truncated.new(puzzle.xpath('body').text)}",
       "The puzzle `#{puzzle.xpath('id').text}` \
+(from ##{puzzle.xpath('ticket').text}) \
 in [`#{puzzle.xpath('file').text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
 (lines #{puzzle.xpath('lines').text}) \
