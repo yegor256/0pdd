@@ -109,7 +109,7 @@ configure do
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
-    'http://www.0pdd.com/github-oauth'
+    'http://www.0pdd.com/github-callback'
   )
   set :ruby_version, Exec.new('ruby -e "print RUBY_VERSION"').run
   set :git_version, Exec.new('git --version | cut -d" " -f 3').run
@@ -134,12 +134,11 @@ before '/*' do
 end
 
 get '/github-callback' do
-  settings.glogin.user(params[:code]).to_s
-  # cookies[:glogin] = GLogin::Cookie::Open.new(
-  #   settings.glogin.user(params[:code]),
-  #   settings.config['github']['encryption_secret']
-  # ).to_s
-  # redirect to('/')
+  cookies[:glogin] = GLogin::Cookie::Open.new(
+    settings.glogin.user(params[:code]),
+    settings.config['github']['encryption_secret']
+  ).to_s
+  redirect to('/')
 end
 
 get '/logout' do
