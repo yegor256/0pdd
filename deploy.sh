@@ -3,7 +3,7 @@ set -e
 
 cd $(dirname $0)
 bundle update
-rake
+# rake
 sed -i -s 's|Gemfile.lock||g' .gitignore
 cp /code/home/assets/0pdd/config.yml .
 git add config.yml
