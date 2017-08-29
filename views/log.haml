@@ -5,6 +5,12 @@
   %a{href: "/p?name=#{repo}"}
     = repo
 %p
+  This log is here for safety reason. Every time
+  0pdd is touching your GitHub repository, this log gets
+  a unique record. Later, if 0pdd will try to submit a similar
+  issue by mistake, this log will prevent that from happening,
+  because all records here must be unique.
+%p
   Since
   = Time.at(since).iso8601
 - events = log.list(since)
@@ -17,7 +23,7 @@
     - last = e['time'].to_i
     %p
       = "#{Time.at(e['time']).iso8601}: #{e['text']}"
-      %a{href: "/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}", onclick: 'return confirm("Normally you should not do this. Are you sure?")'}
+      %a{href: "/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}", onclick: "return confirm('You are going to delete the \"#{e['tag']}\" event. Normally you should not do this. Are you sure?')"}
         delete
   - if last
     %p
