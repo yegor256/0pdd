@@ -71,7 +71,7 @@ _removed_ from the source code. Here is more about \
         users.join(' ') + ' please pay attention to this new issue.'
       )
     end
-    puts "GitHub issue #{@repo}:#{issue} submitted: #{users}"
+    puts "GitHub issue #{@repo}##{issue} submitted: #{users}"
     { number: issue, href: json['html_url'] }
   end
 
