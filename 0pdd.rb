@@ -199,7 +199,7 @@ get '/log' do
 end
 
 get '/log-delete' do
-  redirect '/' if @locals[:user][:login] != 'yegor256'
+  redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = params[:name]
   Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"

@@ -4,7 +4,7 @@
 %p
   - if defined? user
     = "@#{user[:login]}"
-    = user
+    = '|'
     %a{href: '/logout'}
       Logout
   - else
@@ -32,7 +32,7 @@
     - last = e['time'].to_i
     %p
       = "#{Time.at(e['time']).iso8601}: #{e['text']}"
-      - if defined? user && user[:login] == 'yegor256'
+      - if defined?(user) && user[:login] == 'yegor256'
         %a{href: "/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}", onclick: "return confirm('You are going to delete the \"#{e['tag']}\" event. Normally you should not do this. Are you sure?')"}
           delete
   - if last
