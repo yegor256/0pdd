@@ -49,6 +49,7 @@ require_relative 'objects/s3'
 configure do
   if ENV['RACK_ENV'] != 'test'
     puts Exec.new('find /app/.apt -print').run
+    puts Exec.new('ls -al /app/.apt/usr/bin').run
   end
   config = if ENV['RACK_ENV'] == 'test'
     {
