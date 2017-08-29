@@ -2,6 +2,14 @@
   %a{href:'/'}
     %img.logo{src:'https://avatars2.githubusercontent.com/u/24456188'}
 %p
+  - if defined? user
+        = "@#{user[:login]}"
+        %a{href: '/logout'}
+          Logout
+  - else
+    %a{href: login_link}
+      Login
+%p
   %a{href: "/p?name=#{repo}"}
     = repo
 %p
@@ -23,8 +31,9 @@
     - last = e['time'].to_i
     %p
       = "#{Time.at(e['time']).iso8601}: #{e['text']}"
-      %a{href: "/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}", onclick: "return confirm('You are going to delete the \"#{e['tag']}\" event. Normally you should not do this. Are you sure?')"}
-        delete
+      - if user[:login] == 'yegor256'
+        %a{href: "/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}", onclick: "return confirm('You are going to delete the \"#{e['tag']}\" event. Normally you should not do this. Are you sure?')"}
+          delete
   - if last
     %p
       %a{href: "/log?name=#{repo}&since=#{last}"}

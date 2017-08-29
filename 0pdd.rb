@@ -27,10 +27,12 @@ require 'haml'
 require 'json'
 require 'ostruct'
 require 'sinatra'
+require 'sinatra/cookies'
 require 'sass'
 require 'raven'
 require 'octokit'
 require 'tmpdir'
+require 'glogin'
 
 require_relative 'version'
 require_relative 'objects/job'
@@ -49,15 +51,14 @@ require_relative 'objects/safe_storage'
 require_relative 'objects/s3'
 
 configure do
-  if ENV['RACK_ENV'] != 'test'
-    puts Exec.new('file /app/.apt/usr/bin/git').run
-    puts Exec.new('/app/.apt/usr/bin/git --version').run
-  end
+  Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
     {
       'github' => {
         'login' => '0pdd',
-        'pwd' => '--the-secret--'
+        'pwd' => '--the-secret--',
+        'client_id' => '?',
+        'client_secret' => '?'
       },
       'sentry' => '',
       's3' => {
@@ -105,15 +106,49 @@ configure do
       secret_access_key: settings.config['dynamo']['secret']
     )
   end
+  set :glogin, GLogin::Auth.new(
+    config['github']['client_id'],
+    config['github']['client_secret'],
+    'http://www.0pdd.com/github-oauth'
+  )
   set :ruby_version, Exec.new('ruby -e "print RUBY_VERSION"').run
   set :git_version, Exec.new('git --version | cut -d" " -f 3').run
   set :temp_dir, Dir.mktmpdir('0pdd')
 end
 
-get '/' do
-  haml :index, layout: :layout, locals: {
-    title: '0pdd',
+before '/*' do
+  @locals = {
     ver: VERSION,
+    login_link: settings.glogin.login_uri
+  }
+  if cookies[:glogin]
+    begin
+      @locals[:user] = Cookie::Closed.new(
+        cookies[:glogin],
+        settings.config['github']['encryption_secret']
+      ).to_user
+    rescue OpenSSL::Cipher::CipherError => _
+      @locals.delete(:user)
+    end
+  end
+end
+
+get '/github-callback' do
+  cookies[:glogin] = Cookie::Open.new(
+    settings.glogin.user(params[:code]),
+    settings.config['github']['encryption_secret']
+  ).to_s
+  redirect to('/')
+end
+
+get '/logout' do
+  cookies.delete(:glogin)
+  redirect to('/')
+end
+
+get '/' do
+  haml :index, layout: :layout, locals: @locals.merge(
+    title: '0pdd',
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
     tail: Exec.new(
@@ -121,7 +156,7 @@ get '/' do
       | uniq\
       | tail -10"
     ).run.split("\n").reject(&:empty?)
-  }
+  )
 end
 
 get '/robots.txt' do
@@ -155,16 +190,16 @@ end
 
 get '/log' do
   repo = params[:name]
-  haml :log, layout: :layout, locals: {
-    ver: VERSION,
+  haml :log, layout: :layout, locals: @locals.merge(
     title: repo,
     repo: repo,
     log: Log.new(settings.dynamo, repo),
     since: params[:since] ? params[:since].to_i : Time.now.to_i
-  }
+  )
 end
 
 get '/log-delete' do
+  redirect '/' if @locals[:user][:login] != 'yegor256'
   repo = params[:name]
   Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"

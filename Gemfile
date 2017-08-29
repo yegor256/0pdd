@@ -24,6 +24,7 @@ ruby '2.3.3'
 
 gem 'aws-sdk', '2.9.20'
 gem 'codecov', '0.1.10'
+gem 'glogin'
 gem 'haml', '5.0.1'
 gem 'mail', '2.6.5'
 gem 'nokogiri', '1.7.2'
@@ -38,5 +39,6 @@ gem 'rubocop-rspec', '1.15.1', require: false
 gem 'sass', '3.4.23'
 gem 'sentry-raven', '2.6.0'
 gem 'sinatra', '1.4.7'
+gem 'sinatra-contrib', '1.4.7'
 gem 'sprockets', '3.7.1'
 gem 'test-unit', '3.2.3', require: false
