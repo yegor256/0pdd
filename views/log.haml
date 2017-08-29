@@ -17,7 +17,7 @@
     - last = e['time'].to_i
     %p
       = "#{Time.at(e['time']).iso8601}: #{e['text']}"
-      %a{href: "/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}"}
+      %a{href: "/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}", onclick: 'return confirm("Normally you should not do this. Are you sure?")'}
         delete
   - if last
     %p
