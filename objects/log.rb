@@ -60,7 +60,7 @@ class Log
   end
 
   def delete(time, tag)
-    @aws.put_item(
+    @aws.delete_item(
       table_name: '0pdd-events',
       key: {
         'repo' => @repo,
