@@ -50,7 +50,7 @@ configure do
   if ENV['RACK_ENV'] != 'test'
     puts Exec.new('find /app/.apt -print').run
     puts Exec.new('ls -al /app/.apt/usr/bin').run
-    puts Exec.new('whoami').run
+    puts Exec.new('file /app/.apt/usr/bin/git').run
     puts Exec.new('/app/.apt/usr/bin/git --version').run
   end
   config = if ENV['RACK_ENV'] == 'test'
