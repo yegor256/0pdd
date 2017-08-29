@@ -166,7 +166,7 @@ end
 
 get '/log-delete' do
   repo = params[:name]
-  Log.new(settings.dynamo, repo).delete(params[:time], params[:tag])
+  Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
 
