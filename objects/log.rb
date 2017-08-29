@@ -59,6 +59,20 @@ class Log
     ).items.empty?
   end
 
+  def delete(time, tag)
+    @aws.put_item(
+      table_name: '0pdd-events',
+      key: {
+        'repo' => @repo,
+        'time' => time
+      },
+      expression_attribute_values: {
+        ':t' => tag
+      },
+      key_condition_expression: 'tag=:t'
+    )
+  end
+
   def list(since = Time.now.to_i)
     @aws.query(
       table_name: '0pdd-events',

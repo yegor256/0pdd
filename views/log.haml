@@ -17,9 +17,12 @@
     - last = e['time'].to_i
     %p
       = "#{Time.at(e['time']).iso8601}: #{e['text']}"
+      %a{href: "/log-delete?name=#{repo}&time=#{e['time']}&tag=#{e['tag']}"}
   - if last
     %p
       %a{href: "/log?name=#{repo}&since=#{last}"}
         = 'more'
+%p
+  ='--'
 %p
   =ver

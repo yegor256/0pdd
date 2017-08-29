@@ -164,6 +164,12 @@ get '/log' do
   }
 end
 
+get '/log-delete' do
+  repo = params[:name]
+  Log.new(settings.dynamo, repo).delete(params[:time], params[:tag])
+  redirect "/log?name=#{repo}"
+end
+
 get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
