@@ -69,7 +69,7 @@ class Log
       expression_attribute_values: {
         ':t' => tag
       },
-      key_condition_expression: 'tag=:t'
+      condition_expression: 'tag=:t'
     )
   end
 
