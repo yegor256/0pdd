@@ -48,7 +48,7 @@ require_relative 'objects/s3'
 
 configure do
   if ENV['RACK_ENV'] != 'test'
-    puts Exec.new('sudo dpkg --add-architecture i386').run
+    puts Exec.new('dpkg --add-architecture i386').run
     puts Exec.new('file /app/.apt/usr/bin/git').run
     puts Exec.new('/app/.apt/usr/bin/git --version').run
   end
