@@ -123,7 +123,7 @@ before '/*' do
   }
   if cookies[:glogin]
     begin
-      @locals[:user] = Cookie::Closed.new(
+      @locals[:user] = GLogin::Cookie::Closed.new(
         cookies[:glogin],
         settings.config['github']['encryption_secret']
       ).to_user
@@ -134,7 +134,7 @@ before '/*' do
 end
 
 get '/github-callback' do
-  cookies[:glogin] = Cookie::Open.new(
+  cookies[:glogin] = GLogin::Cookie::Open.new(
     settings.glogin.user(params[:code]),
     settings.config['github']['encryption_secret']
   ).to_s
