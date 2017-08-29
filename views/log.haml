@@ -4,6 +4,7 @@
 %p
   - if defined? user
     = "@#{user[:login]}"
+    = user
     %a{href: '/logout'}
       Logout
   - else
