@@ -200,7 +200,16 @@ end
 
 post '/hook/github' do
   request.body.rewind
-  json = JSON.parse(request.body.read)
+  json = JSON.parse(
+    case request.content_type
+    when 'application/x-www-form-urlencoded'
+      params[:payload]
+    when 'application/json'
+      request.body.read
+    else
+      raise "Invalid content-type: \"#{request.content_type}\""
+    end
+  )
   return unless json['ref'] == 'refs/heads/master'
   name = json['repository']['full_name']
   unless ENV['RACK_ENV'] == 'test'
