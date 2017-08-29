@@ -134,11 +134,12 @@ before '/*' do
 end
 
 get '/github-callback' do
-  cookies[:glogin] = GLogin::Cookie::Open.new(
-    settings.glogin.user(params[:code]),
-    settings.config['github']['encryption_secret']
-  ).to_s
-  redirect to('/')
+  settings.glogin.user(params[:code]).to_s
+  # cookies[:glogin] = GLogin::Cookie::Open.new(
+  #   settings.glogin.user(params[:code]),
+  #   settings.config['github']['encryption_secret']
+  # ).to_s
+  # redirect to('/')
 end
 
 get '/logout' do
