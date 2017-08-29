@@ -1,0 +1,54 @@
+<test>
+    <snapshot>
+        <puzzles date="2016-12-10T16:26:36Z">
+            <puzzle>
+                <ticket>516</ticket>
+                <estimate>15</estimate>
+                <role>IMP</role>
+                <id>516-ffdd7ae8</id>
+                <lines>61-63</lines>
+                <body>Move some files around.</body>
+                <file>src/test/java/Test.java</file>
+                <author>yegor256</author>
+                <email>yegor@0pdd.com</email>
+                <time>2016-01-21T12:44:55Z</time>
+            </puzzle>
+            <puzzle>
+                <ticket>517</ticket>
+                <estimate>15</estimate>
+                <role>IMP</role>
+                <id>517-ffdd7ae9</id>
+                <lines>61-63</lines>
+                <body>Move some files around.</body>
+                <file>src/test/java/Test.java</file>
+                <author>yegor256</author>
+                <email>yegor@0pdd.com</email>
+                <time>2016-01-21T12:44:55Z</time>
+            </puzzle>
+            <puzzle>
+                <ticket>518</ticket>
+                <estimate>15</estimate>
+                <role>IMP</role>
+                <id>518-ffdd7aea</id>
+                <lines>61-63</lines>
+                <body>Move some files around.</body>
+                <file>src/test/java/Test.java</file>
+                <author>yegor256</author>
+                <email>yegor@0pdd.com</email>
+                <time>2016-01-21T12:44:55Z</time>
+            </puzzle>
+        </puzzles>
+    </snapshot>
+    <before>
+        <puzzles date="2016-12-03T16:26:36Z" version="0.1"/>
+    </before>
+    <assertions>
+        <xpath>/puzzles[count(//puzzle)=3]</xpath>
+    </assertions>
+    <submit>
+        <ticket>516-ffdd7ae8</ticket>
+        <ticket>517-ffdd7ae9</ticket>
+        <ticket>518-ffdd7aea</ticket>
+    </submit>
+    <close/>
+</test>

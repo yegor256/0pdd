@@ -41,6 +41,7 @@ class TestPuzzles < Test::Unit::TestCase
       test_xml(d, 'closes-one-puzzle.xml')
       test_xml(d, 'ignores-unknown-issues.xml')
       test_xml(d, 'submits-old-puzzles.xml')
+      test_xml(d, 'submits-three-tickets.xml')
     end
   end
 
