@@ -245,6 +245,11 @@ I see you're talking to me, but I can't reply since I'm not a chat bot."
   end.join("\n") + "\n"
 end
 
+get '/hook/github' do
+  'This URL expects POST requests from GitHub
+  WebHook: https://developer.github.com/webhooks/'
+end
+
 post '/hook/github' do
   request.body.rewind
   json = JSON.parse(
