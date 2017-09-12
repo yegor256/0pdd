@@ -25,7 +25,7 @@ require 'rake'
 require 'rdoc'
 require 'rake/clean'
 
-task default: %i[clean test rubocop copyright]
+task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
 desc 'Run all unit tests'
@@ -42,6 +42,14 @@ desc 'Run RuboCop on all directories'
 RuboCop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = true
   task.requires << 'rubocop-rspec'
+end
+
+require 'xcop/rake_task'
+desc 'Validate all XML/XSL/XSD/HTML files for formatting'
+Xcop::RakeTask.new :xcop do |task|
+  task.license = 'LICENSE.txt'
+  task.includes = ['**/*.xml', '**/*.xsl', '**/*.xsd', '**/*.html']
+  task.excludes = ['target/**/*', 'coverage/**/*']
 end
 
 task :run do
