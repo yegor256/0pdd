@@ -34,6 +34,7 @@ Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
   test.verbose = false
+  test.warning = false
 end
 
 require 'rubocop/rake_task'
