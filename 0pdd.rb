@@ -357,7 +357,7 @@ def storage(repo)
         else
           LoggedStorage.new(
             S3.new(
-              "#{name}.xml",
+              "#{repo}.xml",
               settings.config['s3']['bucket'],
               settings.config['s3']['region'],
               settings.config['s3']['key'],
