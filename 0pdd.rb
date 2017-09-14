@@ -54,6 +54,9 @@ require_relative 'objects/cached_storage'
 require_relative 'objects/once_storage'
 require_relative 'objects/s3'
 
+# @todo #110:30nin Let's add DynamoDB Local for the testing cycle
+#  and make sure we work correctly with Dynamo persistence layer.
+#  Somehow we must also fix the Rakefile.
 configure do
   Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
