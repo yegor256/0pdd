@@ -23,6 +23,9 @@
 require 'nokogiri'
 require 'test/unit'
 require 'tmpdir'
+require_relative 'fake_repo'
+require_relative 'fake_tickets'
+require_relative 'fake_storage'
 require_relative '../objects/job'
 require_relative '../objects/safe_storage'
 

@@ -21,20 +21,19 @@
 # SOFTWARE.
 
 require 'test/unit'
-require_relative 'fake_repo'
-require_relative '../objects/job_emailed'
+require_relative 'fake_storage'
+require_relative '../objects/cached_storage'
 
-# JobEmailed test.
+# CachedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
-class TestJobEmailed < Test::Unit::TestCase
-  def test_simple_scenario
-    job = Object.new
-    def job.proceed
-      # nothing
+class TestCachedStorage < Test::Unit::TestCase
+  def test_simple_xml_loading
+    Dir.mktmpdir do |dir|
+      storage = CachedStorage.new(FakeStorage.new, File.join(dir, 'temp.xml'))
+      storage.save(Nokogiri::XML('<test>hello</test>'))
+      assert_equal('hello', storage.load.xpath('/test/text()')[0].to_s)
     end
-    repo = FakeRepo.new
-    JobEmailed.new('yegor256/0pdd', repo, job).proceed
   end
 end

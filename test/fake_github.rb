@@ -20,21 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'test/unit'
-require_relative 'fake_repo'
-require_relative '../objects/job_emailed'
+class FakeGithub
+  def issue(_, _)
+    { 'state' => 'open' }
+  end
 
-# JobEmailed test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
-# License:: MIT
-class TestJobEmailed < Test::Unit::TestCase
-  def test_simple_scenario
-    job = Object.new
-    def job.proceed
-      # nothing
-    end
-    repo = FakeRepo.new
-    JobEmailed.new('yegor256/0pdd', repo, job).proceed
+  def close_issue(_, _)
+    # nothing to do here
+  end
+
+  def create_issue(_, _, _)
+    { 'number' => 555 }
+  end
+
+  def add_comment(_, _, _)
+    # nothing to do here
   end
 end

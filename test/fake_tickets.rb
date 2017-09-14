@@ -20,21 +20,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'test/unit'
-require_relative 'fake_repo'
-require_relative '../objects/job_emailed'
+class FakeTickets
+  attr_reader :submitted, :closed
+  def initialize
+    @submitted = []
+    @closed = []
+  end
 
-# JobEmailed test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
-# License:: MIT
-class TestJobEmailed < Test::Unit::TestCase
-  def test_simple_scenario
-    job = Object.new
-    def job.proceed
-      # nothing
-    end
-    repo = FakeRepo.new
-    JobEmailed.new('yegor256/0pdd', repo, job).proceed
+  def safe
+    true
+  end
+
+  def submit(puzzle)
+    @submitted << puzzle.xpath('id').text
+    puts "Fake issue submitted for #{puzzle.xpath('id').text}"
+    { number: '123', href: 'http://0pdd.com' }
+  end
+
+  def close(puzzle)
+    @closed << puzzle.xpath('id').text
+    puts "Fake issue closed for #{puzzle.xpath('id').text}"
+    true
   end
 end

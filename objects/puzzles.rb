@@ -33,10 +33,6 @@ class Puzzles
   end
 
   def deploy(tickets)
-    # @todo #3:30min It's not really effective to always save the XML
-    #  document back to storage, even when it was not really modified. Would
-    #  be much better to check whether any modifications have been made
-    #  and skip that SAVE() operation.
     saved(
       covered(
         saved(

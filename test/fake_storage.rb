@@ -20,21 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'test/unit'
-require_relative 'fake_repo'
-require_relative '../objects/job_emailed'
+require 'nokogiri'
+require 'tempfile'
 
-# JobEmailed test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
-# License:: MIT
-class TestJobEmailed < Test::Unit::TestCase
-  def test_simple_scenario
-    job = Object.new
-    def job.proceed
-      # nothing
-    end
-    repo = FakeRepo.new
-    JobEmailed.new('yegor256/0pdd', repo, job).proceed
+class FakeStorage
+  def initialize(
+    dir = Dir.mktmpdir,
+    xml = '<puzzles date="2016-12-10T16:26:36Z" version="0.1"/>'
+  )
+    @file = File.join(dir, 'storage.xml')
+    save(xml)
+  end
+
+  def load
+    Nokogiri.XML(IO.read(@file))
+  end
+
+  def save(xml)
+    IO.write(@file, xml.to_s)
   end
 end

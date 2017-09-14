@@ -14,27 +14,34 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'test/unit'
-require_relative 'fake_repo'
-require_relative '../objects/job_emailed'
+#
+# XML cached in a temporary file.
+#
+class CachedStorage
+  def initialize(origin, file)
+    @origin = origin
+    @file = file
+  end
 
-# JobEmailed test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
-# License:: MIT
-class TestJobEmailed < Test::Unit::TestCase
-  def test_simple_scenario
-    job = Object.new
-    def job.proceed
-      # nothing
+  def load
+    if File.exist?(@file)
+      xml = @origin.load
+      File.write(@file, xml)
+    else
+      xml = Nokogiri::XML(File.read(@file))
     end
-    repo = FakeRepo.new
-    JobEmailed.new('yegor256/0pdd', repo, job).proceed
+    xml
+  end
+
+  def save(xml)
+    File.delete(@file) if File.exist?(@file)
+    @origin.save(xml)
+    File.write(@file, xml.to_s)
   end
 end
