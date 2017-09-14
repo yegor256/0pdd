@@ -29,11 +29,33 @@ require_relative '../objects/once_storage'
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
 class TestOnceStorage < Test::Unit::TestCase
-  def test_simple_xml_saving
-    storage = OnceStorage.new(FakeStorage.new)
-    xml = '<test>hello</test>'
-    storage.save(Nokogiri::XML(xml))
-    storage.save(Nokogiri::XML(xml))
-    assert_equal('hello', storage.load.xpath('/test/text()')[0].to_s)
+  def test_never_saves_duplicates
+    origin = TestStorage.new
+    storage = OnceStorage.new(origin)
+    storage.save(Nokogiri::XML('<test>hello</test>'))
+    assert_equal(0, origin.count)
+  end
+
+  def test_saves_only_once
+    origin = TestStorage.new
+    storage = OnceStorage.new(origin)
+    storage.save(Nokogiri::XML('<test>bye</test>'))
+    assert_equal(1, origin.count)
+  end
+
+  class TestStorage
+    attr_reader :count
+
+    def initialize
+      @count = 0
+    end
+
+    def load
+      Nokogiri::XML('<test>hello</test>')
+    end
+
+    def save(_)
+      @count += 1
+    end
   end
 end
