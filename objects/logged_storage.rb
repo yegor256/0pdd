@@ -37,7 +37,7 @@ class LoggedStorage
     @origin.save(xml)
     @log.put(
       Time.now.to_i.to_s,
-      "Saved XML with #{xml.xpath('//puzzle[@alive=true]').size}/\
+      "Saved XML with #{xml.xpath('//puzzle[@alive="true"]').size}/\
 #{xml.xpath('//puzzle').size} puzzles"
     )
   end
