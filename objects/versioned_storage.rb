@@ -20,15 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'nokogiri'
-
 #
-# Safe, XSD validated, storage.
+# Storage that adds version to the XML when it gets saved.
 #
-class SafeStorage
-  def initialize(origin)
+class VersionedStorage
+  def initialize(origin, version)
     @origin = origin
-    @xsd = Nokogiri::XML::Schema(File.read('assets/xsd/puzzles.xsd'))
+    @version = version
   end
 
   def load
@@ -36,14 +34,9 @@ class SafeStorage
   end
 
   def save(xml)
-    @origin.save(valid(xml))
-  end
-
-  private
-
-  def valid(xml)
-    error = @xsd.validate(xml).each(&:message).join("\n")
-    raise "XML is invalid\nw#{error}\n#{xml}" unless error.empty?
-    xml
+    root = xml.xpath('/*')[0]
+    root['date'] = Time.now.iso8601
+    root['version'] = @version
+    @origin.save(xml)
   end
 end

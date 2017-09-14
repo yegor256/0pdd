@@ -40,7 +40,7 @@ SOFTWARE.
     </puzzles>
   </snapshot>
   <before>
-    <puzzles date="2016-12-03T16:26:36Z" version="0.1">
+    <puzzles>
       <puzzle alive="true">
         <issue>100</issue>
         <ticket>23</ticket>
@@ -70,7 +70,7 @@ SOFTWARE.
     </puzzles>
   </before>
   <assertions>
-    <xpath>/puzzles[@date='2016-12-10T16:26:36Z']</xpath>
+    <xpath>/puzzles[@date]</xpath>
     <xpath>/puzzles[count(//puzzle)=3]</xpath>
     <xpath>/puzzles[count(//puzzle[@alive='true'])=1]</xpath>
     <xpath>//puzzle[id='516-ffc97ad1' and @alive='true']</xpath>

@@ -44,7 +44,7 @@ SOFTWARE.
     </puzzles>
   </before>
   <assertions>
-    <xpath>/puzzles[@date='2016-12-10T16:26:36Z']</xpath>
+    <xpath>/puzzles[@date and @version]</xpath>
     <xpath>/puzzles[count(//puzzle)=1]</xpath>
     <xpath>/puzzles[count(//puzzle[@alive='true'])=0]</xpath>
     <xpath>/puzzles[count(//puzzle[@alive='false'])=1]</xpath>

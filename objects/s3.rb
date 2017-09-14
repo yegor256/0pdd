@@ -43,7 +43,7 @@ class S3
         data
       else
         puts "Empty puzzles for #{@object.bucket_name}/#{@object.key}"
-        "<puzzles date='#{Time.now.iso8601}' version='#{VERSION}'/>"
+        '<puzzles/>'
       end
     )
   end

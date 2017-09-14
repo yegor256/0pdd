@@ -30,6 +30,7 @@ require_relative '../version'
 require_relative '../objects/git_repo'
 require_relative '../objects/puzzles'
 require_relative '../objects/safe_storage'
+require_relative '../objects/versioned_storage'
 
 # Puzzles test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -73,11 +74,14 @@ class TestPuzzles < Test::Unit::TestCase
 
   def test_xml(dir, name)
     xml = File.open("test-assets/puzzles/#{name}") { |f| Nokogiri::XML(f) }
-    storage = SafeStorage.new(
-      FakeStorage.new(
-        dir,
-        Nokogiri.XML(xml.xpath('/test/before/puzzles')[0].to_s)
-      )
+    storage = VersionedStorage.new(
+      SafeStorage.new(
+        FakeStorage.new(
+          dir,
+          Nokogiri.XML(xml.xpath('/test/before/puzzles')[0].to_s)
+        )
+      ),
+      '0.0.1'
     )
     repo = OpenStruct.new(
       xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s)

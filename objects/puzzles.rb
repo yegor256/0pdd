@@ -64,8 +64,6 @@ class Puzzles
       p.name = 'extra'
       target.add_child(p)
     end
-    target['date'] = snapshot.xpath('/puzzles/@date')[0].to_s
-    target['version'] = VERSION
     before
   end
 

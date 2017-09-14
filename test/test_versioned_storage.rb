@@ -14,36 +14,26 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'nokogiri'
+require 'test/unit'
+require_relative 'fake_storage'
+require_relative 'fake_log'
+require_relative '../objects/logged_storage'
 
-#
-# Safe, XSD validated, storage.
-#
-class SafeStorage
-  def initialize(origin)
-    @origin = origin
-    @xsd = Nokogiri::XML::Schema(File.read('assets/xsd/puzzles.xsd'))
-  end
-
-  def load
-    @origin.load
-  end
-
-  def save(xml)
-    @origin.save(valid(xml))
-  end
-
-  private
-
-  def valid(xml)
-    error = @xsd.validate(xml).each(&:message).join("\n")
-    raise "XML is invalid\nw#{error}\n#{xml}" unless error.empty?
-    xml
+# VersionedStorage test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
+# License:: MIT
+class TestVersionedStorage < Test::Unit::TestCase
+  def test_xml_versioning
+    version = '0.0.1'
+    storage = VersionedStorage.new(FakeStorage.new, version)
+    storage.save(Nokogiri::XML('<test>hello</test>'))
+    assert_equal(version, storage.load.xpath('/test/@version')[0].to_s)
   end
 end

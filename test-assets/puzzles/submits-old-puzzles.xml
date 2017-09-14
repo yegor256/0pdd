@@ -83,7 +83,7 @@ SOFTWARE.
     </puzzles>
   </before>
   <assertions>
-    <xpath>/puzzles[@date='2016-12-10T16:26:36Z']</xpath>
+    <xpath>/puzzles[@date and @version]</xpath>
     <xpath>/puzzles[count(//puzzle)=2]</xpath>
     <xpath>//puzzle[id='516-ffdd7ae8' and issue]</xpath>
     <xpath>//puzzle[id='516-eedd7ae8' and issue!='unknown']</xpath>

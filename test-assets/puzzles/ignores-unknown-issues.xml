@@ -44,7 +44,7 @@ SOFTWARE.
     </puzzles>
   </before>
   <assertions>
-    <xpath>/puzzles[@date='2016-12-10T16:26:36Z']</xpath>
+    <xpath>/puzzles[@date and @version]</xpath>
   </assertions>
   <submit/>
   <close>
