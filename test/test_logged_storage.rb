@@ -21,53 +21,18 @@
 # SOFTWARE.
 
 require 'test/unit'
-require 'nokogiri'
-require 'yaml'
+require_relative 'fake_storage'
 require_relative 'fake_log'
-require_relative '../objects/logged_tickets'
+require_relative '../objects/logged_storage'
 
-# LoggedTickets test.
+# LoggedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
-class TestLoggedTickets < Test::Unit::TestCase
-  def test_submits_tickets
-    log = FakeLog.new
-    require_relative 'test__helper'
-    tickets = LoggedTickets.new(log, FakeTickets.new)
-    tickets.submit(
-      Nokogiri::XML(
-        '<puzzle>
-          <id>23-ab536de</id>
-          <file>/a/b/c/test.txt</file>
-          <body>hey!</body>
-          <lines>1-3</lines>
-        </puzzle>'
-      ).xpath('/puzzle')
-    )
-    assert_equal('23-ab536de/submit', log.tag)
-    assert_equal(
-      '23-ab536de submitted in issue #123: "hey!" at /a/b/c/test.txt; 1-3',
-      log.title
-    )
-  end
-
-  def test_closes_tickets
-    log = FakeLog.new
-    require_relative 'test__helper'
-    tickets = LoggedTickets.new(log, FakeTickets.new)
-    tickets.close(
-      Nokogiri::XML(
-        '<puzzle>
-          <id>23-ab536fe</id>
-          <issue>1</issue>
-        </puzzle>'
-      ).xpath('/puzzle')
-    )
-    assert_equal('23-ab536fe/closed', log.tag)
-    assert_equal(
-      '23-ab536fe closed in issue #1',
-      log.title
-    )
+class TestLoggedStorage < Test::Unit::TestCase
+  def test_simple_xml_saving
+    storage = LoggedStorage.new(FakeStorage.new, FakeLog.new)
+    storage.save(Nokogiri::XML('<test>hello</test>'))
+    assert_equal('hello', storage.load.xpath('/test/text()')[0].to_s)
   end
 end

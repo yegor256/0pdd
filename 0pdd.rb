@@ -48,6 +48,7 @@ require_relative 'objects/emailed_tickets'
 require_relative 'objects/logged_tickets'
 require_relative 'objects/commit_tickets'
 require_relative 'objects/safe_storage'
+require_relative 'objects/logged_storage'
 require_relative 'objects/cached_storage'
 require_relative 'objects/once_storage'
 require_relative 'objects/s3'
@@ -347,23 +348,26 @@ end
 
 private
 
-def storage(name)
+def storage(repo)
   OnceStorage.new(
     CachedStorage.new(
       SafeStorage.new(
         if ENV['RACK_ENV'] == 'test'
           FakeStorage.new
         else
-          S3.new(
-            "#{name}.xml",
-            settings.config['s3']['bucket'],
-            settings.config['s3']['region'],
-            settings.config['s3']['key'],
-            settings.config['s3']['secret']
+          LoggedStorage.new(
+            S3.new(
+              "#{name}.xml",
+              settings.config['s3']['bucket'],
+              settings.config['s3']['region'],
+              settings.config['s3']['key'],
+              settings.config['s3']['secret']
+            ),
+            Log.new(settings.dynamo, repo)
           )
         end
       ),
-      File.join('/tmp/0pdd-xml-cache', name)
+      File.join('/tmp/0pdd-xml-cache', repo)
     )
   )
 end
