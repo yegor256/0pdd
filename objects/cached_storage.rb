@@ -31,10 +31,10 @@ class CachedStorage
 
   def load
     if File.exist?(@file)
-      xml = @origin.load
-      File.write(@file, xml)
-    else
       xml = Nokogiri::XML(File.read(@file))
+    else
+      xml = @origin.load
+      write(xml)
     end
     xml
   end
@@ -42,6 +42,13 @@ class CachedStorage
   def save(xml)
     File.delete(@file) if File.exist?(@file)
     @origin.save(xml)
-    File.write(@file, xml.to_s)
+    write(xml.to_s)
+  end
+
+  private
+
+  def write(xml)
+    FileUtils.mkdir_p(File.dirname(@file))
+    File.write(@file, xml)
   end
 end

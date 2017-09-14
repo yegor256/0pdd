@@ -48,6 +48,7 @@ require_relative 'objects/emailed_tickets'
 require_relative 'objects/logged_tickets'
 require_relative 'objects/commit_tickets'
 require_relative 'objects/safe_storage'
+require_relative 'objects/cached_storage'
 require_relative 'objects/s3'
 
 configure do
@@ -346,17 +347,20 @@ end
 private
 
 def storage(name)
-  SafeStorage.new(
-    if ENV['RACK_ENV'] == 'test'
-      FakeStorage.new
-    else
-      S3.new(
-        "#{name}.xml",
-        settings.config['s3']['bucket'],
-        settings.config['s3']['region'],
-        settings.config['s3']['key'],
-        settings.config['s3']['secret']
-      )
-    end
+  CachedStorage.new(
+    SafeStorage.new(
+      if ENV['RACK_ENV'] == 'test'
+        FakeStorage.new
+      else
+        S3.new(
+          "#{name}.xml",
+          settings.config['s3']['bucket'],
+          settings.config['s3']['region'],
+          settings.config['s3']['key'],
+          settings.config['s3']['secret']
+        )
+      end
+    ),
+    File.join('/tmp/0pdd-xml-cache', name)
   )
 end
