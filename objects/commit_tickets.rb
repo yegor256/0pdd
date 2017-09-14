@@ -52,7 +52,7 @@ and submitted as ##{done[:number]}."
     if done
       @github.create_commit_comment(
         @repo, @commit,
-        "Puzzle `#{puzzle.xpath('id').text}` disappeared in \
+        "Puzzle `#{puzzle.xpath('id').text}` disappeared from \
 [`#{puzzle.xpath('file').text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}), \
 that's why I closed ##{puzzle.xpath('issue').text}."
