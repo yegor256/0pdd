@@ -59,12 +59,13 @@ class Puzzles
   end
 
   def join(before, snapshot)
-    target = before.xpath('/puzzles')[0]
+    after = Nokogiri::XML(before.to_s)
+    target = after.xpath('/puzzles')[0]
     snapshot.xpath('//puzzle').each do |p|
       p.name = 'extra'
       target.add_child(p)
     end
-    before
+    after
   end
 
   def group(xml)
@@ -74,17 +75,18 @@ class Puzzles
   end
 
   def submit(xml, tickets)
+    after = Nokogiri::XML(xml.to_s)
     Nokogiri::XSLT(File.read('assets/xsl/to-submit.xsl'))
-      .transform(xml)
+      .transform(after)
       .xpath('//puzzle')
       .map { |p| { issue: tickets.submit(p), id: p.xpath('id')[0].text } }
       .reject { |p| p[:issue].nil? }
       .each do |p|
-        xml.xpath("//extra[id='#{p[:id]}']")[0].add_child(
+        after.xpath("//extra[id='#{p[:id]}']")[0].add_child(
           "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
         )
       end
-    xml
+    after
   end
 
   # @todo #41:30min Let's post notification messages to tickets where
@@ -99,21 +101,22 @@ class Puzzles
   end
 
   def covered(xml, tickets)
+    after = Nokogiri::XML(xml.to_s)
     if tickets.safe
-      xml.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
+      after.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
         .each { |p| tickets.close(p) }
-      xml.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
+      after.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
         .map { |p| { issue: tickets.submit(p), id: p.xpath('id')[0].text } }
         .reject { |p| p[:issue].nil? }
         .each do |p|
-          node = xml.xpath("//puzzle[id='#{p[:id]}']")[0]
+          node = after.xpath("//puzzle[id='#{p[:id]}']")[0]
           node.search('issue').remove
           node.add_child(
             "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
           )
-          saved(xml)
+          saved(after)
         end
     end
-    xml
+    after
   end
 end
