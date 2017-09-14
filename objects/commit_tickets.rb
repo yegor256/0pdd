@@ -39,9 +39,9 @@ class CommitTickets
     done = @tickets.submit(puzzle)
     @github.create_commit_comment(
       @repo, @commit,
-      "Puzzle `#{puzzle.xpath('id').text}` discovered in \
-[`#{puzzle.xpath('file').text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
+      "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
+[`#{puzzle.xpath('file')[0].text}`](\
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
 and submitted as ##{done[:number]}."
     )
     done
@@ -52,10 +52,10 @@ and submitted as ##{done[:number]}."
     if done
       @github.create_commit_comment(
         @repo, @commit,
-        "Puzzle `#{puzzle.xpath('id').text}` disappeared from \
-[`#{puzzle.xpath('file').text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}), \
-that's why I closed ##{puzzle.xpath('issue').text}."
+        "Puzzle `#{puzzle.xpath('id')[0].text}` disappeared from \
+[`#{puzzle.xpath('file')[0].text}`](\
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}), \
+that's why I closed ##{puzzle.xpath('issue')[0].text}."
       )
     end
     done

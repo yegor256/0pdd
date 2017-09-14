@@ -34,6 +34,6 @@ class TestVersionedStorage < Test::Unit::TestCase
     version = '0.0.1'
     storage = VersionedStorage.new(FakeStorage.new, version)
     storage.save(Nokogiri::XML('<test>hello</test>'))
-    assert_equal(version, storage.load.xpath('/test/@version')[0].to_s)
+    assert_equal(version, storage.load.xpath('/test/@version')[0].text)
   end
 end

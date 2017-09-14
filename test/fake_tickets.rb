@@ -32,12 +32,12 @@ class FakeTickets
   end
 
   def submit(puzzle)
-    @submitted << puzzle.xpath('id').text
+    @submitted << puzzle.xpath('id')[0].text
     { number: '123', href: 'http://0pdd.com' }
   end
 
   def close(puzzle)
-    @closed << puzzle.xpath('id').text
+    @closed << puzzle.xpath('id')[0].text
     true
   end
 end

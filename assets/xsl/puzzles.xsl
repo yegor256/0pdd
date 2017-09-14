@@ -73,7 +73,7 @@ SOFTWARE.
             <xsl:text>XML</xsl:text>
           </a>
           <xsl:text> (</xsl:text>
-          <span title="{$length bytes}">
+          <span title="{$length} bytes">
             <xsl:value-of select="format-number($length div 1024, '#.0')"/>
             <xsl:text> Kb</xsl:text>
           </span>
@@ -93,7 +93,7 @@ SOFTWARE.
           <xsl:text>.</xsl:text>
         </p>
         <p>
-          <a href="http://www.0pdd.com">
+          <a href="http://www.0pdd.com" title="Current version of 0pdd is {$version}">
             <xsl:value-of select="$version"/>
           </a>
         </p>

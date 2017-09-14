@@ -91,19 +91,19 @@ class TestPuzzles < Test::Unit::TestCase
     xml.xpath('/test/assertions/xpath/text()').each do |xpath|
       after = storage.load
       assert(
-        !after.xpath(xpath.to_s).empty?,
+        !after.xpath(xpath.text).empty?,
         "#{xpath} not found in #{after}"
       )
     end
     xml.xpath('/test/submit/ticket/text()').each do |id|
       assert(
-        tickets.submitted.include?(id.to_s),
+        tickets.submitted.include?(id.text),
         "Puzzle #{id} was not submitted: #{tickets.submitted}"
       )
     end
     xml.xpath('/test/close/ticket/text()').each do |ticket|
       assert(
-        tickets.closed.include?(ticket.to_s),
+        tickets.closed.include?(ticket.text),
         "Ticket #{ticket} was not closed: #{tickets.closed}"
       )
     end

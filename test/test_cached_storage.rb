@@ -33,7 +33,7 @@ class TestCachedStorage < Test::Unit::TestCase
     Dir.mktmpdir do |dir|
       storage = CachedStorage.new(FakeStorage.new, File.join(dir, 'a/b/z.xml'))
       storage.save(Nokogiri::XML('<test>hello</test>'))
-      assert_equal('hello', storage.load.xpath('/test/text()')[0].to_s)
+      assert_equal('hello', storage.load.xpath('/test/text()')[0].text)
     end
   end
 end

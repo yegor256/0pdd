@@ -36,7 +36,7 @@ class LoggedTickets
   end
 
   def submit(puzzle)
-    tag = "#{puzzle.xpath('id').text}/submit"
+    tag = "#{puzzle.xpath('id')[0].text}/submit"
     if @log.exists(tag)
       raise "Tag \"#{tag}\" already exists, won't submit again. This situation \
 most probably means that this puzzle was already seen in the code and \
@@ -47,9 +47,9 @@ in GitHub: https://github.com/yegor256/0pdd/issues"
     done = @tickets.submit(puzzle)
     @log.put(
       tag,
-      "#{puzzle.xpath('id').text} submitted in issue ##{done[:number]}: \
-\"#{Truncated.new(puzzle.xpath('body').text, 100)}\" \
-at #{puzzle.xpath('file').text}; #{puzzle.xpath('lines').text}"
+      "#{puzzle.xpath('id')[0].text} submitted in issue ##{done[:number]}: \
+\"#{Truncated.new(puzzle.xpath('body')[0].text, 100)}\" \
+at #{puzzle.xpath('file')[0].text}; #{puzzle.xpath('lines')[0].text}"
     )
     done
   end
@@ -57,7 +57,7 @@ at #{puzzle.xpath('file').text}; #{puzzle.xpath('lines').text}"
   def close(puzzle)
     done = @tickets.close(puzzle)
     if done
-      tag = "#{puzzle.xpath('id').text}/closed"
+      tag = "#{puzzle.xpath('id')[0].text}/closed"
       if @log.exists(tag)
         raise "Tag \"#{tag}\" already exists, won't close again. This is \
 a rare and rather unusual bug. Please report it to us: \
@@ -65,8 +65,8 @@ https://github.com/yegor256/0pdd/issues"
       end
       @log.put(
         tag,
-        "#{puzzle.xpath('id').text} closed in issue \
-##{puzzle.xpath('issue').text}"
+        "#{puzzle.xpath('id')[0].text} closed in issue \
+##{puzzle.xpath('issue')[0].text}"
       )
     end
     done

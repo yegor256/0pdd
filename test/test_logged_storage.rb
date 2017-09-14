@@ -24,6 +24,7 @@ require 'test/unit'
 require_relative 'fake_storage'
 require_relative 'fake_log'
 require_relative '../objects/logged_storage'
+require_relative '../objects/versioned_storage'
 
 # LoggedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -31,8 +32,10 @@ require_relative '../objects/logged_storage'
 # License:: MIT
 class TestLoggedStorage < Test::Unit::TestCase
   def test_simple_xml_saving
-    storage = LoggedStorage.new(FakeStorage.new, FakeLog.new)
+    storage = LoggedStorage.new(
+      VersionedStorage.new(FakeStorage.new, '0.0.1'), FakeLog.new
+    )
     storage.save(Nokogiri::XML('<test>hello</test>'))
-    assert_equal('hello', storage.load.xpath('/test/text()')[0].to_s)
+    assert_equal('hello', storage.load.xpath('/test/text()')[0].text)
   end
 end

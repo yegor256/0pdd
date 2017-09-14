@@ -42,20 +42,21 @@ class GithubTickets
   def submit(puzzle)
     json = @github.create_issue(
       @repo,
-      "#{File.basename(puzzle.xpath('file').text)}:\
-#{puzzle.xpath('lines').text}: #{Truncated.new(puzzle.xpath('body').text)}",
-      "The puzzle `#{puzzle.xpath('id').text}` \
-(from ##{puzzle.xpath('ticket').text}) \
-in [`#{puzzle.xpath('file').text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file').text}) \
-(lines #{puzzle.xpath('lines').text}) \
-has to be resolved: \"#{Truncated.new(puzzle.xpath('body').text, 400)}\"\
+      "#{File.basename(puzzle.xpath('file')[0].text)}:\
+#{puzzle.xpath('lines')[0].text}: \
+#{Truncated.new(puzzle.xpath('body')[0].text)}",
+      "The puzzle `#{puzzle.xpath('id')[0].text}` \
+(from ##{puzzle.xpath('ticket')[0].text}) \
+in [`#{puzzle.xpath('file')[0].text}`](\
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
+(lines #{puzzle.xpath('lines')[0].text}) \
+has to be resolved: \"#{Truncated.new(puzzle.xpath('body')[0].text, 400)}\"\
 \n\n\
-The puzzle was created by #{puzzle.xpath('author').text} on \
-#{Time.parse(puzzle.xpath('time').text).strftime('%d-%b-%y')}. \
+The puzzle was created by #{puzzle.xpath('author')[0].text} on \
+#{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. \
 \n\n\
-Estimate: #{puzzle.xpath('estimate').text} minutes, \
-role: #{puzzle.xpath('role').text}.\
+Estimate: #{puzzle.xpath('estimate')[0].text} minutes, \
+role: #{puzzle.xpath('role')[0].text}.\
 \n\n\
 If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
@@ -75,13 +76,13 @@ _removed_ from the source code. Here is more about \
   end
 
   def close(puzzle)
-    issue = puzzle.xpath('issue').text
+    issue = puzzle.xpath('issue')[0].text
     return false if @github.issue(@repo, issue)['state'] == 'closed'
     @github.close_issue(@repo, issue)
     @github.add_comment(
       @repo,
       issue,
-      "The puzzle `#{puzzle.xpath('id').text}` has disappeared from the \
+      "The puzzle `#{puzzle.xpath('id')[0].text}` has disappeared from the \
 source code, that's why I closed this issue." +
       (users.empty? ? '' : ' //cc ' + users.join(' '))
     )

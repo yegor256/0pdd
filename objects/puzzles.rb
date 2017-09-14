@@ -77,7 +77,7 @@ class Puzzles
     Nokogiri::XSLT(File.read('assets/xsl/to-submit.xsl'))
       .transform(xml)
       .xpath('//puzzle')
-      .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
+      .map { |p| { issue: tickets.submit(p), id: p.xpath('id')[0].text } }
       .reject { |p| p[:issue].nil? }
       .each do |p|
         xml.xpath("//extra[id='#{p[:id]}']")[0].add_child(
@@ -103,7 +103,7 @@ class Puzzles
       xml.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
         .each { |p| tickets.close(p) }
       xml.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
-        .map { |p| { issue: tickets.submit(p), id: p.xpath('id').text } }
+        .map { |p| { issue: tickets.submit(p), id: p.xpath('id')[0].text } }
         .reject { |p| p[:issue].nil? }
         .each do |p|
           node = xml.xpath("//puzzle[id='#{p[:id]}']")[0]

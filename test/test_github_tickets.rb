@@ -43,7 +43,11 @@ class TestGithubTickets < Test::Unit::TestCase
           <id>23-ab536de</id>
           <file>/a/b/c/test.txt</file>
           <time>01-01-2017</time>
+          <author>yegor</author>
           <body>hey!</body>
+          <ticket>123</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
           <lines>1-3</lines>
         </puzzle>'
       ).xpath('/puzzle')
@@ -57,6 +61,10 @@ class TestGithubTickets < Test::Unit::TestCase
     end
     require_relative 'test__helper'
     tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
-    tickets.close(Nokogiri::XML('<puzzle><issue>1</issue></puzzle>'))
+    tickets.close(
+      Nokogiri::XML(
+        '<puzzle><id>xx</id><issue>1</issue></puzzle>'
+      ).xpath('/puzzle')
+    )
   end
 end
