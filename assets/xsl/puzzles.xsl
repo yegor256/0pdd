@@ -73,8 +73,11 @@ SOFTWARE.
             <xsl:text>XML</xsl:text>
           </a>
           <xsl:text> (</xsl:text>
-          <xsl:value-of select="format-number($length div 1024, '#.0')"/>
-          <xsl:text> Kb).</xsl:text>
+          <span title="{$length bytes}">
+            <xsl:value-of select="format-number($length div 1024, '#.0')"/>
+            <xsl:text> Kb</xsl:text>
+          </span>
+          <xsl:text>).</xsl:text>
         </p>
         <p>
           <xsl:text>Project "</xsl:text>
