@@ -71,7 +71,6 @@ _removed_ from the source code. Here is more about \
         users.join(' ') + ' please pay attention to this new issue.'
       )
     end
-    puts "GitHub issue #{@repo}##{issue} submitted: #{users}"
     { number: issue, href: json['html_url'] }
   end
 
@@ -86,7 +85,6 @@ _removed_ from the source code. Here is more about \
 source code, that's why I closed this issue." +
       (users.empty? ? '' : ' //cc ' + users.join(' '))
     )
-    puts "GitHub issue #{@repo}:#{issue} closed: #{users}"
     true
   end
 

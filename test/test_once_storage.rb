@@ -20,24 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class FakeTickets
-  attr_reader :submitted, :closed
-  def initialize
-    @submitted = []
-    @closed = []
-  end
+require 'test/unit'
+require_relative 'fake_storage'
+require_relative '../objects/once_storage'
 
-  def safe
-    true
-  end
-
-  def submit(puzzle)
-    @submitted << puzzle.xpath('id').text
-    { number: '123', href: 'http://0pdd.com' }
-  end
-
-  def close(puzzle)
-    @closed << puzzle.xpath('id').text
-    true
+# OnceStorage test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
+# License:: MIT
+class TestOnceStorage < Test::Unit::TestCase
+  def test_simple_xml_saving
+    storage = OnceStorage.new(FakeStorage.new)
+    xml = '<test>hello</test>'
+    storage.save(Nokogiri::XML(xml))
+    storage.save(Nokogiri::XML(xml))
+    assert_equal('hello', storage.load.xpath('/test/text()')[0].to_s)
   end
 end
