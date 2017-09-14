@@ -25,6 +25,10 @@ require 'rake'
 require 'rdoc'
 require 'rake/clean'
 
+# @todo #110:30min Let's make puzzles.xsd publicly avaiable in the
+#  web and let's add it to the XML files we save, so that users can
+#  see the XSD schema together with the XML content.
+
 task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
