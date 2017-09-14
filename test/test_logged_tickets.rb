@@ -24,6 +24,7 @@ require 'test/unit'
 require 'nokogiri'
 require 'yaml'
 require_relative 'fake_log'
+require_relative 'fake_tickets'
 require_relative '../objects/logged_tickets'
 
 # LoggedTickets test.
@@ -33,7 +34,6 @@ require_relative '../objects/logged_tickets'
 class TestLoggedTickets < Test::Unit::TestCase
   def test_submits_tickets
     log = FakeLog.new
-    require_relative 'test__helper'
     tickets = LoggedTickets.new(log, FakeTickets.new)
     tickets.submit(
       Nokogiri::XML(
@@ -54,7 +54,6 @@ class TestLoggedTickets < Test::Unit::TestCase
 
   def test_closes_tickets
     log = FakeLog.new
-    require_relative 'test__helper'
     tickets = LoggedTickets.new(log, FakeTickets.new)
     tickets.close(
       Nokogiri::XML(
