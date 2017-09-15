@@ -77,7 +77,11 @@ SOFTWARE.
             <xsl:value-of select="format-number($length div 1024, '#.0')"/>
             <xsl:text> Kb</xsl:text>
           </span>
-          <xsl:text>).</xsl:text>
+          <xsl:text>); see </xsl:text>
+          <a href="/snapshot?name={$project}">
+            <xsl:text>snapshot</xsl:text>
+          </a>
+          <xsl:text>.</xsl:text>
         </p>
         <p>
           <xsl:text>Project "</xsl:text>

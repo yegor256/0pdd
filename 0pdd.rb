@@ -208,6 +208,11 @@ get '/log' do
   )
 end
 
+get '/snapshot' do
+  content_type 'text/xml'
+  repo(params[:name]).xml.to_s
+end
+
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = params[:name]
@@ -275,11 +280,7 @@ post '/hook/github' do
   return unless json['ref'] == 'refs/heads/master'
   name = json['repository']['full_name']
   unless ENV['RACK_ENV'] == 'test'
-    repo = GitRepo.new(
-      name: name,
-      id_rsa: settings.config['id_rsa'],
-      dir: settings.temp_dir
-    )
+    repo = repo(name)
     JobDetached.new(
       repo,
       JobCommitErrors.new(
@@ -354,6 +355,14 @@ error do
 end
 
 private
+
+def repo(name)
+  GitRepo.new(
+    name: name,
+    id_rsa: settings.config['id_rsa'],
+    dir: settings.temp_dir
+  )
+end
 
 def storage(repo)
   OnceStorage.new(
