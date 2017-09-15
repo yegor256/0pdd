@@ -1,6 +1,6 @@
 = Haml::Engine.new(File.read('views/_header.haml')).render(
-  Object.new, user: user, login_link: login_link, repo: repo
-)
+    Object.new, user: user, login_link: login_link, repo: repo
+  )
 
 %p
   This is a single entry in the log. All entries have unique
