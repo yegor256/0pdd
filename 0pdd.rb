@@ -211,7 +211,9 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  repo(params[:name]).xml.to_s
+  repo = repo(params[:name])
+  repo.push
+  repo.xml.to_s
 end
 
 get '/log-delete' do
