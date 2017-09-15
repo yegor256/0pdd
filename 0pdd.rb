@@ -213,7 +213,9 @@ get '/snapshot' do
   content_type 'text/xml'
   repo = repo(params[:name])
   repo.push
-  repo.xml.to_s
+  xml = repo.xml
+  xml.xpath('/*/processing-instruction()').remove()
+  xml.to_s
 end
 
 get '/log-delete' do
