@@ -1,6 +1,4 @@
-= Haml::Engine.new(File.read('views/_header.haml')).render(
-    Object.new, user: user, login_link: login_link, repo: repo
-  )
+= Haml::Engine.new(File.read('views/_header.haml')).render(Object.new, user: user, login_link: login_link, repo: repo)
 
 %p
   This log is here for safety reason. Every time
