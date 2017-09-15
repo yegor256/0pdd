@@ -214,7 +214,7 @@ get '/snapshot' do
   repo = repo(params[:name])
   repo.push
   xml = repo.xml
-  xml.xpath('/*/processing-instruction()').remove()
+  xml.xpath('//processing-instruction("xml-stylesheet")').remove()
   xml.to_s
 end
 
