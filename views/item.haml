@@ -14,4 +14,4 @@
   Details:
   = item['text']
 
-= Haml::Engine.new(File.read('views/_footer.haml')).render
+= Haml::Engine.new(File.read('views/_footer.haml')).render(Object.new, ver: ver)

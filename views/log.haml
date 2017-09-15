@@ -18,7 +18,7 @@
   - events.each do |e|
     - last = e['time'].to_i
     %p
-      %a{href:url("/log-item?repo=#{name}&tag=#{e['tag']}")}>
+      %a{href:url("/log-item?repo=#{repo}&tag=#{e['tag']}")}>
         = Time.at(e['time']).iso8601
       = ':'
       = e['text']
@@ -30,4 +30,4 @@
       %a{href:url("/log?name=#{repo}&since=#{last}")}
         = 'more'
 
-= Haml::Engine.new(File.read('views/_footer.haml')).render
+= Haml::Engine.new(File.read('views/_footer.haml')).render(Object.new, ver: ver)
