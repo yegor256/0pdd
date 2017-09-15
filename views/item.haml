@@ -1,4 +1,4 @@
-= Haml::Engine.new(File.read('_header.haml')).render
+= Haml::Engine.new(File.read('views/_header.haml')).render
 
 %p
   This is a single entry in the log. All entries have unique
@@ -14,4 +14,4 @@
   Details:
   = item['text']
 
-= Haml::Engine.new(File.read('_footer.haml')).render
+= Haml::Engine.new(File.read('views/_footer.haml')).render

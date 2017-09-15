@@ -1,4 +1,4 @@
-= Haml::Engine.new(File.read('_header.haml')).render
+= Haml::Engine.new(File.read('views/_header.haml')).render
 
 %p
   This log is here for safety reason. Every time
@@ -30,4 +30,4 @@
       %a{href:url("/log?name=#{repo}&since=#{last}")}
         = 'more'
 
-= Haml::Engine.new(File.read('_footer.haml')).render
+= Haml::Engine.new(File.read('views/_footer.haml')).render
