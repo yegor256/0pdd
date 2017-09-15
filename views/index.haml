@@ -1,6 +1,6 @@
 %div.center
   %p
-    %a{href:'/'}
+    %a{href:url('/')}
       %img.logo{src:'https://avatars2.githubusercontent.com/u/24456188'}
   %p
     PDD puzzles collector.
@@ -28,12 +28,12 @@
     %a{href:'https://github.com/yegor256/0pdd'}
       %img{src:'https://img.shields.io/github/stars/yegor256/0pdd.svg'}
   %p.versions
-    %img{src:'/images/logo.svg', alt:'Currently deployed version'}
+    %img{src:url('/images/logo.svg'), alt:'Currently deployed version'}
     %span{title:'Currently deployed version'}
       =ver
-    %img{src:'/images/git-logo.svg', alt:'Git version on the server'}
+    %img{src:url('/images/git-logo.svg'), alt:'Git version on the server'}
     %span{title:'Git version on the server'}
       =git_version
-    %img{src:'/images/ruby-logo.svg', alt:'Ruby version on the server'}
+    %img{src:url('/images/ruby-logo.svg'), alt:'Ruby version on the server'}
     %span{title:'Ruby version on the server'}
     =ruby_version

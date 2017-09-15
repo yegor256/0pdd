@@ -218,6 +218,16 @@ get '/snapshot' do
   xml.to_s
 end
 
+get '/log-item' do
+  repo = params[:repo]
+  tag = params[:tag]
+  haml :item, layout: :layout, locals: @locals.merge(
+    title: tag,
+    repo: repo,
+    item: Log.new(settings.dynamo, repo).get(tag)
+  )
+end
+
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = params[:name]
@@ -311,6 +321,7 @@ post '/hook/github' do
                     json['head_commit']['id'],
                     LoggedTickets.new(
                       Log.new(settings.dynamo, name),
+                      name,
                       GithubTickets.new(
                         name,
                         settings.github,

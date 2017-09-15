@@ -1,0 +1,15 @@
+%p
+  %a{href:'/'}
+    %img.logo{src:'https://avatars2.githubusercontent.com/u/24456188'}
+%p
+  - if defined? user
+    = "@#{user[:login]}"
+    = '|'
+    %a{href: '/logout'}
+      Logout
+  - else
+    %a{href: login_link}
+      Login
+%p
+  %a{href: "/p?name=#{repo}"}
+    = repo

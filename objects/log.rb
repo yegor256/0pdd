@@ -45,6 +45,20 @@ class Log
     )
   end
 
+  def get(tag)
+    @aws.query(
+      table_name: '0pdd-events',
+      index_name: 'tags',
+      select: 'ALL_ATTRIBUTES',
+      limit: 1,
+      expression_attribute_values: {
+        ':r' => @repo,
+        ':t' => tag
+      },
+      key_condition_expression: 'repo=:r and tag=:t'
+    ).items[0]
+  end
+
   def exists(tag)
     !@aws.query(
       table_name: '0pdd-events',

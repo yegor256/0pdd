@@ -1,0 +1,17 @@
+= Haml::Engine.new(File.read('_header.haml')).render
+
+%p
+  This is a single entry in the log. All entries have unique
+  mnemo "tags", in order to prevent duplicate events from
+  happening.
+%p
+  Tag:
+  = item['tag']
+%p
+  Time:
+  = Time.at(item['time']).iso8601
+%p
+  Details:
+  = item['text']
+
+= Haml::Engine.new(File.read('_footer.haml')).render

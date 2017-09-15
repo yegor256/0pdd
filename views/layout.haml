@@ -1,6 +1,7 @@
 %html
   %head
-    %title=title
+    %title
+      =title
     %meta{charset:'UTF-8'}
     %meta{name:'viewport', content:'width=device-width, initial-scale=1.0'}
     %meta{name:'keywords', content:'PDD, GitHub, Puzzle Driven Development'}
@@ -8,7 +9,7 @@
     %link{type:'text/css', href:url('css/main.css'), rel:'stylesheet'}
     %link{rel:'shortcut icon', href:'https://avatars2.githubusercontent.com/u/24456188'}
   %body
-    =yield
+    = yield
     :javascript
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

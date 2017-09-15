@@ -20,14 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'cgi'
 require_relative 'truncated'
 
 #
 # Tickets that are logged.
 #
 class LoggedTickets
-  def initialize(log, tickets)
+  def initialize(log, repo, tickets)
     @log = log
+    @repo = repo
     @tickets = tickets
   end
 
@@ -42,7 +44,8 @@ class LoggedTickets
 most probably means that this puzzle was already seen in the code and \
 you're trying to create it again. We would recommend you to re-phrase \
 the text of the puzzle and push again. If this doesn't work, pleas let us know \
-in GitHub: https://github.com/yegor256/0pdd/issues"
+in GitHub: https://github.com/yegor256/0pdd/issues. More details here: \
+http://www.0pdd.com/log-item?repo=#{CGI.escape(@repo)}&tag=#{CGI.escape(tag)}."
     end
     done = @tickets.submit(puzzle)
     @log.put(
@@ -61,7 +64,8 @@ at #{puzzle.xpath('file')[0].text}; #{puzzle.xpath('lines')[0].text}"
       if @log.exists(tag)
         raise "Tag \"#{tag}\" already exists, won't close again. This is \
 a rare and rather unusual bug. Please report it to us: \
-https://github.com/yegor256/0pdd/issues"
+https://github.com/yegor256/0pdd/issues. More details here: \
+http://www.0pdd.com/log-item?repo=#{CGI.escape(@repo)}&tag=#{CGI.escape(tag)}."
       end
       @log.put(
         tag,
