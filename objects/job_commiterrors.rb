@@ -40,6 +40,8 @@ class JobCommitErrors
       "I wasn't able to retrieve PDD puzzles from the code base (if you \
 think that it's a bug on your our side, please submit it to \
 [yegor256/0pdd](https://github.com/yegor256/0pdd/issues)):\n\n\
+> #{e.message}\n\n
+Please, copy and paste this stack trace to GitHub:\n\n
 ```\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
     )
     puts "Comment posted about an error: #{done['html_url']}"
