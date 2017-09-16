@@ -18,8 +18,7 @@
   - events.each do |e|
     - last = e['time'].to_i
     %p
-      %a{href:url("/log-item?repo=#{repo}&tag=#{e['tag']}")}>
-        = Time.at(e['time']).iso8601
+      %a{href:url("/log-item?repo=#{repo}&tag=#{e['tag']}")}>= Time.at(e['time']).iso8601
       = ':'
       = e['text']
       - if defined?(user) && user[:login] == 'yegor256'
