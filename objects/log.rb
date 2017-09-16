@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'aws-sdk'
+require 'aws-sdk-dynamodb'
 require 'nokogiri'
 require_relative '../version'
 

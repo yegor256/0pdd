@@ -20,11 +20,12 @@
 source 'https://rubygems.org'
 ruby '2.3.3'
 
-gem 'aws-sdk', '2.9.20'
+gem 'aws-sdk-dynamodb', '1.2.0'
+gem 'aws-sdk-s3', '1.4.0'
 gem 'codecov', '0.1.10'
 gem 'glogin'
-gem 'haml', '5.0.1'
-gem 'mail', '2.6.5'
+gem 'haml', '5.0.3'
+gem 'mail', '2.6.6'
 gem 'nokogiri', '~>1.8'
 gem 'octokit', '4.7.0'
 gem 'pdd'
@@ -34,8 +35,8 @@ gem 'rake', '12.0.0', require: false
 gem 'rspec-rails', '3.6.0', require: false
 gem 'rubocop', '0.48.1', require: false
 gem 'rubocop-rspec', '1.15.1', require: false
-gem 'sass', '3.4.23'
-gem 'sentry-raven', '2.6.0'
+gem 'sass', '3.5.1'
+gem 'sentry-raven', '~>2.6'
 gem 'sinatra', '1.4.7'
 gem 'sinatra-contrib', '1.4.7'
 gem 'sprockets', '3.7.1'
