@@ -222,7 +222,7 @@ get '/log-item' do
   repo = params[:repo]
   tag = params[:tag]
   log = Log.new(settings.dynamo, repo)
-  raise 404 unless log.exists(tag)
+  error 404 unless log.exists(tag)
   haml :item, layout: :layout, locals: @locals.merge(
     title: tag,
     repo: repo,
