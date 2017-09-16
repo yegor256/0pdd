@@ -31,27 +31,19 @@ class Puzzles
   end
 
   def deploy(tickets)
-    saved(
-      covered(
-        saved(
-          group(
-            submit(
-              close(
-                join(@storage.load, @repo.xml),
-                tickets
-              ),
-              tickets
-            )
-          )
-        ),
-        SafeTickets.new(tickets)
-      )
+    expose(
+      save(
+        group(
+          join(@storage.load, @repo.xml)
+        )
+      ),
+      SafeTickets.new(tickets)
     )
   end
 
   private
 
-  def saved(xml)
+  def save(xml)
     @storage.save(xml)
     xml
   end
@@ -72,49 +64,20 @@ class Puzzles
     )
   end
 
-  def submit(xml, tickets)
-    after = Nokogiri::XML(xml.to_s)
-    Nokogiri::XSLT(File.read('assets/xsl/to-submit.xsl'))
-      .transform(after)
-      .xpath('//puzzle')
+  def expose(xml, tickets)
+    return unless tickets.safe
+    xml.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
+      .each { |p| tickets.close(p) }
+    xml.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
       .map { |p| { issue: tickets.submit(p), id: p.xpath('id')[0].text } }
       .reject { |p| p[:issue].nil? }
       .each do |p|
-        after.xpath("//extra[id='#{p[:id]}']")[0].add_child(
+        node = xml.xpath("//puzzle[id='#{p[:id]}']")[0]
+        node.search('issue').remove
+        node.add_child(
           "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
         )
+        save(xml)
       end
-    after
-  end
-
-  # @todo #41:30min Let's post notification messages to tickets where
-  #  other puzzles were waiting for the resolution of this one. Let's update
-  #  them with a summary information of what is left.
-  def close(xml, tickets)
-    Nokogiri::XSLT(File.read('assets/xsl/to-close.xsl'))
-      .transform(xml)
-      .xpath('//puzzle')
-      .each { |p| tickets.close(p) }
-    xml
-  end
-
-  def covered(xml, tickets)
-    after = Nokogiri::XML(xml.to_s)
-    if tickets.safe
-      after.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
-        .each { |p| tickets.close(p) }
-      after.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
-        .map { |p| { issue: tickets.submit(p), id: p.xpath('id')[0].text } }
-        .reject { |p| p[:issue].nil? }
-        .each do |p|
-          node = after.xpath("//puzzle[id='#{p[:id]}']")[0]
-          node.search('issue').remove
-          node.add_child(
-            "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
-          )
-          saved(after)
-        end
-    end
-    after
   end
 end
