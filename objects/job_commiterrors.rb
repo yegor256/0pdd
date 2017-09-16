@@ -35,7 +35,8 @@ class JobCommitErrors
   rescue Exception => e
     done = @github.create_commit_comment(
       @name, @commit,
-      "I wasn't able to retrieve PDD puzzles from the code base (if you \
+      "I wasn't able to retrieve PDD puzzles from the code base and \
+submit them to GitHub. If you \
 think that it's a bug on your our side, please submit it to \
 [yegor256/0pdd](https://github.com/yegor256/0pdd/issues)):\n\n\
 > #{e.message}\n\n
