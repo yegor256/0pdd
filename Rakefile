@@ -22,6 +22,9 @@ require 'rubygems'
 require 'rake'
 require 'rdoc'
 require 'rake/clean'
+require_relative 'objects/dynamo'
+
+ENV['RACK_ENV'] = 'test'
 
 # @todo #110:30min Let's make puzzles.xsd publicly avaiable in the
 #  web and let's add it to the XML files we save, so that users can
@@ -31,7 +34,7 @@ task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
 desc 'Run all unit tests'
-Rake::TestTask.new(:test) do |test|
+Rake::TestTask.new(test: :dynamo) do |test|
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
@@ -54,8 +57,36 @@ Xcop::RakeTask.new :xcop do |task|
   task.excludes = ['target/**/*', 'coverage/**/*']
 end
 
-task :run do
-  `RACK_ENV=test ruby ./0pdd.rb`
+desc 'Start DynamoDB Local server'
+task :dynamo do
+  FileUtils.rm_rf('dynamodb-local/target')
+  pid = Process.spawn('mvn', 'install', chdir: 'dynamodb-local')
+  at_exit do
+    `kill -TERM #{pid}`
+    puts "DynamoDB Local killed in PID #{pid}"
+  end
+  begin
+    puts 'DynamoDB Local table: ' + Dynamo.new.aws.describe_table(
+      table_name: '0pdd-events'
+    )[:table][:table_status]
+  rescue Exception => e
+    puts e.message
+    sleep(5)
+    retry
+  end
+  puts "DynamoDB Local is running in PID #{pid}"
+end
+
+desc 'Sleep endlessly after the start of DynamoDB Local server'
+task :sleep do
+  loop do
+    sleep(5)
+    puts 'Still alive...'
+  end
+end
+
+task run: :dynamo do
+  `rerun -b "RACK_ENV=test rackup"`
 end
 
 task :copyright do

@@ -45,6 +45,16 @@ class AppTest < Test::Unit::TestCase
     assert(last_response.body.include?('0pdd'))
   end
 
+  def test_renders_log_page
+    repo = 'yegor256/0pdd'
+    log = Log.new(Dynamo.new.aws, repo)
+    log.put('some-tag', 'some text here')
+    get("/log?name=#{repo}")
+    assert(last_response.ok?, last_response.body)
+    assert(last_response.body.include?(repo), last_response.body)
+    assert(last_response.body.include?('some text'), last_response.body)
+  end
+
   def test_renders_page_not_found
     get('/the-url-that-is-absent')
     assert(last_response.status == 404)

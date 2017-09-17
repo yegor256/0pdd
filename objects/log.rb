@@ -21,6 +21,7 @@
 require 'aws-sdk-dynamodb'
 require 'nokogiri'
 require_relative '../version'
+require_relative 'dynamo'
 
 #
 # Log.

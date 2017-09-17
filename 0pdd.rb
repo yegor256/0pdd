@@ -51,6 +51,7 @@ require_relative 'objects/versioned_storage'
 require_relative 'objects/cached_storage'
 require_relative 'objects/once_storage'
 require_relative 'objects/s3'
+require_relative 'objects/dynamo'
 
 # @todo #110:30nin Let's add DynamoDB Local for the testing cycle
 #  and make sure we work correctly with Dynamo persistence layer.
@@ -77,9 +78,11 @@ configure do
   else
     YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
   end
-  Raven.configure do |c|
-    c.dsn = config['sentry']
-    c.release = VERSION
+  if ENV['RACK_ENV'] != 'test'
+    Raven.configure do |c|
+      c.dsn = config['sentry']
+      c.release = VERSION
+    end
   end
   set :config, config
   if config['smtp']
@@ -104,13 +107,7 @@ configure do
       password: settings.config['github']['pwd']
     )
   end
-  if ENV['RACK_ENV'] != 'test'
-    set :dynamo, Aws::DynamoDB::Client.new(
-      region: settings.config['dynamo']['region'],
-      access_key_id: settings.config['dynamo']['key'],
-      secret_access_key: settings.config['dynamo']['secret']
-    )
-  end
+  set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -126,7 +123,6 @@ before '/*' do
     ver: VERSION,
     login_link: settings.glogin.login_uri
   }
-  @locals[:local_assigns] = @locals
   if cookies[:glogin]
     begin
       @locals[:user] = GLogin::Cookie::Closed.new(
@@ -153,7 +149,7 @@ get '/logout' do
 end
 
 get '/' do
-  haml :index, layout: :layout, locals: @locals.merge(
+  haml :index, layout: :layout, locals: merged(
     title: '0pdd',
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
@@ -200,11 +196,11 @@ get '/log' do
   #  if the list doesn't have any more elements. At the moment we keep
   #  showing that MORE link if any elements are there.
   repo = params[:name]
-  haml :log, layout: :layout, locals: @locals.merge(
+  haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
     log: Log.new(settings.dynamo, repo),
-    since: params[:since] ? params[:since].to_i : Time.now.to_i
+    since: params[:since] ? params[:since].to_i : Time.now.to_i + 1
   )
 end
 
@@ -222,7 +218,7 @@ get '/log-item' do
   tag = params[:tag]
   log = Log.new(settings.dynamo, repo)
   error 404 unless log.exists(tag)
-  haml :item, layout: :layout, locals: @locals.merge(
+  haml :item, layout: :layout, locals: merged(
     title: tag,
     repo: repo,
     item: log.get(tag)
@@ -350,10 +346,9 @@ end
 
 not_found do
   status 404
-  haml :not_found, layout: :layout, locals: {
-    ver: VERSION,
+  haml :not_found, layout: :layout, locals: merged(
     title: 'Page not found'
-  }
+  )
 end
 
 error do
@@ -363,15 +358,20 @@ error do
   haml(
     :error,
     layout: :layout,
-    locals: {
+    locals: merged(
       title: 'error',
-      ver: VERSION,
       error: "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
-    }
+    )
   )
 end
 
 private
+
+def merged(hash)
+  out = @locals.merge(hash)
+  out[:local_assigns] = out
+  out
+end
 
 def repo(name)
   GitRepo.new(

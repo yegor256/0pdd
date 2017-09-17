@@ -1,3 +1,4 @@
+target/
 coverage/
 .idea/
 *.gem
