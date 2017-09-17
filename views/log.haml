@@ -1,4 +1,4 @@
-= Haml::Engine.new(File.read('views/_header.haml')).render(Object.new, user: user, login_link: login_link, repo: repo)
+= Haml::Engine.new(File.read('views/_header.haml')).render(Object.new, local_assigns)
 
 %p
   This log is here for safety reason. Every time
@@ -29,4 +29,4 @@
       %a{href:url("/log?name=#{repo}&since=#{last}")}
         = 'more'
 
-= Haml::Engine.new(File.read('views/_footer.haml')).render(Object.new, ver: ver)
+= Haml::Engine.new(File.read('views/_footer.haml')).render(Object.new, local_assigns)
