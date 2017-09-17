@@ -124,7 +124,8 @@ end
 before '/*' do
   @locals = {
     ver: VERSION,
-    login_link: settings.glogin.login_uri
+    login_link: settings.glogin.login_uri,
+    local_assigns: @locals
   }
   if cookies[:glogin]
     begin
