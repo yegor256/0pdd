@@ -168,8 +168,7 @@ get '/version' do
 end
 
 get '/p' do
-  name = params[:name]
-  error 404 if name.nil?
+  name = repo_name(params[:name])
   xml = storage(name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
@@ -186,8 +185,7 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  name = params[:name]
-  error 404 if name.nil?
+  name = repo_name(params[:name])
   storage(name).load.to_s
 end
 
@@ -195,8 +193,7 @@ get '/log' do
   # @todo #110:30min Let's not show the MORE link in the log list
   #  if the list doesn't have any more elements. At the moment we keep
   #  showing that MORE link if any elements are there.
-  repo = params[:name]
-  error 404 if repo.nil?
+  repo = repo_name(params[:name])
   haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
@@ -207,8 +204,7 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  name = params[:name]
-  error 404 if name.nil?
+  name = repo_name(params[:name])
   repo = repo(name)
   repo.push
   xml = repo.xml
@@ -217,8 +213,7 @@ get '/snapshot' do
 end
 
 get '/log-item' do
-  repo = params[:repo]
-  error 404 if repo.nil?
+  repo = repo_name(params[:repo])
   tag = params[:tag]
   error 404 if tag.nil?
   log = Log.new(settings.dynamo, repo)
@@ -232,8 +227,7 @@ end
 
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
-  repo = params[:name]
-  error 404 if repo.nil?
+  repo = repo_name(params[:name])
   Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
@@ -241,8 +235,7 @@ end
 get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
-  name = params[:name]
-  error 404 if name.nil?
+  name = repo_name(params[:name])
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
     storage(name).load, ['project', "'#{name}'"]
   ).to_s
@@ -373,6 +366,12 @@ error do
 end
 
 private
+
+def repo_name(name)
+  error 404 if name.nil?
+  error 404 unless name =~ %r{[a-zA-Z0-9_]+/[a-zA-Z0-9_]+}
+  name
+end
 
 def merged(hash)
   out = @locals.merge(hash)
