@@ -304,6 +304,7 @@ post '/hook/github' do
           repo,
           JobRecorded.new(
             name,
+            settings.github,
             JobStarred.new(
               name,
               settings.github,

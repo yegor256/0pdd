@@ -22,8 +22,9 @@
 # Job that records all requests.
 #
 class JobRecorded
-  def initialize(name, job)
+  def initialize(name, github, job)
     @name = name
+    @github = github
     @job = job
   end
 
@@ -31,6 +32,6 @@ class JobRecorded
     @job.proceed
     open('/tmp/0pdd-done.txt', 'a+') do |f|
       f.puts(@name)
-    end
+    end unless @github.repository(@name)['private']
   end
 end
