@@ -169,6 +169,7 @@ end
 
 get '/p' do
   name = params[:name]
+  error 404 if name.nil?
   xml = storage(name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
@@ -185,7 +186,9 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  storage(params[:name]).load.to_s
+  name = params[:name]
+  error 404 if name.nil?
+  storage(name).load.to_s
 end
 
 get '/log' do
@@ -193,6 +196,7 @@ get '/log' do
   #  if the list doesn't have any more elements. At the moment we keep
   #  showing that MORE link if any elements are there.
   repo = params[:name]
+  error 404 if repo.nil?
   haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
@@ -203,7 +207,9 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  repo = repo(params[:name])
+  name = params[:name]
+  error 404 if name.nil?
+  repo = repo(name)
   repo.push
   xml = repo.xml
   xml.xpath('//processing-instruction("xml-stylesheet")').remove
@@ -212,7 +218,9 @@ end
 
 get '/log-item' do
   repo = params[:repo]
+  error 404 if repo.nil?
   tag = params[:tag]
+  error 404 if tag.nil?
   log = Log.new(settings.dynamo, repo)
   error 404 unless log.exists(tag)
   haml :item, layout: :layout, locals: merged(
@@ -225,6 +233,7 @@ end
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = params[:name]
+  error 404 if repo.nil?
   Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
@@ -233,6 +242,7 @@ get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
   name = params[:name]
+  error 404 if name.nil?
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
     storage(name).load, ['project', "'#{name}'"]
   ).to_s
