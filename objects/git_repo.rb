@@ -31,12 +31,15 @@ require_relative 'exec'
 class GitRepo
   def initialize(
     name:, dir: Dir.mktmpdir('0pdd'),
-    uri: "git@github.com:#{name}", id_rsa: ''
+    uri: "git@github.com:#{name}",
+    id_rsa: '',
+    master: 'master'
   )
     @name = name
     @path = "#{dir}/#{@name}"
     @uri = uri
     @id_rsa = id_rsa
+    @master = master
   end
 
   def lock
@@ -90,9 +93,9 @@ class GitRepo
         'git reset --hard --quiet',
         'git clean --force -d',
         'git fetch --quiet',
-        'git checkout master',
+        "git checkout #{@master}",
         'git rebase --abort || true',
-        'git rebase --strategy-option=theirs origin/master'
+        "git rebase --strategy-option=theirs origin/#{@master}"
       ].join(' && ')
     ).run
   end

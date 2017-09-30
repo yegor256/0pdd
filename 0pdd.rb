@@ -384,7 +384,8 @@ def repo(name)
   GitRepo.new(
     name: name,
     id_rsa: settings.config['id_rsa'],
-    dir: settings.temp_dir
+    dir: settings.temp_dir,
+    master: settings.github.repository(name)['default_branch']
   )
 end
 
