@@ -88,19 +88,20 @@ class GitRepo
   def pull
     prepare_key
     prepare_git
-    branch = Shellwords.escape("origin/#{@master}")
     Exec.new(
       [
         "cd #{@path}",
+        'git config --local core.autocrlf false',
         'git reset --hard --quiet',
         'git clean --force -d',
         'git fetch --quiet',
-        "git checkout #{branch}",
+        "git checkout #{Shellwords.escape(@master)}",
         'git rebase --abort || true',
         'git checkout -- .',
         'git stash clear',
         'git stash save --keep-index --include-untracked',
-        "git rebase --strategy-option=theirs #{branch}"
+        "git rebase --strategy-option=theirs \
+#{Shellwords.escape("origin/#{@master}")}"
       ].join(' && ')
     ).run
   end
