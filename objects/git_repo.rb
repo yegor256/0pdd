@@ -23,6 +23,7 @@ require 'pdd'
 require 'tmpdir'
 require 'tempfile'
 require 'yaml'
+require 'shellwords'
 require_relative 'exec'
 
 #
@@ -87,15 +88,18 @@ class GitRepo
   def pull
     prepare_key
     prepare_git
+    branch = Shellwords.escape("origin/#{@master}")
     Exec.new(
       [
         "cd #{@path}",
         'git reset --hard --quiet',
         'git clean --force -d',
         'git fetch --quiet',
-        "git checkout #{@master}",
+        "git checkout #{branch}",
         'git rebase --abort || true',
-        "git rebase --strategy-option=theirs origin/#{@master}"
+        'git stash clear',
+        'git stash',
+        "git rebase --strategy-option=theirs #{branch}"
       ].join(' && ')
     ).run
   end
