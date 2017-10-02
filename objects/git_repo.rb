@@ -92,6 +92,7 @@ class GitRepo
       [
         "cd #{@path}",
         'git config --local core.autocrlf false',
+        'git rm --cached -r .',
         'git reset --hard --quiet',
         'git clean --force -d',
         'git fetch --quiet',

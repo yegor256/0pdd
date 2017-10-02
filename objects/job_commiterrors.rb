@@ -41,7 +41,7 @@ class JobCommitErrors
 submit them to GitHub. If you \
 think that it's a bug on your our side, please submit it to \
 [yegor256/0pdd](https://github.com/yegor256/0pdd/issues)):\n\n\
-> #{Truncated.new(e.message.gsub(/\s/, ' '), 100)}\n\n
+> #{Truncated.new(e.message.gsub(/\s/, ' '), 300)}\n\n
 Please, copy and paste this stack trace to GitHub:\n\n
 ```\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
     )
