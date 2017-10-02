@@ -97,8 +97,9 @@ class GitRepo
         'git fetch --quiet',
         "git checkout #{branch}",
         'git rebase --abort || true',
+        'git checkout -- .',
         'git stash clear',
-        'git stash',
+        'git stash save --keep-index --include-untracked',
         "git rebase --strategy-option=theirs #{branch}"
       ].join(' && ')
     ).run
