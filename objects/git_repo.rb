@@ -92,15 +92,11 @@ class GitRepo
       [
         "cd #{@path}",
         'git config --local core.autocrlf false',
-        'git rm --cached -r .',
         'git reset --hard --quiet',
         'git clean --force -d',
         'git fetch --quiet',
         "git checkout #{Shellwords.escape(@master)}",
         'git rebase --abort || true',
-        'git checkout -- .',
-        'git stash clear',
-        'git stash save --keep-index --include-untracked',
         "git rebase --strategy-option=theirs \
 #{Shellwords.escape("origin/#{@master}")}"
       ].join(' && ')
