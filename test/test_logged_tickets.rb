@@ -21,6 +21,7 @@
 require 'test/unit'
 require 'nokogiri'
 require 'yaml'
+require_relative 'test__helper'
 require_relative 'fake_log'
 require_relative 'fake_tickets'
 require_relative '../objects/logged_tickets'

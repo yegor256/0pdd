@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require 'test/unit'
+require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative '../objects/cached_storage'
 

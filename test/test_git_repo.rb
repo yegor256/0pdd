@@ -20,6 +20,7 @@
 
 require 'test/unit'
 require 'tmpdir'
+require_relative 'test__helper'
 require_relative '../objects/git_repo'
 
 # GitRepo test.

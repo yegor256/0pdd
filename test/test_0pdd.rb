@@ -20,6 +20,7 @@
 
 require 'test/unit'
 require 'rack/test'
+require_relative 'test__helper'
 require_relative '../0pdd'
 
 class AppTest < Test::Unit::TestCase
