@@ -49,7 +49,7 @@ class TestGitRepo < Test::Unit::TestCase
         git checkout --orphan master
         echo 'hello, dude!' > new.txt
         git add new.txt
-        git commit -am 'new master'
+        git commit --quiet -am 'new master'
       ").run
       repo.push
       assert(File.exist?(File.join(d, 'yegor256/pdd/new.txt')))
@@ -66,7 +66,7 @@ class TestGitRepo < Test::Unit::TestCase
         cd '#{d}/#{dir}'
         echo 'hello, dude!' > z.txt
         git add z.txt
-        git commit --amend --message 'new fix'
+        git commit --quiet --amend --message 'new fix'
       ").run
       repo.push
       assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
@@ -114,6 +114,30 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
+  def test_doesnt_touch_crlf
+    omit
+    # I can't reproduce the problem of #125. The code works as it should
+    # be, however in production it fails due to some issues with CRLF
+    # in binary files.
+    # See also: https://stackoverflow.com/questions/46539254
+    Dir.mktmpdir 'test' do |d|
+      dir = 'repo'
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      Exec.new("
+        set -e
+        cd '#{d}/#{dir}'
+        git config --local core.autocrlf false
+        echo -n -e 'Hello, world!\r\nHow are you?' >> crlf.txt \
+          && git add . && git commit -am crlf.txt
+      ").run
+      repo.push
+      assert_equal(
+        File.read(File.join(d, 'yegor256/pdd/crlf.txt')),
+        "Hello, world!\n\rHow are you?"
+      )
+    end
+  end
+
   def test_push
     Dir.mktmpdir 'test' do |d|
       repo = GitRepo.new(name: 'teamed/est', dir: d, uri: git(d))
@@ -145,13 +169,13 @@ class TestGitRepo < Test::Unit::TestCase
     Exec.new("
       set -e
       cd '#{dir}'
-      git init #{subdir}
+      git init --quiet #{subdir}
       cd #{subdir}
       git config user.email git@0pdd.com
       git config user.name 0pdd
       echo 'foo: hello' > .0pdd.yml
       git add .0pdd.yml
-      git commit -am 'add line'
+      git commit --quiet -am 'add line'
       echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
       echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
       echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
