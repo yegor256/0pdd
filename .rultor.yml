@@ -9,22 +9,22 @@ release:
   script: |-
     bundle install
     rake
-    cp ../config.yml config.yml
     git remote add heroku git@heroku.com:zeropdd.git
     rm -rf ~/.ssh
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
     chmod -R 600 ~/.ssh/*
     echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
-    git add config.yml
     sed -i -s 's|Gemfile.lock||g' .gitignore
     git add Gemfile.lock
     git add .gitignore
-    git commit -m 'config.yml & others'
     git fetch
     sed -i "s/BUILD/${tag}/g" ./version.rb
     git add ./version.rb
     git commit -m 'build number set'
+    cp ../config.yml config.yml
+    git commit -m 'config.yml'
+    git add config.yml
     git push -f heroku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0pdd.com > /dev/null
