@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require 'octokit'
+require_relative 'truncated'
 
 #
 # Tickets that never throw exceptions.
@@ -50,13 +51,20 @@ class SafeTickets
     Mail.new do
       from '0pdd <no-reply@0pdd.com>'
       to 'admin@0pdd.com'
-      subject e.message
+      subject Truncated.new(e.message).to_s
       text_part do
         content_type 'text/plain; charset=UTF-8'
         body "Hi,\n\n\
+#{e.message}\n\n
 #{e.backtrace.join("\n")}\n\n
 Thanks,\n\
 0pdd"
+      end
+      html_part do
+        content_type 'text/html; charset=UTF-8'
+        body "<html><body><p>Hi,</p>
+        <pre>#{e.message}\n\n#{e.backtrace.join("\n")}</pre>
+        </body></html>"
       end
     end.deliver!
     puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
