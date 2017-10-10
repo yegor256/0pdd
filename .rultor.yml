@@ -23,8 +23,8 @@ release:
     git add ./version.rb
     git commit -m 'build number set'
     cp ../config.yml config.yml
-    git commit -m 'config.yml'
     git add config.yml
+    git commit -m 'config.yml'
     git push -f heroku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0pdd.com > /dev/null
