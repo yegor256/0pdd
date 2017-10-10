@@ -20,8 +20,62 @@
 
 require 'test/unit'
 require 'mail'
+require 'yaml'
+require 'tmpdir'
+require 'aws-sdk-dynamodb'
+require_relative '../objects/s3'
+require_relative '../objects/github_tickets'
+require_relative '../objects/log'
+require_relative '../objects/git_repo'
 
 class CredentialsTest < Test::Unit::TestCase
+  def test_connects_to_git_via_ssh
+    cfg = config
+    Dir.mktmpdir 'test' do |d|
+      repo = GitRepo.new(
+        name: 'yegor256/0pdd',
+        id_rsa: cfg['id_rsa'],
+        dir: d
+      )
+      repo.push
+      assert(!repo.xml.xpath('//puzzles').nil?)
+    end
+  end
+
+  def test_connects_to_aws_dynamo
+    cfg = config
+    dynamo = Aws::DynamoDB::Client.new(
+      region: cfg['dynamo']['region'],
+      access_key_id: cfg['dynamo']['key'],
+      secret_access_key: cfg['dynamo']['secret']
+    )
+    assert(!Log.new(dynamo, 'yegor256/0pdd').exists('some stupid tag'))
+  end
+
+  def test_connects_to_github
+    cfg = config
+    github = Octokit::Client.new(
+      login: cfg['github']['login'],
+      password: cfg['github']['pwd']
+    )
+    tickets = GithubTickets.new(
+      nil, github, 'yegor256/0pdd'
+    )
+    assert(!tickets.safe.nil?)
+  end
+
+  def test_connects_to_aws_s3
+    cfg = config
+    storage = S3.new(
+      'yegor256/0pdd.xml',
+      cfg['s3']['bucket'],
+      cfg['s3']['region'],
+      cfg['s3']['key'],
+      cfg['s3']['secret']
+    )
+    assert(!storage.load.xpath('//puzzles').nil?)
+  end
+
   def test_sends_email_via_smtp
     cfg = config
     Mail.defaults do
