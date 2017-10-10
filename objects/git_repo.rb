@@ -131,8 +131,12 @@ class GitRepo
     return if ENV['RACK_ENV'] == 'test'
     Exec.new(
       [
-        'git config --global user.email "server@0pdd.com"',
-        'git config --global user.name "0pdd.com"'
+        'if ! git config --get --global user.email',
+        'then git config --global user.email "server@0pdd.com"',
+        'fi',
+        'if ! git config --get --global user.name',
+        'then git config --global user.name "0pdd.com"',
+        'fi'
       ].join(';')
     ).run
   end
