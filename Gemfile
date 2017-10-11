@@ -26,6 +26,7 @@ gem 'codecov', '0.1.10'
 gem 'glogin'
 gem 'haml', '5.0.3'
 gem 'mail', '2.6.6'
+gem 'mocha', require: false
 gem 'nokogiri', '~>1.8'
 gem 'octokit', '4.7.0'
 gem 'pdd'

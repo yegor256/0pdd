@@ -352,6 +352,13 @@ not_found do
   )
 end
 
+error Octokit::NotFound do
+  status 404
+  haml :repo_unavailable, layout: :layout, locals: merged(
+    title: 'This repository is unavailable'
+  )
+end
+
 error do
   status 503
   e = env['sinatra.error']
