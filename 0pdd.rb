@@ -204,8 +204,8 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  name = repo_name(params[:name])
-  repo = repo(name)
+  @name = repo_name(params[:name])
+  repo = repo(@name)
   repo.push
   xml = repo.xml
   xml.xpath('//processing-instruction("xml-stylesheet")').remove
@@ -355,7 +355,8 @@ end
 error Octokit::NotFound do
   status 404
   haml :repo_unavailable, layout: :layout, locals: merged(
-    title: 'This repository is unavailable'
+    title: 'This repository is unavailable',
+    repo_name: @name
   )
 end
 
