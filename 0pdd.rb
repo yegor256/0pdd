@@ -115,6 +115,16 @@ configure do
   set :temp_dir, Dir.mktmpdir('0pdd')
 end
 
+helpers do
+  def error_custom_400(message)
+    status 400
+    haml :error_400, layout: :layout, locals: merged(
+      title: 'Request error',
+      error_message: message
+    )
+  end
+end
+
 before '/*' do
   @locals = {
     ver: VERSION,
@@ -350,6 +360,10 @@ not_found do
   haml :not_found, layout: :layout, locals: merged(
     title: 'Page not found'
   )
+end
+
+error Octokit::NotFound do
+  error_custom_400('Unavailable repository')
 end
 
 error do
