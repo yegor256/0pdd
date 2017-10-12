@@ -115,6 +115,16 @@ configure do
   set :temp_dir, Dir.mktmpdir('0pdd')
 end
 
+helpers do
+  def error_custom_400(message)
+    status 400
+    haml :error_400, layout: :layout, locals: merged(
+      title: 'Request error',
+      error_message: message
+    )
+  end
+end
+
 before '/*' do
   @locals = {
     ver: VERSION,
@@ -204,8 +214,8 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  @name = repo_name(params[:name])
-  repo = repo(@name)
+  name = repo_name(params[:name])
+  repo = repo(name)
   repo.push
   xml = repo.xml
   xml.xpath('//processing-instruction("xml-stylesheet")').remove
@@ -353,11 +363,7 @@ not_found do
 end
 
 error Octokit::NotFound do
-  status 404
-  haml :repo_unavailable, layout: :layout, locals: merged(
-    title: 'This repository is unavailable',
-    repo_name: @name
-  )
+  error_custom_400('Unavailable repository')
 end
 
 error do
