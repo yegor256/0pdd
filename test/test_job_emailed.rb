@@ -31,7 +31,7 @@ require_relative '../objects/job_emailed'
 class TestJobEmailed < Test::Unit::TestCase
   def fake_job
     job = Object.new
-    job.stubs(:proceed).returns()
+    job.stubs(:proceed)
     job
   end
 

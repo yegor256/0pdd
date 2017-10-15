@@ -35,7 +35,7 @@ class FakeGithub
     # nothing to do here
   end
 
-  def user(login)
+  def user(_login)
     { 'email' => 'foobar@example.com' }
   end
 end
