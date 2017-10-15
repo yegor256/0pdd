@@ -34,6 +34,10 @@ class TestJobEmailed < Test::Unit::TestCase
       # nothing
     end
     repo = FakeRepo.new
-    JobEmailed.new('yegor256/0pdd', repo, job).proceed
+    github = FakeGithub.new
+    JobEmailed.new('yegor256/0pdd', github, repo, job).proceed
+  end
+
+  def test_exception_mail_to_repo_owner_as_cc
   end
 end

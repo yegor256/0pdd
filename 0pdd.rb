@@ -311,6 +311,7 @@ post '/hook/github' do
         json['head_commit']['id'],
         JobEmailed.new(
           name,
+          settings.github,
           repo,
           JobRecorded.new(
             name,

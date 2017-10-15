@@ -24,8 +24,9 @@ require 'mail'
 # Job that emails if exception occurs.
 #
 class JobEmailed
-  def initialize(name, repo, job)
+  def initialize(name, github, repo, job)
     @name = name
+    @github = github
     @repo = repo
     @job = job
   end
@@ -38,6 +39,8 @@ class JobEmailed
     emails << 'admin@0pdd.com'
     trace = e.message + "\n\n" + e.backtrace.join("\n")
     name = @name
+    repo_owner_login = repo_user_login(name)
+    repo_owner_email = user_email(repo_owner_login)
     emails.each do |email|
       mail = Mail.new do
         from '0pdd <no-reply@0pdd.com>'
@@ -65,9 +68,20 @@ Sorry,\n\
             <p>Sorry,<br/><a href='http://www.0pdd.com'>0pdd</a></p>"
         end
       end
+      mail.cc = repo_owner_email if repo_owner_email
       mail.deliver!
       puts "Email sent to #{email}"
     end
     raise e
+  end
+
+  private
+
+  def repo_user_login(repo_name)
+    repo_name.split('/').first
+  end
+
+  def user_email(login)
+    @github.user(login)['email']
   end
 end

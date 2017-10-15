@@ -34,4 +34,8 @@ class FakeGithub
   def add_comment(_, _, _)
     # nothing to do here
   end
+
+  def user(login)
+    { 'email' => 'foobar@example.com' }
+  end
 end
