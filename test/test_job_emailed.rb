@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require 'test/unit'
+require 'mocha/test_unit'
 require_relative 'test__helper'
 require_relative 'fake_repo'
 require_relative '../objects/job_emailed'
@@ -28,16 +29,23 @@ require_relative '../objects/job_emailed'
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
 class TestJobEmailed < Test::Unit::TestCase
-  def test_simple_scenario
+  def fake_job
     job = Object.new
-    def job.proceed
-      # nothing
-    end
+    job.stubs(:proceed).returns()
+    job
+  end
+
+  def test_simple_scenario
     repo = FakeRepo.new
     github = FakeGithub.new
+    job = fake_job
     JobEmailed.new('yegor256/0pdd', github, repo, job).proceed
   end
 
   def test_exception_mail_to_repo_owner_as_cc
+    repo = FakeRepo.new
+    github = FakeGithub.new
+    job = fake_job
+    JobEmailed.new('yegor256/0pdd', github, repo, job).proceed
   end
 end
