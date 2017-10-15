@@ -30,7 +30,7 @@ require_relative '../objects/job_emailed'
 # License:: MIT
 class TestJobEmailed < Test::Unit::TestCase
   def fake_job
-    job = Object.new
+    job = stub
     job.stubs(:proceed)
     job
   end
@@ -43,9 +43,15 @@ class TestJobEmailed < Test::Unit::TestCase
   end
 
   def test_exception_mail_to_repo_owner_as_cc
+    exception_class = Exception
     repo = FakeRepo.new
     github = FakeGithub.new
     job = fake_job
-    JobEmailed.new('yegor256/0pdd', github, repo, job).proceed
+    job.expects(:proceed).raises(exception_class)
+    Mail::Message.any_instance.stubs(:deliver!)
+    Mail::Message.any_instance.expects(:cc=).with('foobar@example.com')
+    assert_raise Exception do
+      JobEmailed.new('yegor256/0pdd', github, repo, job).proceed
+    end
   end
 end
