@@ -65,10 +65,20 @@ class Puzzles
   end
 
   def expose(xml, tickets)
-    xml.xpath(
-      '//puzzle[@alive="false" and issue
-      and issue!="unknown" and not(issue/@closed)]'
-    ).each { |p| tickets.close(p) }
+    seen = []
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="false" and issue
+        and issue != "unknown" and not(issue/@closed)' +
+        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
+      )
+      break if puzzles.empty?
+      puzzle = puzzles[0]
+      if tickets.close(puzzle)
+        puzzle.search('issue')[0]['closed'] = Time.now.iso8601
+      end
+      save(xml)
+    end
     seen = []
     Kernel.loop do
       puzzles = xml.xpath(
