@@ -29,10 +29,6 @@ class CommitTickets
     @tickets = tickets
   end
 
-  def safe
-    @tickets.safe
-  end
-
   def submit(puzzle)
     done = @tickets.submit(puzzle)
     @github.create_commit_comment(

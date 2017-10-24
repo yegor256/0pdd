@@ -27,10 +27,6 @@ class EmailedTickets
     @tickets = tickets
   end
 
-  def safe
-    @tickets.safe
-  end
-
   def submit(puzzle)
     done = @tickets.submit(puzzle)
     r = @repo

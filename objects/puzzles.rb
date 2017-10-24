@@ -65,19 +65,27 @@ class Puzzles
   end
 
   def expose(xml, tickets)
-    return unless tickets.safe
-    xml.xpath('//puzzle[@alive="false" and issue and issue!="unknown"]')
-      .each { |p| tickets.close(p) }
-    xml.xpath('//puzzle[@alive="true" and (not(issue) or issue="unknown")]')
-      .map { |p| { issue: tickets.submit(p), id: p.xpath('id')[0].text } }
-      .reject { |p| p[:issue].nil? }
-      .each do |p|
-        node = xml.xpath("//puzzle[id='#{p[:id]}']")[0]
-        node.search('issue').remove
-        node.add_child(
-          "<issue href='#{p[:issue][:href]}'>#{p[:issue][:number]}</issue>"
-        )
-        save(xml)
-      end
+    xml.xpath(
+      '//puzzle[@alive="false" and issue
+      and issue!="unknown" and not(issue/@closed)]'
+    ).each { |p| tickets.close(p) }
+    seen = []
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
+        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
+      )
+      break if puzzles.empty?
+      puzzle = puzzles[0]
+      id = puzzle.xpath('id')[0].text
+      seen << id
+      issue = tickets.submit(puzzle)
+      next if issue.nil?
+      puzzle.search('issue').remove
+      puzzle.add_child(
+        "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
+      )
+      save(xml)
+    end
   end
 end

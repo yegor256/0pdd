@@ -32,11 +32,6 @@ class GithubTickets
     @sources = sources
   end
 
-  # Is it safe to do something right now or it's better to wait a bit?
-  def safe
-    @github.rate_limit.remaining > 2000
-  end
-
   def submit(puzzle)
     json = @github.create_issue(
       @repo,

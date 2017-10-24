@@ -29,10 +29,6 @@ class SafeTickets
     @tickets = tickets
   end
 
-  def safe
-    @tickets.safe
-  end
-
   def submit(puzzle)
     @tickets.submit(puzzle)
   rescue Exception => e

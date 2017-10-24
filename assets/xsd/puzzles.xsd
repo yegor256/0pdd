@@ -37,6 +37,7 @@ SOFTWARE.
           <xs:simpleContent>
             <xs:extension base="xs:string">
               <xs:attribute name="href" type="xs:string" use="optional"/>
+              <xs:attribute name="closed" use="optional" type="xs:dateTime"/>
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -65,7 +66,7 @@ SOFTWARE.
       <xs:element name="estimate" minOccurs="1" maxOccurs="1">
         <xs:simpleType>
           <xs:restriction base="xs:integer">
-                    </xs:restriction>
+          </xs:restriction>
         </xs:simpleType>
       </xs:element>
       <xs:element name="ticket" minOccurs="1" maxOccurs="1">

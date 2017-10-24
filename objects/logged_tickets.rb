@@ -31,10 +31,6 @@ class LoggedTickets
     @tickets = tickets
   end
 
-  def safe
-    @tickets.safe
-  end
-
   def submit(puzzle)
     tag = "#{puzzle.xpath('id')[0].text}/submit"
     if @log.exists(tag)
