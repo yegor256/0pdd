@@ -44,7 +44,7 @@ class JobDetached
     lock = @repo.lock
     FileUtils.mkdir_p(File.dirname(lock))
     f = File.open(lock, File::RDWR | File::CREAT, 0o644)
-    Timeout.timeout(15) do
+    Timeout.timeout(120) do
       f.flock(File::LOCK_EX)
       @job.proceed
       f.close
