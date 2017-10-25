@@ -22,6 +22,7 @@ require 'test/unit'
 require 'mocha/test_unit'
 require_relative 'test__helper'
 require_relative 'fake_repo'
+require_relative 'fake_github'
 require_relative '../objects/job_emailed'
 
 # JobEmailed test.

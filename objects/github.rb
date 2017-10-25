@@ -19,54 +19,32 @@
 # SOFTWARE.
 
 require 'octokit'
-require 'mail'
-require 'raven'
-require_relative 'truncated'
 
 #
-# Tickets that never throw exceptions.
+# Github client
 #
-class SafeTickets
-  def initialize(tickets)
-    @tickets = tickets
+class Github
+  def initialize(config = {})
+    @config = config
   end
 
-  def submit(puzzle)
-    @tickets.submit(puzzle)
-  rescue Exception => e
-    Raven.capture_exception(e)
-    email(e)
-  end
-
-  def close(puzzle)
-    @tickets.close(puzzle)
-  rescue Exception => e
-    Raven.capture_exception(e)
-    email(e)
-  end
-
-  private
-
-  def email(e)
-    mail = Mail.new do
-      from '0pdd <no-reply@0pdd.com>'
-      to 'admin@0pdd.com'
-      subject Truncated.new(e.message).to_s
-      text_part do
-        content_type 'text/plain; charset=UTF-8'
-        body "Hi,\n\n\
-#{e.message}\n\n
-#{e.backtrace.join("\n")}\n\n
-Thanks,\n\
-0pdd"
+  def client
+    if @config['testing']
+      require_relative '../test/fake_github'
+      FakeGithub.new
+    else
+      args = {}
+      if @config['github']
+        args[:login] = @config['github']['login']
+        args[:password] = @config['github']['pwd']
       end
-      html_part do
-        content_type 'text/html; charset=UTF-8'
-        body "<html><body><p>Hi,</p>
-        <pre>#{e.message}\n\n#{e.backtrace.join("\n")}</pre>
-        </body></html>"
-      end
+      Octokit.connection_options = {
+        request: {
+          timeout: 20,
+          open_timeout: 20
+        }
+      }
+      Octokit::Client.new(args)
     end
-    mail.deliver!
   end
 end

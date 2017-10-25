@@ -18,24 +18,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class FakeGithub
-  def issue(_, _)
-    { 'state' => 'open' }
-  end
+require 'test/unit'
+require_relative 'test__helper'
+require_relative '../objects/github'
 
-  def close_issue(_, _)
-    # nothing to do here
-  end
-
-  def create_issue(_, _, _)
-    { 'number' => 555 }
-  end
-
-  def add_comment(_, _, _)
-    # nothing to do here
-  end
-
-  def user(_login)
-    { email: 'foobar@example.com' }
+# Github test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
+# License:: MIT
+class TestGithub < Test::Unit::TestCase
+  def test_configures_everything_right
+    github = Github.new.client
+    assert_equal('0pdd', github.user('0pdd')[:login])
   end
 end

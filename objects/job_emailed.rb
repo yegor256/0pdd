@@ -82,6 +82,6 @@ Sorry,\n\
   end
 
   def user_email(login)
-    @github.user(login)['email']
+    @github.user(login)[:email]
   end
 end

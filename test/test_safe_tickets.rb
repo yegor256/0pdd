@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require 'test/unit'
+require 'mocha/test_unit'
 require_relative 'test__helper'
 require_relative '../objects/safe_tickets'
 
@@ -32,6 +33,7 @@ class TestSafeTickets < Test::Unit::TestCase
     def tickets.submit(_)
       raise 'submit failure'
     end
+    Mail::Message.any_instance.stubs(:deliver!)
     SafeTickets.new(tickets).submit(0)
   end
 
@@ -40,6 +42,7 @@ class TestSafeTickets < Test::Unit::TestCase
     def tickets.close(_)
       raise 'close failure'
     end
+    Mail::Message.any_instance.stubs(:deliver!)
     SafeTickets.new(tickets).close(0)
   end
 end

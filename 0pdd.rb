@@ -40,6 +40,7 @@ require_relative 'objects/job_recorded'
 require_relative 'objects/job_starred'
 require_relative 'objects/job_commiterrors'
 require_relative 'objects/log'
+require_relative 'objects/github'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
 require_relative 'objects/emailed_tickets'
@@ -57,6 +58,7 @@ configure do
   Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
     {
+      'testing' => true,
       'github' => {
         'login' => '0pdd',
         'pwd' => '--the-secret--',
@@ -95,16 +97,7 @@ configure do
       )
     end
   end
-  set :github, if ENV['RACK_ENV'] == 'test'
-    require_relative 'test/fake_github'
-    FakeGithub.new
-  else
-    Octokit.connection_options[:timeout] = 20
-    Octokit::Client.new(
-      login: settings.config['github']['login'],
-      password: settings.config['github']['pwd']
-    )
-  end
+  set :github, Github.new(config).client
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
