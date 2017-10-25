@@ -99,6 +99,7 @@ configure do
     require_relative 'test/fake_github'
     FakeGithub.new
   else
+    Octokit.connection_options[:timeout] = 20
     Octokit::Client.new(
       login: settings.config['github']['login'],
       password: settings.config['github']['pwd']
