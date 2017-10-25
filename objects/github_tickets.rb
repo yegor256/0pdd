@@ -70,7 +70,7 @@ _removed_ from the source code. Here is more about \
 
   def close(puzzle)
     issue = puzzle.xpath('issue')[0].text
-    return false if @github.issue(@repo, issue)['state'] == 'closed'
+    return true if @github.issue(@repo, issue)['state'] == 'closed'
     @github.close_issue(@repo, issue)
     @github.add_comment(
       @repo,
