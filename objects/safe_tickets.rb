@@ -19,6 +19,8 @@
 # SOFTWARE.
 
 require 'octokit'
+require 'mail'
+require 'raven'
 require_relative 'truncated'
 
 #
@@ -32,19 +34,21 @@ class SafeTickets
   def submit(puzzle)
     @tickets.submit(puzzle)
   rescue Exception => e
+    Raven.capture_exception(e)
     email(e)
   end
 
   def close(puzzle)
     @tickets.close(puzzle)
   rescue Exception => e
+    Raven.capture_exception(e)
     email(e)
   end
 
   private
 
   def email(e)
-    Mail.new do
+    mail = Mail.new do
       from '0pdd <no-reply@0pdd.com>'
       to 'admin@0pdd.com'
       subject Truncated.new(e.message).to_s
@@ -62,7 +66,7 @@ Thanks,\n\
         <pre>#{e.message}\n\n#{e.backtrace.join("\n")}</pre>
         </body></html>"
       end
-    end.deliver!
-    puts "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+    end
+    mail.deliver! if ENV['RACK_ENV'] != 'test'
   end
 end
