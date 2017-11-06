@@ -19,7 +19,6 @@
 # SOFTWARE.
 
 require 'nokogiri'
-require_relative 'safe_tickets'
 
 #
 # Puzzles in XML/S3
@@ -37,7 +36,7 @@ class Puzzles
           join(@storage.load, @repo.xml)
         )
       ),
-      SafeTickets.new(tickets)
+      tickets
     )
   end
 

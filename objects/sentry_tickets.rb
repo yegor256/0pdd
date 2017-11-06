@@ -24,9 +24,9 @@ require 'raven'
 require_relative 'truncated'
 
 #
-# Tickets that never throw exceptions.
+# Tickets that report to Sentry.
 #
-class SafeTickets
+class SentryTickets
   def initialize(tickets)
     @tickets = tickets
   end
@@ -36,6 +36,7 @@ class SafeTickets
   rescue Exception => e
     Raven.capture_exception(e)
     email(e)
+    raise e
   end
 
   def close(puzzle)
@@ -43,6 +44,7 @@ class SafeTickets
   rescue Exception => e
     Raven.capture_exception(e)
     email(e)
+    raise e
   end
 
   private
