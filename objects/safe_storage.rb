@@ -40,8 +40,10 @@ class SafeStorage
   private
 
   def valid(xml)
-    error = @xsd.validate(xml).each(&:message).join("\n")
-    raise "XML is invalid\nw#{error}\n#{xml}" unless error.empty?
+    errors = @xsd.validate(xml).each(&:message)
+    unless errors.empty?
+      raise "XML has #{errors.length} errors\nw#{errors.join("\n")}\n#{xml}"
+    end
     xml
   end
 end

@@ -30,9 +30,18 @@ require_relative '../objects/safe_storage'
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
 class TestSafeStorage < Test::Unit::TestCase
+  def test_accepts_valid_xml
+    storage = SafeStorage.new(FakeStorage.new)
+    storage.save(
+      Nokogiri::XML(
+        '<puzzles date="2017-01-01T01:01:01Z" version="1.0"/>'
+      )
+    )
+  end
+
   def test_rejects_invalid_xml
     storage = SafeStorage.new(FakeStorage.new)
-    assert_raise do
+    assert_raise RuntimeError do
       storage.save(Nokogiri::XML('<test>hello</test>'))
     end
   end

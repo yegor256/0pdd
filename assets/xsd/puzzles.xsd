@@ -71,6 +71,8 @@ SOFTWARE.
       <xs:element name="estimate" minOccurs="1" maxOccurs="1">
         <xs:simpleType>
           <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="60000"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
@@ -88,8 +90,20 @@ SOFTWARE.
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
-      <xs:element name="author" minOccurs="1" maxOccurs="1" type="xs:string"/>
-      <xs:element name="email" minOccurs="1" maxOccurs="1" type="xs:string"/>
+      <xs:element name="author" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value=".+"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="email" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
       <xs:element name="time" minOccurs="1" maxOccurs="1" type="xs:dateTime"/>
       <xs:element name="children" minOccurs="0" maxOccurs="1">
         <xs:complexType>
@@ -107,7 +121,13 @@ SOFTWARE.
         <xs:element name="puzzle" type="puzzle" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="date" use="required" type="xs:dateTime"/>
-      <xs:attribute name="version" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9\.]+|BUILD"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
     </xs:complexType>
     <xs:unique name="puzzleId">
       <xs:selector xpath=".//puzzle"/>
