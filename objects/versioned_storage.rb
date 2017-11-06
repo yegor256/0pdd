@@ -28,7 +28,13 @@ class VersionedStorage
   end
 
   def load
-    @origin.load
+    xml = @origin.load
+    root = xml.xpath('/*')[0]
+    unless root['date']
+      root['date'] = '2016-12-08T12:00:49Z'
+      root['version'] = '0.0.0'
+    end
+    xml
   end
 
   def save(xml)
