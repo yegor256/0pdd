@@ -47,6 +47,12 @@ class AppTest < Test::Unit::TestCase
     assert(last_response.body.include?('0pdd'))
   end
 
+  def test_it_renders_puzzles_xsd
+    get('/puzzles.xsd')
+    assert(last_response.ok?)
+    assert(last_response.body.include?('<xs:schema'))
+  end
+
   def test_renders_log_page
     repo = 'yegor256/0pdd'
     log = Log.new(Dynamo.new.aws, repo)

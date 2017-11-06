@@ -350,6 +350,11 @@ get '/css/*.css' do
   sass file.to_sym, views: "#{settings.root}/assets/sass"
 end
 
+get '/puzzles.xsd' do
+  content_type 'application/xml', charset: 'utf-8'
+  File.read('assets/xsd/puzzles.xsd')
+end
+
 not_found do
   status 404
   haml :not_found, layout: :layout, locals: merged(
