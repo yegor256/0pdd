@@ -30,7 +30,10 @@ class UpgradedStorage
   def load
     xml = @origin.load
     if xml.xpath('/*/@version')[0] != @version
-      ['remove-broken-issues'].each do |xsl|
+      [
+        'remove-broken-issues',
+        'add-namespace'
+      ].each do |xsl|
         xml = Nokogiri::XSLT(
           File.read("assets/upgrades/#{xsl}.xsl")
         ).transform(xml)
