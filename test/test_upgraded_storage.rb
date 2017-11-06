@@ -25,6 +25,7 @@ require_relative 'fake_storage'
 require_relative 'fake_log'
 require_relative '../objects/safe_storage'
 require_relative '../objects/upgraded_storage'
+require_relative '../objects/versioned_storage'
 
 # UpgradedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -32,16 +33,12 @@ require_relative '../objects/upgraded_storage'
 # License:: MIT
 class TestUpgradedStorage < Test::Unit::TestCase
   def test_safety_preserved
+    fake = FakeStorage.new
+    fake.save(Nokogiri::XML('<puzzles/>'))
     storage = UpgradedStorage.new(
-      SafeStorage.new(FakeStorage.new),
+      SafeStorage.new(VersionedStorage.new(fake, '0.0.5')),
       '0.0.5'
     )
-    storage.save(
-      Nokogiri::XML(
-        '<puzzles date="2017-01-01T01:01:01Z" version="1.0"/>'
-      )
-    )
-    puts storage.load
     assert(!storage.load.xpath('/puzzles').empty?)
   end
 
