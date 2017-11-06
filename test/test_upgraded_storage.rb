@@ -23,6 +23,7 @@ require 'nokogiri'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
+require_relative '../objects/safe_storage'
 require_relative '../objects/upgraded_storage'
 
 # UpgradedStorage test.
@@ -30,9 +31,22 @@ require_relative '../objects/upgraded_storage'
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
 class TestUpgradedStorage < Test::Unit::TestCase
+  def test_safety_preserved
+    storage = UpgradedStorage.new(
+      SafeStorage.new(FakeStorage.new),
+      '0.0.5'
+    )
+    storage.save(
+      Nokogiri::XML(
+        '<puzzles date="2017-01-01T01:01:01Z" version="1.0"/>'
+      )
+    )
+    puts storage.load
+    assert(!storage.load.xpath('/puzzles').empty?)
+  end
+
   def test_removes_broken_issues
-    version = '0.0.1'
-    storage = UpgradedStorage.new(FakeStorage.new, version)
+    storage = UpgradedStorage.new(FakeStorage.new, '0.0.1')
     storage.save(
       Nokogiri::XML(
         '<puzzles><puzzle><id>X1</id><issue>123</issue></puzzle>
@@ -44,8 +58,7 @@ class TestUpgradedStorage < Test::Unit::TestCase
   end
 
   def test_removes_broken_href
-    version = '0.0.2'
-    storage = UpgradedStorage.new(FakeStorage.new, version)
+    storage = UpgradedStorage.new(FakeStorage.new, '0.0.2')
     storage.save(
       Nokogiri::XML(
         '<puzzles><puzzle><id>X1</id><issue href="#">123</issue></puzzle>

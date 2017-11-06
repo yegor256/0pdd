@@ -41,7 +41,7 @@ class S3
         data
       else
         puts "Empty puzzles for #{@object.bucket_name}/#{@object.key}"
-        '<puzzles xmlns="puzzles.xsd"
+        '<puzzles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:noNamespaceSchemaLocation="http://www.0pdd.com/puzzles.xsd"/>'
       end
     )
