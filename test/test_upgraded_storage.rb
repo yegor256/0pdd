@@ -23,17 +23,36 @@ require 'nokogiri'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
-require_relative '../objects/versioned_storage'
+require_relative '../objects/upgraded_storage'
 
-# VersionedStorage test.
+# UpgradedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
 # License:: MIT
-class TestVersionedStorage < Test::Unit::TestCase
-  def test_xml_versioning
+class TestUpgradedStorage < Test::Unit::TestCase
+  def test_removes_broken_issues
     version = '0.0.1'
-    storage = VersionedStorage.new(FakeStorage.new, version)
-    storage.save(Nokogiri::XML('<test>hello</test>'))
-    assert_equal(version, storage.load.xpath('/test/@version')[0].text)
+    storage = UpgradedStorage.new(FakeStorage.new, version)
+    storage.save(
+      Nokogiri::XML(
+        '<puzzles><puzzle><id>X1</id><issue>123</issue></puzzle>
+        <puzzle><id>X2</id><issue/></puzzle><puzzles/>'
+      )
+    )
+    assert(!storage.load.xpath('//puzzle[id="X1"]/issue').empty?)
+    assert(storage.load.xpath('//puzzle[id="X2"]/issue').empty?)
+  end
+
+  def test_removes_broken_href
+    version = '0.0.2'
+    storage = UpgradedStorage.new(FakeStorage.new, version)
+    storage.save(
+      Nokogiri::XML(
+        '<puzzles><puzzle><id>X1</id><issue href="#">123</issue></puzzle>
+        <puzzle><id>X2</id><issue>123</issue></puzzle><puzzles/>'
+      )
+    )
+    assert(!storage.load.xpath('//puzzle[id="X1"]/issue/@href').empty?)
+    assert(storage.load.xpath('//puzzle[id="X2"]/issue/@href').empty?)
   end
 end

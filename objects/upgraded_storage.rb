@@ -12,28 +12,35 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'test/unit'
-require 'nokogiri'
-require_relative 'test__helper'
-require_relative 'fake_storage'
-require_relative 'fake_log'
-require_relative '../objects/versioned_storage'
+#
+# Storage that upgrades itself on load.
+#
+class UpgradedStorage
+  def initialize(origin, version)
+    @origin = origin
+    @version = version
+  end
 
-# VersionedStorage test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
-# License:: MIT
-class TestVersionedStorage < Test::Unit::TestCase
-  def test_xml_versioning
-    version = '0.0.1'
-    storage = VersionedStorage.new(FakeStorage.new, version)
-    storage.save(Nokogiri::XML('<test>hello</test>'))
-    assert_equal(version, storage.load.xpath('/test/@version')[0].text)
+  def load
+    xml = @origin.load
+    if xml.xpath('/*/@version')[0] != @version
+      ['remove-broken-issues'].each do |xsl|
+        xml = Nokogiri::XSLT(
+          File.read("assets/upgrades/#{xsl}.xsl")
+        ).transform(xml)
+      end
+      save(xml)
+    end
+    xml
+  end
+
+  def save(xml)
+    @origin.save(xml)
   end
 end

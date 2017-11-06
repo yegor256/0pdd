@@ -49,6 +49,7 @@ require_relative 'objects/commit_tickets'
 require_relative 'objects/safe_storage'
 require_relative 'objects/logged_storage'
 require_relative 'objects/versioned_storage'
+require_relative 'objects/upgraded_storage'
 require_relative 'objects/cached_storage'
 require_relative 'objects/once_storage'
 require_relative 'objects/s3'
@@ -404,28 +405,31 @@ def repo(name)
 end
 
 def storage(repo)
-  OnceStorage.new(
-    CachedStorage.new(
-      VersionedStorage.new(
-        SafeStorage.new(
-          if ENV['RACK_ENV'] == 'test'
-            FakeStorage.new
-          else
-            LoggedStorage.new(
-              S3.new(
-                "#{repo}.xml",
-                settings.config['s3']['bucket'],
-                settings.config['s3']['region'],
-                settings.config['s3']['key'],
-                settings.config['s3']['secret']
-              ),
-              Log.new(settings.dynamo, repo)
-            )
-          end
-        ),
-        VERSION
-      ),
-      File.join('/tmp/0pdd-xml-cache', repo)
-    )
+  UpgradedStorage.new(
+    SafeStorage.new(
+      OnceStorage.new(
+        CachedStorage.new(
+          VersionedStorage.new(
+            if ENV['RACK_ENV'] == 'test'
+              FakeStorage.new
+            else
+              LoggedStorage.new(
+                S3.new(
+                  "#{repo}.xml",
+                  settings.config['s3']['bucket'],
+                  settings.config['s3']['region'],
+                  settings.config['s3']['key'],
+                  settings.config['s3']['secret']
+                ),
+                Log.new(settings.dynamo, repo)
+              )
+            end,
+            VERSION
+          ),
+          File.join('/tmp/0pdd-xml-cache', repo)
+        )
+      )
+    ),
+    VERSION
   )
 end
