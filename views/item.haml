@@ -5,6 +5,9 @@
   mnemo "tags", in order to prevent duplicate events from
   happening.
 %p
+  Repository:
+  = repo
+%p
   Tag:
   = item['tag']
 %p
@@ -13,5 +16,10 @@
 %p
   Details:
   = item['text']
+
+- if defined?(user) && user[:login] == 'yegor256'
+  %p
+    %a{href:url("/log-delete?name=#{repo}&time=#{item['time'].to_i}&tag=#{item['tag']}"), onclick: "return confirm('You are going to delete the \"#{item['tag']}\" event. Normally you should not do this. Are you sure?')"}
+      delete it
 
 = Haml::Engine.new(File.read('views/_footer.haml')).render(Object.new, local_assigns)
