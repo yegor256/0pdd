@@ -77,6 +77,42 @@ root directory of the repository. Take
 
 Just submit a pull request. Make sure `rake` passes.
 
+If you want to run it on your own machine, you will need to add this
+`config.yml` file to the root directory of this repository:
+
+```yaml
+s3:
+  region: us-east-1
+  bucket: xml.0pdd.com
+  key: AKIAI..........UTSQA
+  secret: Z2FbKB..........viCKaYo4H..........vva21
+sentry: https://....@sentry.io/229223
+dynamo:
+  region: us-east-1
+  key: AKIAI..........UTSQA
+  secret: Z2FbKB..........viCKaYo4H..........vva21
+github:
+  client_id: b96a3b5..........87e
+  client_secret: be61c471154e2..........66f434d33e0f63a5f
+  encryption_secret: some-random-text
+  login: 0pdd
+  pwd: GitHub-Password
+smtp:
+  host: email-smtp.us-east-1.amazonaws.com
+  port: 587
+  key: AKIAI..........UTSQA
+  secret: Z2FbKB..........viCKaYo4H..........vva21
+id_rsa: |
+  -----BEGIN RSA PRIVATE KEY-----
+  MIIJKAIBAAKCAgEAoE94Xy8TGMbnoK5cKJXWccr9qLLDc/liKpMAMlnQEFDCgi0l
+  ...
+  NaaFpowFg8LKSiwc04ERduu72Imv5GJBCkhS8F7laURXFcZiYNqBnWYzY0U=
+  -----END RSA PRIVATE KEY-----
+```
+
+We add this file to the repository while deploying to Heroku,
+see how it's done in `.rultor.yml`.
+
 ## How to install in Heroku
 
 Don't forget this:
