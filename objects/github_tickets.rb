@@ -35,28 +35,8 @@ class GithubTickets
   def submit(puzzle)
     json = @github.create_issue(
       @repo,
-      "#{File.basename(puzzle.xpath('file')[0].text)}:\
-#{puzzle.xpath('lines')[0].text}: \
-#{Truncated.new(puzzle.xpath('body')[0].text)}",
-      "The puzzle `#{puzzle.xpath('id')[0].text}` \
-(from ##{puzzle.xpath('ticket')[0].text}) \
-in [`#{puzzle.xpath('file')[0].text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
-(lines #{puzzle.xpath('lines')[0].text}) \
-has to be resolved: \"#{Truncated.new(puzzle.xpath('body')[0].text, 400)}\"\
-\n\n\
-The puzzle was created by #{puzzle.xpath('author')[0].text} on \
-#{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. \
-\n\n\
-Estimate: #{puzzle.xpath('estimate')[0].text} minutes, \
-role: #{puzzle.xpath('role')[0].text}.\
-\n\n\
-If you have any technical questions, don't ask me, \
-submit new tickets instead. The task will be \"done\" when \
-the problem is fixed and the text of the puzzle is \
-_removed_ from the source code. Here is more about \
-[PDD](http://www.yegor256.com/2009/03/04/pdd.html) and \
-[about me](http://www.yegor256.com/2017/04/05/pdd-in-action.html)."
+      title(puzzle),
+      body(puzzle)
     )
     issue = json['number']
     unless users.empty?
@@ -96,5 +76,42 @@ source code, that's why I closed this issue." +
     else
       []
     end
+  end
+
+  def title(puzzle)
+    yaml = @sources.config
+    format = []
+    if yaml['format'] && yaml['format'].is_a?(Array)
+      format += yaml['format'].map(&:strip).map(&:downcase)
+    end
+    if format.include?('short-title')
+      Truncated.new(puzzle.xpath('body')[0].text, 60)
+    else
+      "#{File.basename(puzzle.xpath('file')[0].text)}:\
+#{puzzle.xpath('lines')[0].text}: \
+#{Truncated.new(puzzle.xpath('body')[0].text)}"
+    end
+  end
+
+  def body(puzzle)
+    "The puzzle `#{puzzle.xpath('id')[0].text}` \
+(from ##{puzzle.xpath('ticket')[0].text}) \
+in [`#{puzzle.xpath('file')[0].text}`](\
+https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
+(lines #{puzzle.xpath('lines')[0].text}) \
+has to be resolved: \"#{Truncated.new(puzzle.xpath('body')[0].text, 400)}\"\
+\n\n\
+The puzzle was created by #{puzzle.xpath('author')[0].text} on \
+#{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. \
+\n\n\
+Estimate: #{puzzle.xpath('estimate')[0].text} minutes, \
+role: #{puzzle.xpath('role')[0].text}.\
+\n\n\
+If you have any technical questions, don't ask me, \
+submit new tickets instead. The task will be \"done\" when \
+the problem is fixed and the text of the puzzle is \
+_removed_ from the source code. Here is more about \
+[PDD](http://www.yegor256.com/2009/03/04/pdd.html) and \
+[about me](http://www.yegor256.com/2017/04/05/pdd-in-action.html)."
   end
 end

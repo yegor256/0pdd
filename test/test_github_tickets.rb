@@ -32,7 +32,16 @@ class TestGithubTickets < Test::Unit::TestCase
   def test_submits_tickets
     sources = Object.new
     def sources.config
-      YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
+      YAML.safe_load(
+        "
+alerts:
+  github:
+    - yegor256
+    - davvd
+format:
+  - short-title
+        "
+      )
     end
     require_relative 'test__helper'
     tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)

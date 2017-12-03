@@ -56,6 +56,8 @@ errors:
 alerts:
   github:
     - yegor256
+format:
+  - short-title
 ```
 
 Section `errors` allows you to specify a list of email addresses which will
@@ -72,6 +74,11 @@ users who will be notified.
 code files. You can configure its behavior by adding `.pdd` file to the
 root directory of the repository. Take
 [this one](https://github.com/yegor256/0pdd/blob/master/.pdd), as an example.
+
+The `format` section helps you instruct 0pdd about GitHub issues formatting.
+These options are supported:
+
+  * `short-title`: issue title will not include file name and line numbers
 
 ## How to contribute?
 
