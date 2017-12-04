@@ -62,7 +62,11 @@ class CredentialsTest < Test::Unit::TestCase
     tickets = GithubTickets.new(
       nil, github, 'yegor256/0pdd'
     )
-    assert(!tickets.safe.nil?)
+    tickets.close(
+      Nokogiri::XML(
+        '<puzzle><id>AA</id><issue>1</issue></puzzle>'
+      ).xpath('/puzzle')
+    )
   end
 
   def test_connects_to_aws_s3
