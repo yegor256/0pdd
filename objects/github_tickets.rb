@@ -87,9 +87,13 @@ source code, that's why I closed this issue." +
     if format.include?('short-title')
       Truncated.new(puzzle.xpath('body')[0].text, 60)
     else
-      "#{File.basename(puzzle.xpath('file')[0].text)}:\
-#{puzzle.xpath('lines')[0].text}: \
-#{Truncated.new(puzzle.xpath('body')[0].text)}"
+      subject = File.basename(puzzle.xpath('file')[0].text)
+      lines = puzzle.xpath('lines')[0].text
+      start, stop = lines.split('-')
+      subject +
+        ':' +
+        (start == stop ? start : "#{start}-#{stop}") +
+        ": #{Truncated.new(puzzle.xpath('body')[0].text)}"
     end
   end
 
