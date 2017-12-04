@@ -58,6 +58,9 @@ alerts:
     - yegor256
 format:
   - short-title
+tags:
+  - pdd
+  - bug
 ```
 
 Section `errors` allows you to specify a list of email addresses which will
@@ -79,6 +82,10 @@ The `format` section helps you instruct 0pdd about GitHub issues formatting.
 These options are supported:
 
   * `short-title`: issue title will not include file name and line numbers
+
+The `tags` section lists GitHub labels that will automatically be attached
+to all new issues we create. If you don't have that labels in your GitHub
+repository, they will automatically be created.
 
 ## How to contribute?
 
