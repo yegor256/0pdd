@@ -98,10 +98,11 @@ source code, that's why I closed this issue." +
   end
 
   def body(puzzle)
+    sha = @github.list_commits(@repo)[0]['sha']
     "The puzzle `#{puzzle.xpath('id')[0].text}` \
 (from ##{puzzle.xpath('ticket')[0].text}) \
 in [`#{puzzle.xpath('file')[0].text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
+https://github.com/#{@repo}/blob/#{sha}/#{puzzle.xpath('file')[0].text}) \
 (lines #{puzzle.xpath('lines')[0].text}) \
 has to be resolved: \"#{Truncated.new(puzzle.xpath('body')[0].text, 400)}\"\
 \n\n\
