@@ -38,4 +38,8 @@ class FakeGithub
   def user(_login)
     { email: 'foobar@example.com' }
   end
+
+  def list_commits(_)
+    [{ 'sha' => '123456' }]
+  end
 end
