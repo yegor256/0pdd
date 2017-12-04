@@ -36,7 +36,9 @@ class CommitTickets
       "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
 [`#{puzzle.xpath('file')[0].text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
-and submitted as ##{done[:number]}."
+and submitted as ##{done[:number]}. Please, remember that the puzzle was not \
+necessarily added in this particular commit. Maybe it was added earlier, but
+we discovered it only now."
     )
     done
   end
@@ -49,7 +51,10 @@ and submitted as ##{done[:number]}."
         "Puzzle `#{puzzle.xpath('id')[0].text}` disappeared from \
 [`#{puzzle.xpath('file')[0].text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}), \
-that's why I closed ##{puzzle.xpath('issue')[0].text}."
+that's why I closed ##{puzzle.xpath('issue')[0].text}. \
+Please, remember that the puzzle was not necessarily removed in this \
+particular commit. Maybe it happened earlier, but we discovered this fact \
+only now."
       )
     end
     done
