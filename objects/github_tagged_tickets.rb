@@ -38,7 +38,12 @@ class GithubTaggedTickets
     if yaml['tags'] && yaml['tags'].is_a?(Array)
       tags = yaml['tags'].map(&:strip).map(&:downcase)
       labels = @github.labels(@repo).map { |json| json['name'] }
-      (tags - labels).each { |t| @github.add_label(@repo, t, 'F74219') }
+      begin
+        (tags - labels).each { |t| @github.add_label(@repo, t, 'F74219') }
+      rescue Octokit::NotFound => e
+        raise "Can't create Github labels, most likely \
+I don't have write permissions: #{e.message}"
+      end
       @github.add_labels_to_an_issue(@repo, done[:number], tags)
     end
     done
