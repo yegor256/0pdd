@@ -100,12 +100,11 @@ source code, that's why I closed this issue." +
     file = puzzle.xpath('file')[0].text
     start, stop = puzzle.xpath('lines')[0].text.split('-')
     sha = @github.list_commits(@repo)[0]['sha']
+    url = "https://github.com/#{@repo}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
     "The puzzle `#{puzzle.xpath('id')[0].text}` \
-(from ##{puzzle.xpath('ticket')[0].text}) \
-in [`#{file}`](\
-https://github.com/#{@repo}/blob/#{sha}/#{file}##L#{start}-L#{stop}) \
+(from ##{puzzle.xpath('ticket')[0].text}) in [`#{file}`](#{url}) \
 has to be resolved: \"#{Truncated.new(puzzle.xpath('body')[0].text, 400)}\"\
-\n\n\
+\n\n#{url}\n\n\
 The puzzle was created by #{puzzle.xpath('author')[0].text} on \
 #{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. \
 \n\n\
