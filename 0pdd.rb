@@ -326,13 +326,13 @@ post '/hook/github' do
                       name,
                       settings.github,
                       json['head_commit']['id'],
-                      LoggedTickets.new(
-                        Log.new(settings.dynamo, name),
+                      GithubTaggedTickets.new(
                         name,
-                        GithubTaggedTickets.new(
+                        settings.github,
+                        repo,
+                        LoggedTickets.new(
+                          Log.new(settings.dynamo, name),
                           name,
-                          settings.github,
-                          repo,
                           GithubTickets.new(
                             name,
                             settings.github,

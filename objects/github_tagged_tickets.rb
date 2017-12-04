@@ -34,17 +34,25 @@ class GithubTaggedTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
+    issue = done[:number]
     yaml = @sources.config
     if yaml['tags'] && yaml['tags'].is_a?(Array)
       tags = yaml['tags'].map(&:strip).map(&:downcase)
       labels = @github.labels(@repo).map { |json| json['name'] }
+      needed = tags - labels
       begin
-        (tags - labels).each { |t| @github.add_label(@repo, t, 'F74219') }
+        needed.each { |t| @github.add_label(@repo, t, 'F74219') }
+        @github.add_labels_to_an_issue(@repo, issue, tags)
       rescue Octokit::NotFound => e
-        raise "Can't create Github labels, most likely \
-I don't have write permissions: #{e.message}"
+        @github.add_comment(
+          @repo, issue,
+          "I can't create GitHub labels `#{needed.join('`, `')}`. \
+Most likely I don't have necessary permissions to `#{@repo}` repository. \
+Please, make sure @0pdd user is in the \
+[list of collaborators](https://github.com/#{@repo}/settings/collaboration):\
+\n\n```#{e.message}\n```"
+        )
       end
-      @github.add_labels_to_an_issue(@repo, done[:number], tags)
     end
     done
   end
