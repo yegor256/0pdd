@@ -87,7 +87,7 @@ The `tags` section lists GitHub labels that will automatically be attached
 to all new issues we create. If you don't have that labels in your GitHub
 repository, they will automatically be created.
 
-## What do expect?
+## What to expect?
 
 Pay attention to the comments @0pdd posts to your commits. They will
 contain valuable information about its recent actions. If something goes
