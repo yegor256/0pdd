@@ -87,6 +87,17 @@ The `tags` section lists GitHub labels that will automatically be attached
 to all new issues we create. If you don't have that labels in your GitHub
 repository, they will automatically be created.
 
+## What do expect?
+
+Pay attention to the comments @0pdd posts to your commits. They will
+contain valuable information about its recent actions. If something goes
+wrong, you will receive exception messages there. Please, post them here
+as new issues.
+
+Remember that GitHub triggers us only when you do `git push`. This means that
+if you make a number of commits, we will process them all together. Only the
+latest one will be commented. It may not be the one with new puzzles though.
+
 ## How to contribute?
 
 Just submit a pull request. Make sure `rake` passes.
