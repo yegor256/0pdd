@@ -43,6 +43,7 @@ require_relative 'objects/log'
 require_relative 'objects/github'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_tickets'
+require_relative 'objects/github_tagged_tickets'
 require_relative 'objects/emailed_tickets'
 require_relative 'objects/logged_tickets'
 require_relative 'objects/commit_tickets'
@@ -328,10 +329,15 @@ post '/hook/github' do
                       LoggedTickets.new(
                         Log.new(settings.dynamo, name),
                         name,
-                        GithubTickets.new(
+                        GithubTaggedTickets.new(
                           name,
                           settings.github,
-                          repo
+                          repo,
+                          GithubTickets.new(
+                            name,
+                            settings.github,
+                            repo
+                          )
                         )
                       )
                     )
