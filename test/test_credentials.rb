@@ -60,7 +60,7 @@ class CredentialsTest < Test::Unit::TestCase
       password: cfg['github']['pwd']
     )
     tickets = GithubTickets.new(
-      nil, github, 'yegor256/0pdd'
+      'yegor256/0pdd', github, nil
     )
     tickets.close(
       Nokogiri::XML(
