@@ -50,7 +50,7 @@ class GithubTaggedTickets
 Most likely I don't have necessary permissions to `#{@repo}` repository. \
 Please, make sure @0pdd user is in the \
 [list of collaborators](https://github.com/#{@repo}/settings/collaboration):\
-\n\n```#{e.message}\n```"
+\n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
         )
       end
     end
