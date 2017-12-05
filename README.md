@@ -26,7 +26,8 @@ just for `push` events  with `http://www.0pdd.com/hook/github` payload URL and
 
 Then, add [@0pdd](https://github.com/0pdd) GitHub user as a
 [collaborator](https://help.github.com/articles/inviting-collaborators-to-a-personal-repository/)
-with read-only access to your repository.
+to your repository, if it's private
+(you don't need this for a public repository).
 
 Then, add a `@todo` [puzzle](http://www.yegor256.com/2009/03/04/pdd.html)
 to the source code (format it [right](https://github.com/teamed/pdd)).
