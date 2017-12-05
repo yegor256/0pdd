@@ -100,7 +100,7 @@ latest one will be commented. It may not be the one with new puzzles though.
 
 After we create GitHub issues you can modify their titles and descriptions. You
 can work with them as with any other issues. We will touch them only one
-more time, when the puzzle disappears from the source code. At the moment
+more time, when the puzzle disappears from the source code. At that moment
 we will try to close the issue. If it is already closed, nothing will happen.
 However, it's not a good practice to close them manually. You better remove
 the necessary puzzle from the source code and let us close the issue.
