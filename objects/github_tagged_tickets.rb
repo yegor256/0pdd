@@ -52,6 +52,14 @@ Please, make sure @0pdd user is in the \
 [list of collaborators](https://github.com/#{@repo}/settings/collaboration):\
 \n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
         )
+      rescue Octokit::Error => e
+        @github.add_comment(
+          @repo, issue,
+          "For some reason I wasn't able to add GitHub labels to this issue. \
+Please, [submit a ticket](https://github.com/yegor256/0pdd/issues/new) \
+to us with the text you see below:\
+\n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
+        )
       end
     end
     done
