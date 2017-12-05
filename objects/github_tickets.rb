@@ -85,7 +85,7 @@ source code, that's why I closed this issue." +
       format += yaml['format'].map(&:strip).map(&:downcase)
     end
     if format.include?('short-title')
-      Truncated.new(puzzle.xpath('body')[0].text, 60)
+      Truncated.new(puzzle.xpath('body')[0].text, 60).to_s
     else
       subject = File.basename(puzzle.xpath('file')[0].text)
       start, stop = puzzle.xpath('lines')[0].text.split('-')
