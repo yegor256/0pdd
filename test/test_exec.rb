@@ -12,45 +12,28 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'English'
-require 'open3'
+require 'test/unit'
+require_relative 'test__helper'
+require_relative '../objects/exec'
 
-#
-# One command exec
-#
-class Exec
-  # When it fails.
-  class Error < StandardError
-    attr_reader :code
-    def initialize(code, msg)
-      super(msg)
-      @code = code
-    end
+# Exec test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016-2017 Yegor Bugayenko
+# License:: MIT
+class TestExec < Test::Unit::TestCase
+  def test_simple_bash_call
+    assert_equal("123\n", Exec.new('echo 123').run)
   end
 
-  def initialize(*rest)
-    @cmd = rest.join(' ')
-  end
-
-  def run
-    c = [
-      'set -x',
-      'set -e',
-      'set -o pipefail',
-      @cmd
-    ].join(';')
-    Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
-      code = thr.value.to_i
-      unless code.zero?
-        raise Error.new(code, "#{c} [#{code}]:\n#{stderr.read}\n#{stdout.read}")
-      end
-      stdout.read
+  def test_bash_failure
+    assert_raises Exec::Error do
+      Exec.new('how_are_you').run
     end
   end
 end
