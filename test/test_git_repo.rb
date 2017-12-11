@@ -22,6 +22,7 @@ require 'test/unit'
 require 'tmpdir'
 require_relative 'test__helper'
 require_relative '../objects/git_repo'
+require_relative '../objects/user_error'
 
 # GitRepo test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -57,7 +58,7 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
-  def test_fail_with_pdd_error
+  def test_fail_with_user_error
     Dir.mktmpdir 'test' do |d|
       dir = 'repo'
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
@@ -71,7 +72,7 @@ class TestGitRepo < Test::Unit::TestCase
         git commit --quiet --amend --message 'zz'
       ").run
       repo.push
-      assert_raises PddError do
+      assert_raises UserError do
         repo.xml
       end
     end

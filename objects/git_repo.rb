@@ -25,7 +25,7 @@ require 'tempfile'
 require 'yaml'
 require 'shellwords'
 require_relative 'exec'
-require_relative 'pdd_error'
+require_relative 'user_error'
 
 #
 # Repository in Git
@@ -63,7 +63,7 @@ class GitRepo
     begin
       Exec.new("cd #{@path} && pdd -v -f #{tmp.path}").run
     rescue Exec::Error => e
-      raise PddError, e.message if e.code == 1
+      raise UserError, e.message if e.code == 1
       raise e
     end
     Nokogiri::XML(File.open(tmp))

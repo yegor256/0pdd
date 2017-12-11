@@ -20,6 +20,7 @@
 
 require 'cgi'
 require_relative 'truncated'
+require_relative 'user_error'
 
 #
 # Tickets that are logged.
@@ -34,8 +35,9 @@ class LoggedTickets
   def submit(puzzle)
     tag = "#{puzzle.xpath('id')[0].text}/submit"
     if @log.exists(tag)
-      raise "Tag \"#{tag}\" already exists, won't submit again. This situation \
-most probably means that this puzzle was already seen in the code and \
+      raise UserError, "Tag \"#{tag}\" already exists, won't submit again. \
+This situation most probably means that \
+this puzzle was already seen in the code and \
 you're trying to create it again. We would recommend you to re-phrase \
 the text of the puzzle and push again. If this doesn't work, pleas let us know \
 in GitHub: https://github.com/yegor256/0pdd/issues. More details here: \
@@ -56,8 +58,8 @@ at #{puzzle.xpath('file')[0].text}; #{puzzle.xpath('lines')[0].text}"
     if done
       tag = "#{puzzle.xpath('id')[0].text}/closed"
       if @log.exists(tag)
-        raise "Tag \"#{tag}\" already exists, won't close again. This is \
-a rare and rather unusual bug. Please report it to us: \
+        raise UserError, "Tag \"#{tag}\" already exists, won't close again. \
+This is a rare and rather unusual bug. Please report it to us: \
 https://github.com/yegor256/0pdd/issues. More details here: \
 http://www.0pdd.com/log-item?repo=#{CGI.escape(@repo)}&tag=#{CGI.escape(tag)}."
       end

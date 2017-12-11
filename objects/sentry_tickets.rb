@@ -21,7 +21,7 @@
 require 'octokit'
 require 'mail'
 require 'raven'
-require_relative 'pdd_error'
+require_relative 'user_error'
 require_relative 'truncated'
 
 #
@@ -34,7 +34,7 @@ class SentryTickets
 
   def submit(puzzle)
     @tickets.submit(puzzle)
-  rescue PddError => e
+  rescue UserError => e
     raise e
   rescue Exception => e
     Raven.capture_exception(e)
@@ -44,7 +44,7 @@ class SentryTickets
 
   def close(puzzle)
     @tickets.close(puzzle)
-  rescue PddError => e
+  rescue UserError => e
     raise e
   rescue Exception => e
     Raven.capture_exception(e)

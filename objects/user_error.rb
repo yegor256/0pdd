@@ -19,7 +19,7 @@
 # SOFTWARE.
 
 #
-# PDD Error
+# User Error
 #
-class PddError < StandardError
+class UserError < StandardError
 end
