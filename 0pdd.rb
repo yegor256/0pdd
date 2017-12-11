@@ -211,8 +211,7 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  name = repo_name(params[:name])
-  repo = repo(name)
+  repo = repo(repo_name(params[:name]))
   repo.push
   xml = repo.xml
   xml.xpath('//processing-instruction("xml-stylesheet")').remove
@@ -297,7 +296,7 @@ post '/hook/github' do
     end
   )
   return unless json['ref'] == 'refs/heads/master'
-  name = json['repository']['full_name']
+  name = repo_name(json['repository']['full_name'])
   unless ENV['RACK_ENV'] == 'test'
     repo = repo(name)
     JobDetached.new(
@@ -405,11 +404,16 @@ def merged(hash)
 end
 
 def repo(name)
+  begin
+    master = settings.github.repository(name)['default_branch']
+  rescue Octokit::InvalidRepository => e
+    raise "Repository #{name} is not available: #{e.message}"
+  end
   GitRepo.new(
     name: name,
     id_rsa: settings.config['id_rsa'],
     dir: settings.temp_dir,
-    master: settings.github.repository(name)['default_branch']
+    master: master
   )
 end
 
