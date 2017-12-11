@@ -17,7 +17,7 @@ Lint/RescueException:
 Metrics/MethodLength:
   Max: 50
 Metrics/ClassLength:
-  Max: 150
+  Max: 200
 Metrics/AbcSize:
   Max: 60
 Metrics/BlockLength:

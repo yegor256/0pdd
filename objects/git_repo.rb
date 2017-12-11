@@ -25,6 +25,7 @@ require 'tempfile'
 require 'yaml'
 require 'shellwords'
 require_relative 'exec'
+require_relative 'pdd_error'
 
 #
 # Repository in Git
@@ -59,7 +60,12 @@ class GitRepo
   def xml
     tmp = Tempfile.new('pdd.xml')
     raise "Path is absent: #{@path}" unless File.exist?(@path)
-    Exec.new("cd #{@path} && pdd -q -f #{tmp.path}").run
+    begin
+      Exec.new("cd #{@path} && pdd -v -f #{tmp.path}").run
+    rescue Exec::Error => e
+      raise PddError, e.message if e.code == 1
+      raise e
+    end
     Nokogiri::XML(File.open(tmp))
   end
 
@@ -97,6 +103,7 @@ class GitRepo
         'git fetch --quiet',
         "git checkout #{Shellwords.escape(@master)}",
         'git rebase --abort || true',
+        'git stash',
         "git rebase --strategy-option=theirs \
 #{Shellwords.escape("origin/#{@master}")}"
       ].join(' && ')

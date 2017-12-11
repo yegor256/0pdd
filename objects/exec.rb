@@ -44,9 +44,9 @@ class Exec
       'set -e',
       'set -o pipefail',
       @cmd
-    ].join(';')
+    ].join(' && ')
     Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
-      code = thr.value.to_i
+      code = thr.value.exitstatus
       unless code.zero?
         raise Error.new(code, "#{c} [#{code}]:\n#{stderr.read}\n#{stdout.read}")
       end

@@ -21,6 +21,7 @@
 require 'test/unit'
 require_relative 'test__helper'
 require_relative '../objects/exec'
+require_relative '../objects/pdd_error'
 
 # Exec test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -35,5 +36,12 @@ class TestExec < Test::Unit::TestCase
     assert_raises Exec::Error do
       Exec.new('how_are_you').run
     end
+  end
+
+  def test_failures_with_pdd_error
+    error = assert_raises Exec::Error do
+      Exec.new('exit 1').run
+    end
+    assert_equal error.code, 1
   end
 end

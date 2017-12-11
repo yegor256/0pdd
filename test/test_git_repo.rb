@@ -57,6 +57,26 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
+  def test_fail_with_pdd_error
+    Dir.mktmpdir 'test' do |d|
+      dir = 'repo'
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      repo.push
+      Exec.new("
+        set -e
+        cd '#{d}/#{dir}'
+        echo '...\x40todoBad puzzle' > z1.txt
+        echo '\x40todo #1 Good puzzle' > z2.txt
+        git add z1.txt z2.txt
+        git commit --quiet --amend --message 'zz'
+      ").run
+      repo.push
+      assert_raises PddError do
+        repo.xml
+      end
+    end
+  end
+
   def test_merge_after_ammend
     Dir.mktmpdir 'test' do |d|
       dir = 'repo'
