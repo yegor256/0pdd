@@ -35,7 +35,7 @@ class SentryTickets
   def submit(puzzle)
     @tickets.submit(puzzle)
   rescue UserError => e
-    raise e
+    puts e.message
   rescue Exception => e
     Raven.capture_exception(e)
     email(e)
@@ -45,7 +45,7 @@ class SentryTickets
   def close(puzzle)
     @tickets.close(puzzle)
   rescue UserError => e
-    raise e
+    puts e.message
   rescue Exception => e
     Raven.capture_exception(e)
     email(e)
