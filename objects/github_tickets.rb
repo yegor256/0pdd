@@ -84,16 +84,19 @@ source code, that's why I closed this issue." +
     if yaml['format'] && yaml['format'].is_a?(Array)
       format += yaml['format'].map(&:strip).map(&:downcase)
     end
-    if format.include?('short-title')
-      Truncated.new(puzzle.xpath('body')[0].text, 60).to_s
-    else
-      subject = File.basename(puzzle.xpath('file')[0].text)
-      start, stop = puzzle.xpath('lines')[0].text.split('-')
-      subject +
-        ':' +
-        (start == stop ? start : "#{start}-#{stop}") +
-        ": #{Truncated.new(puzzle.xpath('body')[0].text)}"
-    end
+    Truncated.new(
+      if format.include?('short-title')
+        puzzle.xpath('body')[0].text
+      else
+        subject = File.basename(puzzle.xpath('file')[0].text)
+        start, stop = puzzle.xpath('lines')[0].text.split('-')
+        subject +
+          ':' +
+          (start == stop ? start : "#{start}-#{stop}") +
+          ": #{puzzle.xpath('body')[0]}"
+      end,
+      60
+    ).to_s
   end
 
   def body(puzzle)
