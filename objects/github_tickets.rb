@@ -84,6 +84,7 @@ source code, that's why I closed this issue." +
     if yaml['format'] && yaml['format'].is_a?(Array)
       format += yaml['format'].map(&:strip).map(&:downcase)
     end
+    len = format.find { |i| i =~ /title-length=\d+/ }
     Truncated.new(
       if format.include?('short-title')
         puzzle.xpath('body')[0].text
@@ -95,7 +96,7 @@ source code, that's why I closed this issue." +
           (start == stop ? start : "#{start}-#{stop}") +
           ": #{puzzle.xpath('body')[0]}"
       end,
-      60
+      [[len ? len.gsub(/^title-length=/, '').to_i : 60, 30].max, 255].min
     ).to_s
   end
 

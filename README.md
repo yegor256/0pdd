@@ -59,6 +59,7 @@ alerts:
     - yegor256
 format:
   - short-title
+  - title-length=100
 tags:
   - pdd
   - bug
@@ -83,6 +84,10 @@ The `format` section helps you instruct 0pdd about GitHub issues formatting.
 These options are supported:
 
   * `short-title`: issue title will not include file name and line numbers
+
+  * `title-length=...`: you may configure the length of the title of GitHub
+    issues we create. Minimim length is 30, maximum is 255. Any other values
+    will be silently ignored. The default length is 60.
 
 The `tags` section lists GitHub labels that will automatically be attached
 to all new issues we create. If you don't have that labels in your GitHub
