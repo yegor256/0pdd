@@ -38,7 +38,9 @@ class GithubTaggedTickets
     yaml = @sources.config
     if yaml['tags'] && yaml['tags'].is_a?(Array)
       tags = yaml['tags'].map(&:strip).map(&:downcase)
-      labels = @github.labels(@repo).map { |json| json['name'] }
+      labels = @github.labels(@repo)
+        .map { |json| json['name'] }
+        .map(&:strip).map(&:downcase)
       needed = tags - labels
       begin
         needed.each { |t| @github.add_label(@repo, t, 'F74219') }
@@ -55,7 +57,8 @@ Please, make sure @0pdd user is in the \
       rescue Octokit::Error => e
         @github.add_comment(
           @repo, issue,
-          "For some reason I wasn't able to add GitHub labels to this issue. \
+          "For some reason I wasn't able to add GitHub labels \
+`#{needed.join('`, `')}` to this issue. \
 Please, [submit a ticket](https://github.com/yegor256/0pdd/issues/new) \
 to us with the text you see below:\
 \n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
