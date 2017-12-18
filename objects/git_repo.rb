@@ -98,7 +98,7 @@ class GitRepo
       [
         "cd #{@path}",
         'git config --local core.autocrlf false',
-        'git reset --hard --quiet',
+        "git reset #{Shellwords.escape('origin/' + @master)} --hard --quiet",
         'git clean --force -d',
         'git fetch --quiet',
         "git checkout #{Shellwords.escape(@master)}",
