@@ -102,14 +102,11 @@ class AppTest < Test::Unit::TestCase
 
   def test_snapshots_unavailable_repo
     exception_class = Octokit::NotFound
-    unavailable_repo_name = 'yegor256/0pdd_foobar_unavailable'
-    page_text = 'Unavailable repository'
     FakeGithub.any_instance.expects(:repository).raises(exception_class)
     assert_nothing_raised(exception_class) do
-      get("/snapshot?name=#{unavailable_repo_name}")
+      get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
     end
     assert(last_response.status == 400)
-    assert(last_response.body.include?(page_text))
   end
 
   def test_renders_svg_puzzles

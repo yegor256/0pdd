@@ -112,16 +112,6 @@ configure do
   set :temp_dir, Dir.mktmpdir('0pdd')
 end
 
-helpers do
-  def error_custom_400(message)
-    status 400
-    haml :error_400, layout: :layout, locals: merged(
-      title: 'Request error',
-      error_message: message
-    )
-  end
-end
-
 before '/*' do
   @locals = {
     ver: VERSION,
@@ -371,10 +361,6 @@ not_found do
   )
 end
 
-error Octokit::NotFound do
-  error_custom_400('Unavailable repository')
-end
-
 error do
   status 503
   e = env['sinatra.error']
@@ -407,6 +393,8 @@ def repo(name)
     master = settings.github.repository(name)['default_branch']
   rescue Octokit::InvalidRepository => e
     raise "Repository #{name} is not available: #{e.message}"
+  rescue Octokit::NotFound
+    error 400
   end
   GitRepo.new(
     name: name,
