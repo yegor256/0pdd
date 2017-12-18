@@ -58,7 +58,8 @@ Please, make sure @0pdd user is in the \
         @github.add_comment(
           @repo, issue,
           "For some reason I wasn't able to add GitHub labels \
-`#{needed.join('`, `')}` to this issue. \
+`#{needed.join('`, `')}` to this issue \
+(required=`#{tags.join('`, `')}`; existing=`#{labels.join('`, `')}`). \
 Please, [submit a ticket](https://github.com/yegor256/0pdd/issues/new) \
 to us with the text you see below:\
 \n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
