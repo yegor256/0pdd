@@ -44,6 +44,7 @@ class Github
           open_timeout: 20
         }
       }
+      Octokit.auto_paginate = true
       Octokit::Client.new(args)
     end
   end
