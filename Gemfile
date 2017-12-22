@@ -29,7 +29,7 @@ gem 'mail', '2.6.6'
 gem 'mocha', require: false
 gem 'nokogiri', '~>1.8'
 gem 'octokit', '4.7.0'
-gem 'pdd', '0.19.3'
+gem 'pdd', '0.19.4'
 gem 'rack', '~> 2.0'
 gem 'rack-test', '0.6.3'
 gem 'rake', '12.0.0', require: false
