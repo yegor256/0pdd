@@ -40,11 +40,21 @@ alerts:
     - davvd
 format:
   - short-title
+  - title-length=30
         "
       )
     end
-    require_relative 'test__helper'
-    tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
+    require_relative 'fake_github'
+    github = FakeGithub.new
+    def github.create_issue(_, title, body)
+      @title = title
+      @body = body
+      { 'number' => 555 }
+    end
+    class << github
+      attr_accessor :body, :title
+    end
+    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -52,7 +62,7 @@ format:
           <file>/a/b/c/test.txt</file>
           <time>01-01-2017</time>
           <author>yegor</author>
-          <body>hey!</body>
+          <body>привет дорогой друг, как твои дела?</body>
           <ticket>123</ticket>
           <estimate>30</estimate>
           <role>DEV</role>
@@ -60,6 +70,8 @@ format:
         </puzzle>'
       ).xpath('/puzzle')
     )
+    assert_equal('привет дорогой друг, как...', github.title)
+    assert(github.body.start_with?('The puzzle `23-ab536de` from #123 has'))
   end
 
   def test_closes_tickets
@@ -67,7 +79,7 @@ format:
     def sources.config
       YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
     end
-    require_relative 'test__helper'
+    require_relative 'fake_github'
     tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
     tickets.close(
       Nokogiri::XML(
