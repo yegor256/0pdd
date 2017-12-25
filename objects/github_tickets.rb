@@ -66,7 +66,7 @@ source code, that's why I closed this issue." +
 
   def users
     yaml = @sources.config
-    if yaml['alerts'] && yaml['alerts']['github']
+    if !yaml.nil? && yaml['alerts'] && yaml['alerts']['github']
       yaml['alerts']['github']
         .map(&:strip)
         .map(&:downcase)
@@ -81,7 +81,7 @@ source code, that's why I closed this issue." +
   def title(puzzle)
     yaml = @sources.config
     format = []
-    if yaml['format'] && yaml['format'].is_a?(Array)
+    if !yaml.nil? && yaml['format'] && yaml['format'].is_a?(Array)
       format += yaml['format'].map(&:strip).map(&:downcase)
     end
     len = format.find { |i| i =~ /title-length=\d+/ }
@@ -94,7 +94,7 @@ source code, that's why I closed this issue." +
         subject +
           ':' +
           (start == stop ? start : "#{start}-#{stop}") +
-          ": #{puzzle.xpath('body')[0]}"
+          ": #{puzzle.xpath('body')[0].text}"
       end,
       [[len ? len.gsub(/^title-length=/, '').to_i : 60, 30].max, 255].min
     ).to_s
