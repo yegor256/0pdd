@@ -56,7 +56,7 @@ end
 desc 'Start DynamoDB Local server'
 task :dynamo do
   FileUtils.rm_rf('dynamodb-local/target')
-  pid = Process.spawn('mvn', 'install', chdir: 'dynamodb-local')
+  pid = Process.spawn('mvn', 'install', '--quiet', chdir: 'dynamodb-local')
   at_exit do
     `kill -TERM #{pid}`
     puts "DynamoDB Local killed in PID #{pid}"
