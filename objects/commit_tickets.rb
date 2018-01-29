@@ -37,7 +37,7 @@ class CommitTickets
 [`#{puzzle.xpath('file')[0].text}`](\
 https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
 and submitted as ##{done[:number]}. Please, remember that the puzzle was not \
-necessarily added in this particular commit. Maybe it was added earlier, but
+necessarily added in this particular commit. Maybe it was added earlier, but \
 we discovered it only now."
     )
     done
