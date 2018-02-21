@@ -32,6 +32,13 @@ class GithubTickets
     @sources = sources
   end
 
+  def notify(issue, message)
+    @github.add_comment(
+      @repo, issue,
+      "@#{@github.issue(@repo, issue)['user']['login']} #{message}"
+    )
+  end
+
   def submit(puzzle)
     json = @github.create_issue(
       @repo,

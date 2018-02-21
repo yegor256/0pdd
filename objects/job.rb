@@ -20,6 +20,7 @@
 
 require 'mail'
 require_relative 'puzzles'
+require_relative 'diff'
 
 #
 # One job.
@@ -33,6 +34,8 @@ class Job
 
   def proceed
     @repo.push
+    before = @storage.load
     Puzzles.new(@repo, @storage).deploy(@tickets)
+    Diff.new(before, @storage.load).notify(@tickets)
   end
 end

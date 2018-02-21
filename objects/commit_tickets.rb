@@ -29,6 +29,10 @@ class CommitTickets
     @tickets = tickets
   end
 
+  def notify(issue, message)
+    @tickets.notify(issue, message)
+  end
+
   def submit(puzzle)
     done = @tickets.submit(puzzle)
     @github.create_commit_comment(

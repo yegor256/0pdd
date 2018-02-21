@@ -32,6 +32,10 @@ class GithubTaggedTickets
     @tickets = tickets
   end
 
+  def notify(issue, message)
+    @tickets.notify(issue, message)
+  end
+
   def submit(puzzle)
     done = @tickets.submit(puzzle)
     issue = done[:number]

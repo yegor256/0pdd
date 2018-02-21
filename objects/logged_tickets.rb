@@ -32,6 +32,10 @@ class LoggedTickets
     @tickets = tickets
   end
 
+  def notify(issue, message)
+    @tickets.notify(issue, message)
+  end
+
   def submit(puzzle)
     tag = "#{puzzle.xpath('id')[0].text}/submit"
     if @log.exists(tag)

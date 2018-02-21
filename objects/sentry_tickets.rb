@@ -32,6 +32,16 @@ class SentryTickets
     @tickets = tickets
   end
 
+  def notify(issue, message)
+    @tickets.notify(issue, message)
+  rescue UserError => e
+    puts e.message
+  rescue Exception => e
+    Raven.capture_exception(e)
+    email(e)
+    raise e
+  end
+
   def submit(puzzle)
     @tickets.submit(puzzle)
   rescue UserError => e

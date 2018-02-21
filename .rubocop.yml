@@ -6,9 +6,9 @@ AllCops:
 
 Style/CommandLiteral:
   Enabled: false
-Style/IndentationWidth:
+Layout/IndentationWidth:
   Enabled: false
-Style/ElseAlignment:
+Layout/ElseAlignment:
   Enabled: false
 Lint/EndAlignment:
   Enabled: false
@@ -22,7 +22,7 @@ Metrics/AbcSize:
   Max: 60
 Metrics/BlockLength:
   Max: 100
-Style/MultilineMethodCallIndentation:
+Layout/MultilineMethodCallIndentation:
   Enabled: false
 Metrics/CyclomaticComplexity:
   Max: 10

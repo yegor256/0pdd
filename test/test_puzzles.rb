@@ -48,10 +48,6 @@ class TestPuzzles < Test::Unit::TestCase
 
   def test_with_broken_tickets
     tickets = Object.new
-    def tickets.safe
-      true
-    end
-
     def tickets.submit(_)
       nil
     end
