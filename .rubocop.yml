@@ -4,13 +4,15 @@ AllCops:
     - 'assets/**/*'
   DisplayCopNames: true
 
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 1
 Style/CommandLiteral:
   Enabled: false
 Layout/IndentationWidth:
   Enabled: false
 Layout/ElseAlignment:
   Enabled: false
-Lint/EndAlignment:
+Layout/EndAlignment:
   Enabled: false
 Lint/RescueException:
   Enabled: false

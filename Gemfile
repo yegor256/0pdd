@@ -29,12 +29,12 @@ gem 'mail', '2.7.0'
 gem 'mocha', require: false
 gem 'nokogiri', '~>1.8'
 gem 'octokit', '4.8.0'
-gem 'pdd', '0.20.2'
+gem 'pdd', '0.20.3'
 gem 'rack', '~> 2.0'
 gem 'rack-test', '0.8.2'
 gem 'rake', '12.3.0', require: false
 gem 'rspec-rails', '3.7.2', require: false
-gem 'rubocop', '0.52.1', require: false
+gem 'rubocop', '0.53.0', require: false
 gem 'rubocop-rspec', '1.22.2', require: false
 gem 'sass', '3.5.5'
 gem 'sentry-raven', '~>2.6'
