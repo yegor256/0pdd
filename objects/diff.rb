@@ -33,25 +33,35 @@ class Diff
     @after.xpath('//puzzle[issue]').each do |p|
       id = p.xpath('id/text()')[0]
       current = summary(p)
-      old = @before.xpath("//puzzle[@id='#{id}']")
+      old = @before.xpath("//puzzle[id='#{id}']")
       previous = old.empty? ? '' : summary(old[0])
-      tickets.notify(p.xpath('issue/text()')[0], current) if previous != current
+      next if previous == current
+      next if current.empty?
+      tickets.notify(p.xpath('issue/text()')[0], current)
     end
   end
 
   private
 
   def summary(puzzle)
-    list = puzzle.xpath('children//puzzle[@alive="true" and issue]').map do |p|
+    all = puzzle.xpath('children//puzzle').map do |p|
       "[#{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
     end
-    case list.length
-    when 0
-      'all puzzles are solved'
-    when 1
-      'this puzzle is still not solved: ' + list[0]
+    alive = puzzle.xpath('children//puzzle[@alive="true" and issue]').map do |p|
+      "[#{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
+    end
+    if alive.empty?
+      if all.empty?
+        ''
+      elsif all.length == 1
+        "the puzzle #{all[0]} is solved"
+      else
+        "all #{all.length} puzzles are solved: #{all.join(', ')}"
+      end
+    elsif alive.length == 1
+      "the puzzle #{alive[0]} is still not solved"
     else
-      'these puzzles are still not solved: ' + list.join(', ')
+      "these puzzles are still not solved: #{alive.join(', ')}"
     end
   end
 end

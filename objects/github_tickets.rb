@@ -33,10 +33,10 @@ class GithubTickets
   end
 
   def notify(issue, message)
-    # @github.add_comment(
-    #   @repo, issue,
-    #   "@#{@github.issue(@repo, issue)['user']['login']} #{message}"
-    # )
+    @github.add_comment(
+      @repo, issue,
+      "@#{@github.issue(@repo, issue)['user']['login']} #{message}"
+    )
   end
 
   def submit(puzzle)

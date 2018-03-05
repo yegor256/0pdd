@@ -28,7 +28,7 @@ require_relative '../objects/diff'
 # Copyright:: Copyright (c) 2016-2018 Yegor Bugayenko
 # License:: MIT
 class TestDiff < Test::Unit::TestCase
-  def test_notification_on_new_puzzles
+  def test_notification_on_one_new_puzzle
     tickets = Tickets.new
     Diff.new(
       Nokogiri::XML('<puzzles/>'),
@@ -49,14 +49,51 @@ class TestDiff < Test::Unit::TestCase
         </puzzles>'
       )
     ).notify(tickets)
-    assert(tickets.messages.length == 2)
     assert(
-      tickets.messages[0] == '5 this puzzle is still not solved: [6](#)',
-      "Text is wrong: #{tickets.messages[0]}"
+      tickets.messages.length == 1,
+      "Incorrect number of messages: #{tickets.messages.length}"
     )
     assert(
-      tickets.messages[1] == '6 all puzzles are solved',
-      "Text is wrong: #{tickets.messages[1]}"
+      tickets.messages[0] == '5 the puzzle [6](#) is still not solved',
+      "Text is wrong: #{tickets.messages[0]}"
+    )
+  end
+
+  def test_notification_on_two_new_puzzles
+    tickets = Tickets.new
+    Diff.new(
+      Nokogiri::XML('<puzzles/>'),
+      Nokogiri::XML(
+        '<puzzles>
+          <puzzle alive="true">
+            <id>1-abcdef</id>
+            <issue>55</issue>
+            <children>
+              <puzzle alive="true">
+                <id>5-abcdee</id>
+                <issue href="#">66</issue>
+                <children>
+                </children>
+              </puzzle>
+              <puzzle alive="true">
+                <id>5-abcded</id>
+                <issue href="#">77</issue>
+                <children>
+                </children>
+              </puzzle>
+            </children>
+          </puzzle>
+        </puzzles>'
+      )
+    ).notify(tickets)
+    assert(
+      tickets.messages.length == 1,
+      "Incorrect number of messages: #{tickets.messages.length}"
+    )
+    assert(
+      tickets.messages[0] ==
+      '55 these puzzles are still not solved: [66](#), [77](#)',
+      "Text is wrong: #{tickets.messages[0]}"
     )
   end
 
@@ -92,11 +129,34 @@ class TestDiff < Test::Unit::TestCase
         </puzzles>'
       )
     ).notify(tickets)
-    assert(tickets.messages.length == 2)
+    assert(tickets.messages.length == 1)
     assert(
-      tickets.messages[0] == '5 all puzzles are solved',
+      tickets.messages[0] == '5 the puzzle [6](#) is solved',
       "Text is wrong: #{tickets.messages[0]}"
     )
+  end
+
+  def test_quiet_when_no_changes
+    tickets = Tickets.new
+    xml = '<puzzles>
+      <puzzle alive="true">
+        <id>1-abcdef</id>
+        <issue>50</issue>
+        <children>
+          <puzzle alive="true">
+            <id>50-abcdef</id>
+            <issue href="#">60</issue>
+            <children>
+            </children>
+          </puzzle>
+        </children>
+      </puzzle>
+    </puzzles>'
+    Diff.new(
+      Nokogiri::XML(xml),
+      Nokogiri::XML(xml)
+    ).notify(tickets)
+    assert(tickets.messages.empty?)
   end
 
   class Tickets
