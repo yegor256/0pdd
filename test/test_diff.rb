@@ -97,6 +97,40 @@ class TestDiff < Test::Unit::TestCase
     )
   end
 
+  def test_notification_on_solved_puzzle
+    return
+    tickets = Tickets.new
+    Diff.new(
+      Nokogiri::XML(
+        '<puzzles>
+          <puzzle alive="true">
+            <id>100-ffffff</id>
+            <issue>100</issue>
+            <ticket>500</ticket>
+          </puzzle>
+        </puzzles>'
+      ),
+      Nokogiri::XML(
+        '<puzzles>
+          <puzzle alive="false">
+            <id>100-ffffff</id>
+            <issue>100</issue>
+            <ticket>500</ticket>
+          </puzzle>
+        </puzzles>'
+      )
+    ).notify(tickets)
+    assert(
+      tickets.messages.length == 1,
+      "Incorrect number of messages: #{tickets.messages.length}"
+    )
+    assert(
+      tickets.messages[0] ==
+      '55 these puzzles are still not solved: [66](#), [77](#)',
+      "Text is wrong: #{tickets.messages[0]}"
+    )
+  end
+
   def test_notification_on_update
     tickets = Tickets.new
     Diff.new(

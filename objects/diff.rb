@@ -43,13 +43,15 @@ class Diff
 
   private
 
+  def issues(puzzle, xpath)
+    puzzle.xpath(xpath).map do |p|
+      "[#{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
+    end
+  end
+
   def summary(puzzle)
-    all = puzzle.xpath('children//puzzle').map do |p|
-      "[#{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
-    end
-    alive = puzzle.xpath('children//puzzle[@alive="true" and issue]').map do |p|
-      "[#{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
-    end
+    all = issues(puzzle, 'children//puzzle')
+    alive = issues(puzzle, 'children//puzzle[@alive="true" and issue]')
     if alive.empty?
       if all.empty?
         ''
