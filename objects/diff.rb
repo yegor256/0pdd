@@ -67,9 +67,9 @@ class Diff
       if all.empty?
         ''
       elsif all.length == 1
-        "the puzzle #{all[0]} is solved"
+        "the last puzzle #{all[0]} is solved here"
       else
-        "all #{all.length} puzzles are solved: #{all.join(', ')}"
+        "all #{all.length} puzzles are solved here: #{all.join(', ')}"
       end
     elsif alive.length == 1
       "the puzzle #{alive[0]} is still not solved"

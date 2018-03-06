@@ -125,7 +125,7 @@ class TestDiff < Test::Unit::TestCase
     )
     assert(
       tickets.messages[0] ==
-      '500 the puzzle [#100]() is solved',
+      '500 the last puzzle [#100]() is solved here',
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -164,7 +164,7 @@ class TestDiff < Test::Unit::TestCase
     ).notify(tickets)
     assert(tickets.messages.length == 1)
     assert(
-      tickets.messages[0] == '5 the puzzle [#6](#) is solved',
+      tickets.messages[0] == '5 the last puzzle [#6](#) is solved here',
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
