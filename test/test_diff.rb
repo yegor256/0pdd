@@ -98,7 +98,6 @@ class TestDiff < Test::Unit::TestCase
   end
 
   def test_notification_on_solved_puzzle
-    return
     tickets = Tickets.new
     Diff.new(
       Nokogiri::XML(
@@ -126,7 +125,7 @@ class TestDiff < Test::Unit::TestCase
     )
     assert(
       tickets.messages[0] ==
-      '55 these puzzles are still not solved: [66](#), [77](#)',
+      '500 the puzzle [100]() is solved',
       "Text is wrong: #{tickets.messages[0]}"
     )
   end

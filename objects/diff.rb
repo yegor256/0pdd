@@ -39,6 +39,15 @@ class Diff
       next if current.empty?
       tickets.notify(p.xpath('issue/text()')[0], current)
     end
+    @after.xpath('/puzzles/puzzle[ticket]').each do |p|
+      id = p.xpath('id/text()')[0]
+      current = summary(p, true)
+      old = @before.xpath("//puzzle[id='#{id}']")
+      previous = old.empty? ? '' : summary(old[0], true)
+      next if previous == current
+      next if current.empty?
+      tickets.notify(p.xpath('ticket/text()')[0], current)
+    end
   end
 
   private
@@ -49,9 +58,11 @@ class Diff
     end
   end
 
-  def summary(puzzle)
+  def summary(puzzle, itself = false)
     all = issues(puzzle, 'children//puzzle')
+    all += issues(puzzle, 'self::node()') if itself
     alive = issues(puzzle, 'children//puzzle[@alive="true" and issue]')
+    alive += issues(puzzle, 'self::node()[@alive="true" and issue]') if itself
     if alive.empty?
       if all.empty?
         ''
