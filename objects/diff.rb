@@ -54,7 +54,7 @@ class Diff
 
   def issues(puzzle, xpath)
     puzzle.xpath(xpath).map do |p|
-      "[#{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
+      "[##{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
     end
   end
 
