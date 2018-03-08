@@ -37,7 +37,7 @@ class Diff
       previous = old.empty? ? '' : summary(old[0])
       next if previous == current
       next if current.empty?
-      tickets.notify(p.xpath('issue/text()')[0], current)
+      tickets.notify(p.xpath('issue/text()')[0], current + '.')
     end
     @after.xpath('/puzzles/puzzle[ticket]').each do |p|
       id = p.xpath('id/text()')[0]
@@ -46,7 +46,7 @@ class Diff
       previous = old.empty? ? '' : summary(old[0], true)
       next if previous == current
       next if current.empty?
-      tickets.notify(p.xpath('ticket/text()')[0], current)
+      tickets.notify(p.xpath('ticket/text()')[0], current + '.')
     end
   end
 
