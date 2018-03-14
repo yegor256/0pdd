@@ -41,6 +41,7 @@ class TestDiff < Test::Unit::TestCase
               <puzzle alive="true">
                 <id>5-abcdef</id>
                 <issue href="#">6</issue>
+                <ticket>5</ticket>
                 <children>
                 </children>
               </puzzle>
@@ -72,12 +73,14 @@ class TestDiff < Test::Unit::TestCase
               <puzzle alive="true">
                 <id>5-abcdee</id>
                 <issue href="#">66</issue>
+                <ticket>55</ticket>
                 <children>
                 </children>
               </puzzle>
               <puzzle alive="true">
                 <id>5-abcded</id>
                 <issue href="#">77</issue>
+                <ticket>55</ticket>
                 <children>
                 </children>
               </puzzle>
@@ -99,26 +102,18 @@ class TestDiff < Test::Unit::TestCase
 
   def test_notification_on_solved_puzzle
     tickets = Tickets.new
-    Diff.new(
-      Nokogiri::XML(
-        '<puzzles>
-          <puzzle alive="true">
-            <id>100-ffffff</id>
-            <issue>100</issue>
-            <ticket>500</ticket>
-          </puzzle>
-        </puzzles>'
-      ),
-      Nokogiri::XML(
-        '<puzzles>
-          <puzzle alive="false">
-            <id>100-ffffff</id>
-            <issue>100</issue>
-            <ticket>500</ticket>
-          </puzzle>
-        </puzzles>'
-      )
-    ).notify(tickets)
+    before = Nokogiri::XML(
+      '<puzzles>
+        <puzzle alive="true">
+          <id>100-ffffff</id>
+          <issue>100</issue>
+          <ticket>500</ticket>
+        </puzzle>
+      </puzzles>'
+    )
+    after = Nokogiri::XML(before.to_s)
+    after.xpath('//puzzle[id="100-ffffff"]')[0]['alive'] = 'false'
+    Diff.new(before, after).notify(tickets)
     assert(
       tickets.messages.length == 1,
       "Incorrect number of messages: #{tickets.messages.length}"
@@ -130,39 +125,67 @@ class TestDiff < Test::Unit::TestCase
     )
   end
 
+  def test_notification_on_final_solved_puzzle
+    tickets = Tickets.new
+    before = Nokogiri::XML(
+      '<puzzles>
+        <puzzle alive="true">
+          <id>100-1</id>
+          <issue>100</issue>
+          <ticket>999</ticket>
+        </puzzle>
+        <puzzle alive="false">
+          <id>100-2</id>
+          <issue>101</issue>
+          <ticket>999</ticket>
+          <children>
+            <puzzle alive="false">
+              <id>101-1</id>
+              <issue>103</issue>
+              <ticket>101</ticket>
+            </puzzle>
+          </children>
+        </puzzle>
+      </puzzles>'
+    )
+    after = Nokogiri::XML(before.to_s)
+    after.xpath('//puzzle[id="100-1"]')[0]['alive'] = 'false'
+    Diff.new(before, after).notify(tickets)
+    assert(
+      tickets.messages.length == 1,
+      "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
+    )
+    assert(
+      tickets.messages[0] ==
+      '999 all 3 puzzles are solved here: [#100](), [#101](), [#103]().',
+      "Text is wrong: #{tickets.messages[0]}"
+    )
+  end
+
   def test_notification_on_update
     tickets = Tickets.new
-    Diff.new(
-      Nokogiri::XML(
-        '<puzzles>
-          <puzzle alive="true">
-            <id>1-abcdef</id>
-            <issue>5</issue>
-            <children>
-              <puzzle alive="true">
-                <id>5-abcdef</id>
-                <issue href="#">6</issue>
-              </puzzle>
-            </children>
-          </puzzle>
-        </puzzles>'
-      ),
-      Nokogiri::XML(
-        '<puzzles>
-          <puzzle alive="true">
-            <id>1-abcdef</id>
-            <issue>5</issue>
-            <children>
-              <puzzle alive="false">
-                <id>5-abcdef</id>
-                <issue href="#">6</issue>
-              </puzzle>
-            </children>
-          </puzzle>
-        </puzzles>'
-      )
-    ).notify(tickets)
-    assert(tickets.messages.length == 1)
+    before = Nokogiri::XML(
+      '<puzzles>
+        <puzzle alive="true">
+          <id>1-abcdef</id>
+          <issue>5</issue>
+          <children>
+            <puzzle alive="true">
+              <id>5-abcdef</id>
+              <issue href="#">6</issue>
+              <ticket>5</ticket>
+            </puzzle>
+          </children>
+        </puzzle>
+      </puzzles>'
+    )
+    after = Nokogiri::XML(before.to_s)
+    after.xpath('//puzzle[id="5-abcdef"]')[0]['alive'] = 'false'
+    Diff.new(before, after).notify(tickets)
+    assert(
+      tickets.messages.length == 1,
+      "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
+    )
     assert(
       tickets.messages[0] == '5 the last puzzle [#6](#) is solved here.',
       "Text is wrong: #{tickets.messages[0]}"

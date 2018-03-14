@@ -30,39 +30,39 @@ class Diff
   end
 
   def notify(tickets)
-    @after.xpath('//puzzle[issue]').each do |p|
-      id = p.xpath('id/text()')[0]
-      current = summary(p)
-      old = @before.xpath("//puzzle[id='#{id}']")
-      previous = old.empty? ? '' : summary(old[0])
+    @after.xpath('//puzzle/ticket/text()').map(&:to_s).uniq.each do |t|
+      current = summary(@after, t)
+      previous = summary(@before, t)
       next if previous == current
       next if current.empty?
-      tickets.notify(p.xpath('issue/text()')[0], current + '.')
-    end
-    @after.xpath('/puzzles/puzzle[ticket]').each do |p|
-      id = p.xpath('id/text()')[0]
-      current = summary(p, true)
-      old = @before.xpath("//puzzle[id='#{id}']")
-      previous = old.empty? ? '' : summary(old[0], true)
-      next if previous == current
-      next if current.empty?
-      tickets.notify(p.xpath('ticket/text()')[0], current + '.')
+      tickets.notify(t, current + '.')
     end
   end
 
   private
 
-  def issues(puzzle, xpath)
-    puzzle.xpath(xpath).map do |p|
-      "[##{p.xpath('issue/text()')[0]}](#{p.xpath('issue/@href')})"
-    end
+  def issues(xml, *xpath)
+    xpath.map { |x| xml.xpath(x) }.flatten.map do |p|
+      issue = p.xpath('issue')
+      if issue.empty?
+        "`#{p.xpath('id')}`"
+      else
+        "[##{issue[0].text}](#{issue[0]['href']})"
+      end
+    end.sort
   end
 
-  def summary(puzzle, itself = false)
-    all = issues(puzzle, 'children//puzzle')
-    all += issues(puzzle, 'self::node()') if itself
-    alive = issues(puzzle, 'children//puzzle[@alive="true" and issue]')
-    alive += issues(puzzle, 'self::node()[@alive="true" and issue]') if itself
+  def summary(xml, ticket)
+    all = issues(
+      xml,
+      "//puzzle[ticket='#{ticket}']/children//puzzle",
+      "//puzzle[ticket='#{ticket}']"
+    )
+    alive = issues(
+      xml,
+      "//puzzle[ticket='#{ticket}']/children//puzzle[@alive='true']",
+      "//puzzle[ticket='#{ticket}' and @alive='true']"
+    )
     if alive.empty?
       if all.empty?
         ''
