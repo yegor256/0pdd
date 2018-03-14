@@ -95,7 +95,7 @@ class TestDiff < Test::Unit::TestCase
     )
     assert(
       tickets.messages[0] ==
-      '55 these puzzles are still not solved: [#66](#), [#77](#).',
+      '55 2 puzzles [#66](#), [#77](#) are still not solved.',
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -120,7 +120,7 @@ class TestDiff < Test::Unit::TestCase
     )
     assert(
       tickets.messages[0] ==
-      '500 the last puzzle [#100]() is solved here.',
+      '500 the only puzzle [#100]() is solved here.',
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -187,7 +187,7 @@ class TestDiff < Test::Unit::TestCase
       "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
     )
     assert(
-      tickets.messages[0] == '5 the last puzzle [#6](#) is solved here.',
+      tickets.messages[0] == '5 the only puzzle [#6](#) is solved here.',
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
