@@ -125,7 +125,7 @@ class TestDiff < Test::Unit::TestCase
     )
   end
 
-  def test_notification_on_final_solved_puzzle
+  def test_notification_on_one_solved_puzzle
     tickets = Tickets.new
     before = Nokogiri::XML(
       '<puzzles>
@@ -139,9 +139,9 @@ class TestDiff < Test::Unit::TestCase
           <issue>101</issue>
           <ticket>999</ticket>
           <children>
-            <puzzle alive="false">
+            <puzzle alive="true">
               <id>101-1</id>
-              <issue>103</issue>
+              <issue>13</issue>
               <ticket>101</ticket>
             </puzzle>
           </children>
@@ -157,7 +157,7 @@ class TestDiff < Test::Unit::TestCase
     )
     assert(
       tickets.messages[0] ==
-      '999 all 3 puzzles are solved here: [#100](), [#101](), [#103]().',
+      '999 the puzzle [#13]() is still not solved; solved: [#100](), [#101]().',
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
