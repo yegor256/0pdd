@@ -16,6 +16,8 @@ Layout/EndAlignment:
   Enabled: false
 Lint/RescueException:
   Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
 Metrics/MethodLength:
   Max: 50
 Metrics/ClassLength:
