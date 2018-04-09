@@ -40,7 +40,7 @@ class GithubTaggedTickets
     done = @tickets.submit(puzzle)
     issue = done[:number]
     yaml = @sources.config
-    if yaml['tags']&.is_a?(Array)
+    if yaml['tags'] && yaml['tags'].is_a?(Array)
       tags = yaml['tags'].map(&:strip).map(&:downcase)
       labels = @github.labels(@repo)
         .map { |json| json['name'] }
