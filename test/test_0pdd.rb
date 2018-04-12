@@ -129,4 +129,10 @@ class AppTest < Test::Unit::TestCase
       "broken XML: #{xml}"
     )
   end
+
+  def test_not_found
+    get('/unknown_path')
+    assert(last_response.status == 404)
+    assert(last_response.content_type == 'text/html;charset=utf-8')
+  end
 end

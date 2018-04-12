@@ -356,6 +356,7 @@ end
 
 not_found do
   status 404
+  content_type 'text/html', charset: 'utf-8'
   haml :not_found, layout: :layout, locals: merged(
     title: 'Page not found'
   )
