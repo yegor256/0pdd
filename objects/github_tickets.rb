@@ -20,6 +20,7 @@
 
 require 'octokit'
 require_relative 'truncated'
+require_relative 'maybe_text'
 
 #
 # Tickets in Github.
@@ -118,8 +119,10 @@ from ##{puzzle.xpath('ticket')[0].text} has to be resolved:\
 The puzzle was created by #{puzzle.xpath('author')[0].text} on \
 #{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. \
 \n\n\
-Estimate: #{puzzle.xpath('estimate')[0].text} minutes, \
-role: #{puzzle.xpath('role')[0].text}.\
+#{MaybeText.new("Estimate: #{puzzle.xpath('estimate')[0].text} minutes, ",
+                puzzle.xpath('estimate')[0].text)}  \
+#{MaybeText.new("role: #{puzzle.xpath('role')[0].text}.",
+                puzzle.xpath('role')[0].text, 'IMP')}  \
 \n\n\
 If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
