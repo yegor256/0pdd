@@ -245,7 +245,7 @@ get '/ping-github' do
     puts "Repository invitation #{i['id']} accepted"
   end
   gh.organization_invitations.each do |i|
-    # @todo #194:30min Need to figure out the correct way to accept the 
+    # @todo #194:30min Need to figure out the correct way to accept the
     #  Organization Invitation. It's not quite clear.
     # Octokit Doc Link: https://bit.ly/2qFkfpU
   end
