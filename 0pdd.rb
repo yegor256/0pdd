@@ -157,7 +157,7 @@ end
 
 get '/robots.txt' do
   'User-agent: *
-Disallow: /snapshto'
+Disallow: /snapshot'
 end
 
 get '/version' do
