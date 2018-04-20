@@ -10,6 +10,7 @@ release:
   script: |-
     pdd -f /dev/null
     bundle install
+    ruby -v
     rake
     git remote add heroku git@heroku.com:zeropdd.git
     rm -rf ~/.ssh
