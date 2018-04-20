@@ -63,6 +63,10 @@ optional parameters inside:
 errors:
   - yegor256@gmail.com
 alerts:
+  suppress:
+    - on-found-puzzle
+    - on-lost-puzzle
+    - on-scope
   github:
     - yegor256
 format:
@@ -79,9 +83,18 @@ a very useful feature, since very often programmers make
 mistakes in PDD puzzle formatting. We would recommend you use this feature.
 
 Section `alerts` allows you to specify users that will be notified when
-new PDD puzzles show us. By default we will just submit GitHub tickets
+new PDD puzzles show up. By default we will just submit GitHub tickets
 and that's it. If you add `github` subsection there, you can list GitHub
-users who will be notified.
+users who will be "notified": their GitHub nicknames will be added to
+each puzzle description and GitHub will notify them by email.
+
+Subsection `suppress` lets you make 0pdd more quiet, where it's necessary:
+
+  * `on-found-puzzle`: stay quiet when a new puzzle is discovered
+
+  * `on-lost-puzzle`: stay quiet when a puzzle is gone
+
+  * `on-scope`: stay quiet when child puzzles change statuses
 
 [pdd](https://github.com/yegor256/pdd) is the tool that parses your source
 code files. You can configure its behavior by adding `.pdd` file to the

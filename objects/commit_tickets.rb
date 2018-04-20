@@ -22,8 +22,9 @@
 # Tickets that post into GitHub commits.
 #
 class CommitTickets
-  def initialize(repo, github, commit, tickets)
+  def initialize(repo, sources, github, commit, tickets)
     @repo = repo
+    @sources = sources
     @github = github
     @commit = commit
     @tickets = tickets
@@ -35,21 +36,23 @@ class CommitTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
-    @github.create_commit_comment(
-      @repo, @commit,
-      "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
-[`#{puzzle.xpath('file')[0].text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
-and submitted as ##{done[:number]}. Please, remember that the puzzle was not \
-necessarily added in this particular commit. Maybe it was added earlier, but \
-we discovered it only now."
-    )
+    unless @sources.config.dig('alerts', 'suppress', 'on-found-puzzle')
+      @github.create_commit_comment(
+        @repo, @commit,
+        "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
+  [`#{puzzle.xpath('file')[0].text}`](\
+  https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
+  and submitted as ##{done[:number]}. Please, remember that the puzzle was not \
+  necessarily added in this particular commit. Maybe it was added earlier, but \
+  we discovered it only now."
+      )
+    end
     done
   end
 
   def close(puzzle)
     done = @tickets.close(puzzle)
-    if done
+    if done && !@sources.config.dig('alerts', 'suppress', 'on-lost-puzzle')
       @github.create_commit_comment(
         @repo, @commit,
         "Puzzle `#{puzzle.xpath('id')[0].text}` disappeared from \

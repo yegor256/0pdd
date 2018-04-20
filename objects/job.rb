@@ -36,6 +36,7 @@ class Job
     @repo.push
     before = @storage.load
     Puzzles.new(@repo, @storage).deploy(@tickets)
+    return if @repo.config.dig('alerts', 'suppress', 'on-scope')
     Diff.new(before, @storage.load).notify(@tickets)
   end
 end

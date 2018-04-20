@@ -318,6 +318,7 @@ post '/hook/github' do
                     name,
                     CommitTickets.new(
                       name,
+                      repo,
                       settings.github,
                       json['head_commit']['id'],
                       GithubTaggedTickets.new(
