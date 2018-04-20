@@ -34,6 +34,7 @@ architect:
 merge:
   commanders: []
   script: |-
+    pdd -f /dev/null
     bundle install
     rake
 deploy: {}

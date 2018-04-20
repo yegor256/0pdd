@@ -247,7 +247,7 @@ get '/ping-github' do
   gh.organization_invitations.each do |i|
     # @todo #194:30min Need to figure out the correct way to accept the
     #  Organization Invitation. It's not quite clear.
-    # Octokit Doc Link: https://bit.ly/2qFkfpU
+    #  Octokit Doc Link: https://bit.ly/2qFkfpU
   end
   gh.notifications.map do |n|
     reason = n['reason']
