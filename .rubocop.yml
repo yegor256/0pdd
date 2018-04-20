@@ -3,6 +3,7 @@ AllCops:
     - 'bin/**/*'
     - 'assets/**/*'
   DisplayCopNames: true
+  TargetRubyVersion: 2.3
 
 Naming/UncommunicativeMethodParamName:
   MinNameLength: 1
