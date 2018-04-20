@@ -39,6 +39,10 @@ to the source code (format it [right](https://github.com/teamed/pdd)).
 Then, `git push` something and see what happens. You should see a new
 issue created in your repository by [@0pdd](https://github.com/0pdd).
 
+The dependency tree of all puzzles in your repository you can find
+here: http://www.0pdd.com/p?name=yegor256/0pdd (just replace the name
+of the repo in the URL).
+
 Don't forget to add that cute little badge to your `README.md`, just
 like we did here in this repo (see above). The Markdown you need
 will look like this (replace `yegor256/0pdd` with GitHub coordinates
