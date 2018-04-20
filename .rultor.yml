@@ -8,6 +8,7 @@ install: |-
   git config --global user.name "0pdd.com"
 release:
   script: |-
+    pdd -f /dev/null
     bundle install
     rake
     git remote add heroku git@heroku.com:zeropdd.git
