@@ -20,6 +20,7 @@
 
 require 'octokit'
 require_relative 'truncated'
+require_relative 'maybe_text'
 
 #
 # Tickets in Github.
@@ -112,14 +113,18 @@ source code, that's why I closed this issue." +
     start, stop = puzzle.xpath('lines')[0].text.split('-')
     sha = @github.list_commits(@repo)[0]['sha']
     url = "https://github.com/#{@repo}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
+    # @todo #195:60min Replace body with Template markdown using
+    #  engine such as Liquid. https://github.com/Shopify/liquid
     "The puzzle `#{puzzle.xpath('id')[0].text}` \
 from ##{puzzle.xpath('ticket')[0].text} has to be resolved:\
 \n\n#{url}\n\n\
 The puzzle was created by #{puzzle.xpath('author')[0].text} on \
 #{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. \
 \n\n\
-Estimate: #{puzzle.xpath('estimate')[0].text} minutes, \
-role: #{puzzle.xpath('role')[0].text}.\
+#{MaybeText.new("Estimate: #{puzzle.xpath('estimate')[0].text} minutes, ",
+                puzzle.xpath('estimate')[0].text)}  \
+#{MaybeText.new("role: #{puzzle.xpath('role')[0].text}.",
+                puzzle.xpath('role')[0].text, 'IMP')}  \
 \n\n\
 If you have any technical questions, don't ask me, \
 submit new tickets instead. The task will be \"done\" when \
