@@ -7,4 +7,3 @@ coverage/
 rdoc/
 .sass-cache/
 Gemfile.lock
-config.yml
