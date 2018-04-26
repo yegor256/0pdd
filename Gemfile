@@ -34,8 +34,8 @@ gem 'rack', '~> 2.0.4'
 gem 'rack-test', '1.0.0'
 gem 'rake', '12.3.1', require: false
 gem 'rspec-rails', '3.7.2', require: false
-gem 'rubocop', '0.54.0', require: false
-gem 'rubocop-rspec', '1.25.0', require: false
+gem 'rubocop', '0.55.0', require: false
+gem 'rubocop-rspec', '1.25.1', require: false
 gem 'sass', '3.5.6'
 gem 'sentry-raven', '~>2.7.2'
 gem 'sinatra', '2.0.1'
