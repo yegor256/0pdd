@@ -47,17 +47,20 @@ class Exec
       @cmd
     ].join(' && ')
     start = Time.now
+    out = ''
+    err = ''
     begin
       Timeout.timeout(240) do
         Open3.popen3('bash', '-c', c) do |stdin, stdout, stderr, thr|
           stdin.close
+          out += stdout.read_nonblock(8) until stdout.eof?
+          err = stderr.read
           code = thr.value.exitstatus
           unless code.zero?
             raise Error.new(
-              code, "#{c} [#{code}]:\n#{stderr.read}\n#{stdout.read}"
+              code, "#{c} [#{code}]:\n#{err}\n#{out}"
             )
           end
-          stdout.read
         end
       end
     rescue Timeout::Error => e
@@ -66,8 +69,11 @@ class Exec
 We had to terminate it: \"#{e.message}.\" \
 Most likely your repository has too many files to parse. \
 Try to ignore unnecessary files by using --exclude option in your .pdd file. \
-More information here: https://github.com/yegor256/pdd#how-to-run."
+More information here: https://github.com/yegor256/pdd#how-to-run:\
+\n\n${out}
+\n\n#{err}"
       )
     end
+    out + err
   end
 end

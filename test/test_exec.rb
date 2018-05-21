@@ -29,7 +29,7 @@ require_relative '../objects/user_error'
 # License:: MIT
 class TestExec < Test::Unit::TestCase
   def test_simple_bash_call
-    assert_equal("123\n", Exec.new('echo 123').run)
+    assert(Exec.new('echo 123').run.start_with?("123\n"))
   end
 
   def test_bash_failure
@@ -42,6 +42,6 @@ class TestExec < Test::Unit::TestCase
     error = assert_raises Exec::Error do
       Exec.new('exit 1').run
     end
-    assert_equal error.code, 1
+    assert_equal(1, error.code)
   end
 end
