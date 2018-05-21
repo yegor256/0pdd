@@ -47,7 +47,7 @@ class Exec
       @cmd
     ].join(' && ')
     begin
-      Timeout.timeout(120) do
+      Timeout.timeout(240) do
         Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
           code = thr.value.exitstatus
           unless code.zero?
