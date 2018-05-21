@@ -49,7 +49,8 @@ class Exec
     start = Time.now
     begin
       Timeout.timeout(240) do
-        Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
+        Open3.popen3('bash', '-c', c) do |stdin, stdout, stderr, thr|
+          stdin.close
           code = thr.value.exitstatus
           unless code.zero?
             raise Error.new(
@@ -61,9 +62,9 @@ class Exec
       end
     rescue Timeout::Error => e
       raise Error.new(
-        1, "\"#{c}\" took too long (over #{Time.now - start} seconds). \
+        1, "\"#{c}\" took too long (over #{(Time.now - start).to_i} seconds). \
 We had to terminate it: \"#{e.message}.\" \
-Most likely your repository is too big for us. \
+Most likely your repository has too many files to parse. \
 Try to ignore unnecessary files by using --exclude option in your .pdd file. \
 More information here: https://github.com/yegor256/pdd#how-to-run."
       )
