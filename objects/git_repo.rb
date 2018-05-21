@@ -58,15 +58,16 @@ class GitRepo
   end
 
   def xml
-    tmp = Tempfile.new('pdd.xml')
     raise "Path is absent: #{@path}" unless File.exist?(@path)
-    begin
-      Exec.new("cd #{@path} && pdd -v -f #{tmp.path}").run
-    rescue Exec::Error => e
-      raise UserError, e.message if e.code == 1
-      raise e
+    Tempfile.open do |f|
+      begin
+        Exec.new("cd #{@path} && pdd -v -f #{f.path}").run
+      rescue Exec::Error => e
+        raise UserError, e.message if e.code == 1
+        raise e
+      end
+      Nokogiri::XML(File.read(f))
     end
-    Nokogiri::XML(File.open(tmp))
   end
 
   def push
