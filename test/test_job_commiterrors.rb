@@ -20,10 +20,7 @@
 
 require 'test/unit'
 require 'mocha/test_unit'
-require 'timeout'
 require_relative 'test__helper'
-require_relative 'fake_repo'
-require_relative 'fake_github'
 require_relative '../objects/job_commiterrors'
 
 # JobCommitErrors test.
@@ -31,24 +28,24 @@ require_relative '../objects/job_commiterrors'
 # Copyright:: Copyright (c) 2016-2018 Yegor Bugayenko
 # License:: MIT
 class TestJobCommitErrors < Test::Unit::TestCase
+  class Stub
+    attr_reader :reported
+    def create_commit_comment(_, _, text)
+      @reported = text
+    end
+  end
+
   def test_timeout_scenario
-    repo = FakeRepo.new
     job = Object.new
     def job.proceed
-      sleep(100)
+      raise 'Intended to be here'
     end
-    reported = []
-    github = Object.new
-    def github.create_commit_comment(name, commit, text)
-      reported << text
-    end
+    github = Stub.new
     begin
-      Timeout.timeout(1) do
-        JobCommitErrors.new('yegor256/0pdd', github, '12345678', job).proceed
-      end
-    rescue Timeout::Error
-      # ignore it
+      JobCommitErrors.new('yegor256/0pdd', github, '12345678', job).proceed
+    rescue StandardError => e
+      assert(!e.nil?)
     end
-    assert_equal(1, reported.count)
+    assert(!github.reported.empty?)
   end
 end

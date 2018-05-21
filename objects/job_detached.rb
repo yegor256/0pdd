@@ -19,7 +19,6 @@
 # SOFTWARE.
 
 require 'fileutils'
-require 'timeout'
 
 #
 # One job.
@@ -44,11 +43,12 @@ class JobDetached
     lock = @repo.lock
     FileUtils.mkdir_p(File.dirname(lock))
     f = File.open(lock, File::RDWR | File::CREAT, 0o644)
-    Timeout.timeout(120) do
-      f.flock(File::LOCK_EX)
+    f.flock(File::LOCK_EX)
+    begin
       @job.proceed
+    ensure
       f.close
+      File.delete(lock)
     end
-    File.delete(lock)
   end
 end

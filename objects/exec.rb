@@ -20,6 +20,7 @@
 
 require 'English'
 require 'open3'
+require 'timeout'
 
 #
 # One command exec
@@ -45,12 +46,16 @@ class Exec
       'set -o pipefail',
       @cmd
     ].join(' && ')
-    Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
-      code = thr.value.exitstatus
-      unless code.zero?
-        raise Error.new(code, "#{c} [#{code}]:\n#{stderr.read}\n#{stdout.read}")
+    Timeout.timeout(120) do
+      Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
+        code = thr.value.exitstatus
+        unless code.zero?
+          raise Error.new(
+            code, "#{c} [#{code}]:\n#{stderr.read}\n#{stdout.read}"
+          )
+        end
+        stdout.read
       end
-      stdout.read
     end
   end
 end

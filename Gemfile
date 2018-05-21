@@ -20,7 +20,7 @@
 source 'https://rubygems.org'
 ruby '2.3.3'
 
-gem 'aws-sdk-dynamodb', '1.5.0'
+gem 'aws-sdk-dynamodb', '1.6.0'
 gem 'aws-sdk-s3', '1.9.0'
 gem 'codecov', '0.1.10'
 gem 'glogin', '0.2.1'
@@ -42,4 +42,4 @@ gem 'sinatra', '2.0.1'
 gem 'sinatra-contrib', '~>2.0.1'
 gem 'sprockets', '3.7.1'
 gem 'test-unit', '3.2.7', require: false
-gem 'xcop', '0.5.8'
+gem 'xcop', '0.6'
