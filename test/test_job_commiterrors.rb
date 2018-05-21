@@ -18,21 +18,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if Gem.win_platform? then
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-    SimpleCov::Formatter::HTMLFormatter
-  ]
-  SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/features/"
-  end
-else
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
-    SimpleCov::Formatter::HTMLFormatter
-  )
-  SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/features/"
-    #minimum_coverage 30
+require 'test/unit'
+require 'mocha/test_unit'
+require 'timeout'
+require_relative 'test__helper'
+require_relative 'fake_repo'
+require_relative 'fake_github'
+require_relative '../objects/job_commiterrors'
+
+# JobCommitErrors test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016-2018 Yegor Bugayenko
+# License:: MIT
+class TestJobCommitErrors < Test::Unit::TestCase
+  def test_timeout_scenario
+    repo = FakeRepo.new
+    job = Object.new
+    def job.proceed
+      sleep(100)
+    end
+    reported = []
+    github = Object.new
+    def github.create_commit_comment(name, commit, text)
+      reported << text
+    end
+    begin
+      Timeout.timeout(1) do
+        JobCommitErrors.new('yegor256/0pdd', github, '12345678', job).proceed
+      end
+    rescue Timeout::Error
+      # ignore it
+    end
+    assert_equal(1, reported.count)
   end
 end
