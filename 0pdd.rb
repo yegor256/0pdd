@@ -245,11 +245,6 @@ get '/ping-github' do
     gh.accept_repository_invitation(i['id'])
     puts "Repository invitation #{i['id']} accepted"
   end
-  gh.organization_invitations('zerocracy').each do |i|
-    # @todo #194:30min Need to figure out the correct way to accept the
-    #  Organization Invitation. It's not quite clear.
-    #  Octokit Doc Link: https://bit.ly/2qFkfpU
-  end
   gh.notifications.map do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
@@ -272,6 +267,9 @@ I see you're talking to me, but I can't reply since I'm not a chat bot."
     gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
     "#{repo}: #{reason}"
   end.join("\n") + "\n"
+  # @todo #194:30min Need to figure out the correct way to accept the
+  #  Organization Invitation. It's not quite clear.
+  #  Octokit Doc Link: https://bit.ly/2qFkfpU
 end
 
 get '/hook/github' do

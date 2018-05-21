@@ -46,6 +46,7 @@ class Exec
       'set -o pipefail',
       @cmd
     ].join(' && ')
+    start = Time.now
     begin
       Timeout.timeout(240) do
         Open3.popen3('bash', '-c', c) do |_, stdout, stderr, thr|
@@ -60,7 +61,8 @@ class Exec
       end
     rescue Timeout::Error => e
       raise Error.new(
-        1, "\"#{c}\" took too long and we had to terminate it (#{e.message}). \
+        1, "\"#{c}\" took too long (over #{Time.now - start} seconds). \
+We had to terminate it: \"#{e.message}.\" \
 Most likely your repository is too big for us. \
 Try to ignore unnecessary files by using --exclude option in your .pdd file. \
 More information here: https://github.com/yegor256/pdd#how-to-run."
