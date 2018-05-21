@@ -244,7 +244,7 @@ get '/ping-github' do
     gh.accept_repository_invitation(i['id'])
     puts "Repository invitation #{i['id']} accepted"
   end
-  gh.organization_invitations.each do |i|
+  gh.organization_invitations('zerocracy').each do |i|
     # @todo #194:30min Need to figure out the correct way to accept the
     #  Organization Invitation. It's not quite clear.
     #  Octokit Doc Link: https://bit.ly/2qFkfpU
@@ -371,6 +371,7 @@ end
 error do
   status 503
   e = env['sinatra.error']
+  Raven.capture_exception(e)
   haml(
     :error,
     layout: :layout,
