@@ -188,9 +188,6 @@ get '/xml' do
 end
 
 get '/log' do
-  # @todo #110:30min Let's not show the MORE link in the log list
-  #  if the list doesn't have any more elements. At the moment we keep
-  #  showing that MORE link if any elements are there.
   repo = repo_name(params[:name])
   haml :log, layout: :layout, locals: merged(
     title: repo,

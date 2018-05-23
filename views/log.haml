@@ -9,14 +9,15 @@
 %p
   Since
   = Time.at(since).iso8601
-- events = log.list(since)
+- log_list = log.list(since)
+- events = log_list.items
 - if events.empty?
   %p
     There are no events yet.
 - else
-  - last = nil
+  - next_page = nil
   - events.each do |e|
-    - last = e['time'].to_i
+    - next_page = e['time'].to_i
     %p
       %a{href:url("/log-item?repo=#{repo}&tag=#{e['tag']}")}>= Time.at(e['time']).iso8601
       = ':'
@@ -24,9 +25,9 @@
       - if defined?(user) && user[:login] == 'yegor256'
         %a{href:url("/log-delete?name=#{repo}&time=#{e['time'].to_i}&tag=#{e['tag']}"), onclick: "return confirm('You are going to delete the \"#{e['tag']}\" event. Normally you should not do this. Are you sure?')"}
           delete
-  - if last
+  - unless log_list.last_evaluated_key.nil?
     %p
-      %a{href:url("/log?name=#{repo}&since=#{last}")}
+      %a{href:url("/log?name=#{repo}&since=#{next_page}")}
         = 'more'
 
 = Haml::Engine.new(File.read('views/_footer.haml')).render(Object.new, local_assigns)

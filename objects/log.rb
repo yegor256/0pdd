@@ -100,6 +100,6 @@ class Log
         ':t' => since
       },
       key_condition_expression: 'repo=:r and #time<:t'
-    ).items
+    )
   end
 end
