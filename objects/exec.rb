@@ -74,6 +74,6 @@ More information here: https://github.com/yegor256/pdd#how-to-run:\
 \n\n#{err}"
       )
     end
-    out + err
+    out
   end
 end

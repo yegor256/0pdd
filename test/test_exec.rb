@@ -32,6 +32,10 @@ class TestExec < Test::Unit::TestCase
     assert(Exec.new('echo 123').run.start_with?("123\n"))
   end
 
+  def test_hides_stderr
+    assert(Exec.new('set +x; echo hello').run.start_with?('hello'))
+  end
+
   def test_bash_failure
     assert_raises Exec::Error do
       Exec.new('how_are_you').run
