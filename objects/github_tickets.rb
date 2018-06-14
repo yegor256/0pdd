@@ -118,7 +118,7 @@ source code, that's why I closed this issue." +
       File.join(File.dirname(__FILE__), 'templates/github_tickets_body.haml')
     )
     Haml::Engine.new(template).render(
-      Object.new, :url => url, :puzzle => puzzle
+      Object.new, url: url, puzzle: puzzle
     )
   end
 end
