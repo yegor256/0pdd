@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'haml'
 require 'octokit'
 require_relative 'truncated'
 require_relative 'maybe_text'
@@ -113,24 +114,11 @@ source code, that's why I closed this issue." +
     start, stop = puzzle.xpath('lines')[0].text.split('-')
     sha = @github.list_commits(@repo)[0]['sha']
     url = "https://github.com/#{@repo}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
-    # @todo #195:60min Replace body with Template markdown using
-    #  engine such as Liquid. https://github.com/Shopify/liquid
-    "The puzzle `#{puzzle.xpath('id')[0].text}` \
-from ##{puzzle.xpath('ticket')[0].text} has to be resolved:\
-\n\n#{url}\n\n\
-The puzzle was created by #{puzzle.xpath('author')[0].text} on \
-#{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. \
-\n\n\
-#{MaybeText.new("Estimate: #{puzzle.xpath('estimate')[0].text} minutes, ",
-                puzzle.xpath('estimate')[0].text)}  \
-#{MaybeText.new("role: #{puzzle.xpath('role')[0].text}.",
-                puzzle.xpath('role')[0].text, 'IMP')}  \
-\n\n\
-If you have any technical questions, don't ask me, \
-submit new tickets instead. The task will be \"done\" when \
-the problem is fixed and the text of the puzzle is \
-_removed_ from the source code. Here is more about \
-[PDD](http://www.yegor256.com/2009/03/04/pdd.html) and \
-[about me](http://www.yegor256.com/2017/04/05/pdd-in-action.html)."
+    template = File.read(
+      File.join(File.dirname(__FILE__), 'templates/github_tickets_body.haml')
+    )
+    Haml::Engine.new(template).render(
+      Object.new, :url => url, :puzzle => puzzle
+    )
   end
 end
