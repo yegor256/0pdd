@@ -178,10 +178,20 @@ class TestGitRepo < Test::Unit::TestCase
   end
 
   def test_fetch_config
-    Dir.mktmpdir 'test' do |d|
-      repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: git(d))
-      repo.push
-      assert(repo.config['foo'])
+    clean_dir = ""
+    begin
+      Dir.mktmpdir 'test' do |d|
+        clean_dir = d
+        repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: git(d))
+        repo.push
+        assert(repo.config['foo'])
+      end
+    # HACK: (For Win) Don't deal with deletion issues
+    # Data stored in temp dir, system can deal with it by itself.
+    # On Linux: /tmp gets wiped on reboot automatically
+    # On Windows: %temp% gets wiped as needed (Win10 Storage Sense)
+    rescue Errno::ENOTEMPTY
+      FileUtils.remove_entry(clean_dir, true)
     end
   end
 

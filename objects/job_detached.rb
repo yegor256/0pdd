@@ -48,7 +48,12 @@ class JobDetached
       @job.proceed
     ensure
       f.close
-      File.delete(lock)
+      begin
+        File.delete(lock)
+      rescue Errno::EACCES
+        lock.close
+        File.delete(lock)
+      end
     end
   end
 end
