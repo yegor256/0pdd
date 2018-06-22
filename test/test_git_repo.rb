@@ -178,7 +178,7 @@ class TestGitRepo < Test::Unit::TestCase
   end
 
   def test_fetch_config
-    clean_dir = ""
+    clean_dir = ''
     begin
       Dir.mktmpdir 'test' do |d|
         clean_dir = d
