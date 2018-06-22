@@ -186,10 +186,6 @@ class TestGitRepo < Test::Unit::TestCase
         repo.push
         assert(repo.config['foo'])
       end
-    # HACK: (For Win) Don't deal with deletion issues
-    # Data stored in temp dir, system can deal with it by itself.
-    # On Linux: /tmp gets wiped on reboot automatically
-    # On Windows: %temp% gets wiped as needed (Win10 Storage Sense)
     rescue Errno::ENOTEMPTY
       FileUtils.remove_entry(clean_dir, true)
     end
