@@ -133,7 +133,29 @@ the necessary puzzle from the source code and let us close the issue.
 
 ## How to contribute?
 
-Just submit a pull request. Make sure `rake` passes.
+It is a Ruby project.
+First, install
+[Ruby 2.3+](https://www.ruby-lang.org/en/documentation/installation/),
+[Rubygems](https://rubygems.org/pages/download),
+and
+[Bundler](https://bundler.io/).
+Then:
+
+```bash
+$ bundle update
+$ rake
+```
+
+The build has to be clean. If it's not, [submit an issue](https://github.com/yegor256/0pdd/issues).
+
+Then, make your changes, make sure the build is still clean,
+and [submit a pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
+
+To run it locally:
+
+```
+$ rake run
+```
 
 If you want to run it on your own machine, you will need to add this
 `config.yml` file to the root directory of this repository:
