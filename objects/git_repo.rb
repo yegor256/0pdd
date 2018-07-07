@@ -104,8 +104,7 @@ class GitRepo
         'git fetch --quiet',
         "git checkout #{Shellwords.escape(@master)}",
         'git rebase --abort || true',
-        'git stash',
-        "git rebase --strategy-option=theirs \
+        "git rebase --autostash --strategy-option=theirs \
 #{Shellwords.escape("origin/#{@master}")}"
       ].join(' && ')
     ).run
