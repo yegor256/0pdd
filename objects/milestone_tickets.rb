@@ -40,7 +40,7 @@ class MilestoneTickets
     if @sources.config.dig('tickets', 'inherit-milestone')
       num = puzzle.xpath('ticket')[0].text
       parent = @github.issue(@repo, num)
-      unless parent.nil? or parent.['milestone'].nil?
+      unless parent.nil? or parent['milestone'].nil?
         begin
           @github.update_issue(@repo, num, { :milestone => parent['milestone']['number'] })
           unless @sources.config.dig('alerts', 'suppress', 'on-inherited-milestone')
