@@ -59,6 +59,7 @@ to us with the text you see below:\
           )
         end
       end
+    end
   end
 
   def close(puzzle)
