@@ -78,7 +78,6 @@ alerts:
   end
   
   def test_does_not_set_milestone
-    set = false
     sources = Object.new
     def sources.config
       YAML.safe_load("")
@@ -87,8 +86,11 @@ alerts:
     def github.issue(_, _)
       { "milestone" => { "number" => 123, "title" => "v1.0" } }
     end
-    define_method github.update_issue(_, _, options)
-      set = true
+    def github.update_issue(_, _, options)
+      @updated = true
+    end
+    class << github
+      attr_accessor :updated
     end
     tickets = Object.new
     def tickets.submit(puzzle)
@@ -110,7 +112,7 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert_equal(false, set)
+    assert(not github.updated?)
   end
   
   def test_adds_comment
@@ -159,3 +161,4 @@ tickets:
     assert(github.comment.starts_with?('This puzzle inherited milestone'))
   end
 end
+
