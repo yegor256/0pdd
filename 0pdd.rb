@@ -324,10 +324,15 @@ post '/hook/github' do
                         LoggedTickets.new(
                           Log.new(settings.dynamo, name),
                           name,
-                          GithubTickets.new(
+                          MilestoneTickets.new(
                             name,
+                            repo,
                             settings.github,
-                            repo
+                            GithubTickets.new(
+                              name,
+                              settings.github,
+                              repo
+                            )
                           )
                         )
                       )
