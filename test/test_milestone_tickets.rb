@@ -31,7 +31,7 @@ require_relative '../objects/milestone_tickets'
 # License:: MIT
 class TestGithubTickets < Test::Unit::TestCase
   def test_sets_milestone
-    MILESTONE_NUM = 123
+    milestone = 123
     sources = Object.new
     def sources.config
       YAML.safe_load(
@@ -46,7 +46,7 @@ alerts:
     end
     github = FakeGithub.new
     def github.issue(_, _)
-      { "milestone" => { "number" => MILESTONE_NUM, "title" => "v1.0" } }
+      { "milestone" => { "number" => milestone, "title" => "v1.0" } }
     end
     def github.update_issue(_, _, options)
       @milestone = options['milestone']
@@ -74,7 +74,7 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert_equal(MILESTONE_NUM, github.milestone)
+    assert_equal(milestone, github.milestone)
   end
   
   def test_does_not_set_milestone
@@ -112,7 +112,7 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(not github.updated?)
+    assert(not(github.updated?))
   end
   
   def test_adds_comment
