@@ -56,7 +56,7 @@ alerts:
     end
     tickets = Object.new
     def tickets.submit(puzzle)
-      { number: '123', href: 'http://0pdd.com' }
+      { number: 123, href: 'http://0pdd.com' }
     end
     test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
     test.submit(
@@ -140,7 +140,7 @@ tickets:
     end
     tickets = Object.new
     def tickets.submit(puzzle)
-      { number: '123', href: 'http://0pdd.com' }
+      { number: 123, href: 'http://0pdd.com' }
     end
     test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
     test.submit(
