@@ -183,8 +183,16 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
+  headers['Content-Encoding'] = 'gzip'
   name = repo_name(params[:name])
-  storage(name).load.to_s
+  StringIO.new.tap do |io|
+    gz = Zlib::GzipWriter.new(io)
+    begin
+      gz.write(storage(name).load.to_s)
+    ensure
+      gz.close
+    end
+  end.string
 end
 
 get '/log' do
