@@ -37,13 +37,14 @@ class MilestoneTickets
 
   def submit(puzzle)
     submitted = @tickets.submit(puzzle)
-    if @sources.config.dig('tickets', 'inherit-milestone')
-      num = puzzle.xpath('ticket')[0].text
+    config = @sources.config
+    if config['tickets'] and config['tickets'].include?('inherit-milestone') and puzzle.xpath('ticket')[0].text =~ /[0-9]+/
+      num = puzzle.xpath('ticket')[0].text.to_i
       parent = @github.issue(@repo, num)
       unless parent.nil? or parent['milestone'].nil?
         begin
           @github.update_issue(@repo, num, { :milestone => parent['milestone']['number'] })
-          unless @sources.config.dig('alerts', 'suppress', 'on-inherited-milestone')
+          unless config.dig('alerts', 'suppress') and config.dig('alerts', 'suppress').include?('on-inherited-milestone')
             @github.add_comment(
               @repo, submitted[:number],
               "This puzzle inherited milestone `#{parent['milestone']['title']}` from issue ##{num}."

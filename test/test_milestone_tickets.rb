@@ -41,18 +41,61 @@ tickets:
 alerts:
   suppress:
     - on-inherited-milestone
-"
+    "
       )
     end
     github = FakeGithub.new
     def github.issue(_, _)
-      { "milestone" => { "number" => milestone, "title" => "v1.0" } }
+      { "milestone" => { "number" => 123, "title" => "v1.0" } }
     end
     def github.update_issue(_, _, options)
-      @milestone = options['milestone']
+      @milestone = options[:milestone]
     end
     class << github
       attr_accessor :milestone
+    end
+    tickets = Object.new
+    def tickets.submit(puzzle)
+      { number: 456, href: 'http://0pdd.com' }
+    end
+    test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
+    test.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>23-ab536de</id>
+          <file>/a/b/c/test.txt</file>
+          <time>01-01-2017</time>
+          <author>yegor</author>
+          <body>привет дорогой друг, как твои дела?</body>
+          <ticket>456</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    assert_equal(milestone, github.milestone)
+  end
+  
+  def test_does_not_set_milestone
+    sources = Object.new
+    def sources.config
+      YAML.safe_load("
+alerts:
+  suppress:
+    - on-inherited-milestone
+    "
+    )
+    end
+    github = FakeGithub.new
+    def github.issue(_, _)
+      { "milestone" => { "number" => 123, "title" => "v1.0" } }
+    end
+    def github.update_issue(_, _, options)
+      @updated = true
+    end
+    class << github
+      attr_accessor :updated
     end
     tickets = Object.new
     def tickets.submit(puzzle)
@@ -74,45 +117,7 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert_equal(milestone, github.milestone)
-  end
-  
-  def test_does_not_set_milestone
-    sources = Object.new
-    def sources.config
-      YAML.safe_load("")
-    end
-    github = FakeGithub.new
-    def github.issue(_, _)
-      { "milestone" => { "number" => 123, "title" => "v1.0" } }
-    end
-    def github.update_issue(_, _, options)
-      @updated = true
-    end
-    class << github
-      attr_accessor :updated
-    end
-    tickets = Object.new
-    def tickets.submit(puzzle)
-      { number: '123', href: 'http://0pdd.com' }
-    end
-    test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
-    test.submit(
-      Nokogiri::XML(
-        '<puzzle>
-          <id>23-ab536de</id>
-          <file>/a/b/c/test.txt</file>
-          <time>01-01-2017</time>
-          <author>yegor</author>
-          <body>привет дорогой друг, как твои дела?</body>
-          <ticket>123</ticket>
-          <estimate>30</estimate>
-          <role>DEV</role>
-          <lines>1-3</lines>
-        </puzzle>'
-      ).xpath('/puzzle')
-    )
-    assert(not(github.updated?))
+    assert(not(github.updated))
   end
   
   def test_adds_comment
@@ -158,7 +163,7 @@ tickets:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(github.comment.starts_with?('This puzzle inherited milestone'))
+    assert(github.comment.start_with?('This puzzle inherited milestone'))
   end
 end
 
