@@ -38,29 +38,38 @@ class MilestoneTickets
   def submit(puzzle)
     submitted = @tickets.submit(puzzle)
     config = @sources.config
-    if config['tickets'] and config['tickets'].include?('inherit-milestone') and puzzle.xpath('ticket')[0].text =~ /[0-9]+/
+    if config['tickets']&.include?('inherit-milestone') &&
+       puzzle.xpath('ticket')[0].text =~ /[0-9]+/
       num = puzzle.xpath('ticket')[0].text.to_i
       parent = @github.issue(@repo, num)
-      unless parent.nil? or parent['milestone'].nil?
+      unless parent.nil? || parent['milestone'].nil?
         begin
-          @github.update_issue(@repo, num, { :milestone => parent['milestone']['number'] })
-          unless config.dig('alerts', 'suppress') and config.dig('alerts', 'suppress').include?('on-inherited-milestone')
+          @github.update_issue(
+            @repo, num,
+            milestone: parent['milestone']['number']
+          )
+          unless config.dig('alerts', 'suppress')&.
+                 include?('on-inherited-milestone')
             @github.add_comment(
               @repo, submitted[:number],
-              "This puzzle inherited milestone `#{parent['milestone']['title']}` from issue ##{num}."
+              "This puzzle inherited milestone \
+`#{parent['milestone']['title']}` from issue ##{num}."
             )
           end
         rescue Octokit::Error => e
           @github.add_comment(
             @repo, submitted[:number],
-            "For some reason I wasn't able to set milestone `#{parent['milestone']['title']}`, \
-inherited from `#{num}`, to this issue. Please, [submit a ticket](https://github.com/yegor256/0pdd/issues/new) \
+            "For some reason I wasn't able to set milestone \
+`#{parent['milestone']['title']}`, inherited from `#{num}`, \
+to this issue. Please, \
+[submit a ticket](https://github.com/yegor256/0pdd/issues/new) \
 to us with the text you see below:\
 \n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
           )
         end
       end
     end
+    submitted
   end
 
   def close(puzzle)

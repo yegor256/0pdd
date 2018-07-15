@@ -46,8 +46,9 @@ alerts:
     end
     github = FakeGithub.new
     def github.issue(_, _)
-      { "milestone" => { "number" => 123, "title" => "v1.0" } }
+      { 'milestone' => { 'number' => 123, 'title' => 'v1.0' } }
     end
+
     def github.update_issue(_, _, options)
       @milestone = options[:milestone]
     end
@@ -55,7 +56,7 @@ alerts:
       attr_accessor :milestone
     end
     tickets = Object.new
-    def tickets.submit(puzzle)
+    def tickets.submit(_)
       { number: 456, href: 'http://0pdd.com' }
     end
     test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
@@ -76,29 +77,31 @@ alerts:
     )
     assert_equal(milestone, github.milestone)
   end
-  
+
   def test_does_not_set_milestone
     sources = Object.new
     def sources.config
-      YAML.safe_load("
+      YAML.safe_load(
+        '
 alerts:
   suppress:
     - on-inherited-milestone
-    "
-    )
+    '
+      )
     end
     github = FakeGithub.new
     def github.issue(_, _)
-      { "milestone" => { "number" => 123, "title" => "v1.0" } }
+      { 'milestone' => { 'number' => 123, 'title' => 'v1.0' } }
     end
-    def github.update_issue(_, _, options)
+
+    def github.update_issue(_, _, _)
       @updated = true
     end
     class << github
       attr_accessor :updated
     end
     tickets = Object.new
-    def tickets.submit(puzzle)
+    def tickets.submit(_)
       { number: 123, href: 'http://0pdd.com' }
     end
     test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
@@ -117,34 +120,36 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(not(github.updated))
+    assert(!github.updated)
   end
-  
+
   def test_adds_comment
     sources = Object.new
     def sources.config
       YAML.safe_load(
-        "
+        '
 tickets:
   - inherit-milestone
-"
+'
       )
     end
     github = FakeGithub.new
     def github.issue(_, _)
-      { "milestone" => { "number" => 123, "title" => "v1.0" } }
+      { 'milestone' => { 'number' => 123, 'title' => 'v1.0' } }
     end
-    def github.update_issue(_, _, options)
+
+    def github.update_issue(_, _, _)
       # do nothing
     end
-    def github.add_comment(repo, issue, text)
+
+    def github.add_comment(_, _, text)
       @comment = text
     end
     class << github
       attr_accessor :comment
     end
     tickets = Object.new
-    def tickets.submit(puzzle)
+    def tickets.submit(_)
       { number: 123, href: 'http://0pdd.com' }
     end
     test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
@@ -166,4 +171,3 @@ tickets:
     assert(github.comment.start_with?('This puzzle inherited milestone'))
   end
 end
-
