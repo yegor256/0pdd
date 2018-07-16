@@ -23,6 +23,8 @@ require 'mocha/test_unit'
 require 'rack/test'
 require_relative 'test__helper'
 require_relative '../0pdd'
+require 'zlib'
+require 'stringio'
 
 class AppTest < Test::Unit::TestCase
   include Rack::Test::Methods
@@ -123,7 +125,10 @@ class AppTest < Test::Unit::TestCase
   def test_renders_xml_puzzles
     get('/xml?name=yegor256/pdd')
     assert(last_response.ok?)
-    xml = last_response.body
+    assert_equal('gzip', last_response.headers['Content-Encoding'])
+    xml = Zlib::GzipReader.new(
+      StringIO.new(last_response.body)
+    ).read
     assert(
       xml.include?('<puzzles '),
       "broken XML: #{xml}"
