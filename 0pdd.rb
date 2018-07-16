@@ -112,6 +112,7 @@ configure do
   set :git_version, Exec.new('git --version | cut -d" " -f 3').run
   set :temp_dir, Dir.mktmpdir('0pdd')
 end
+use Rack::Deflater
 
 before '/*' do
   @locals = {
