@@ -112,6 +112,41 @@ format:
     assert(github.body.start_with?('The puzzle `55-ab536de` from #123 has'))
   end
 
+  def test_skips_estimate_if_0
+    sources = Object.new
+    def sources.config
+      YAML.safe_load("\n\n")
+    end
+    require_relative 'fake_github'
+    github = FakeGithub.new
+    def github.create_issue(_, title, body)
+      @title = title
+      @body = body
+      { 'number' => 555 }
+    end
+    class << github
+      attr_accessor :body, :title
+    end
+    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>55-ab536de</id>
+          <file>/a/bz.txt</file>
+          <time>01-05-2017</time>
+          <author>yegor</author>
+          <body>как дела? hey, how are you, please see this title!</body>
+          <ticket>123</ticket>
+          <estimate>0</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    assert(github.body.start_with?('The puzzle `55-ab536de` from #123 has'))
+    assert(!github.body.include?('Estimate:'))
+  end
+
   def test_closes_tickets
     sources = Object.new
     def sources.config
