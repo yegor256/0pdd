@@ -179,9 +179,6 @@ get '/p' do
   ).to_s
 end
 
-# @todo #41:30min Let's add GZIP compression to this output, since
-#  most XML files are rather big and it would be beneficial to see
-#  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
   name = repo_name(params[:name])
