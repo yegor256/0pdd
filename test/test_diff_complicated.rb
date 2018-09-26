@@ -5,6 +5,9 @@ require_relative '../objects/diff'
 
 # Complicated diff test.
 class TestDiff < Test::Unit::TestCase
+
+  # @todo #234:15m Add tests for more complicated dynamics, like [here](https://github.com/php-coder/mystamps/issues/695#issuecomment-405372820)
+
   def test_notification_on_parent_solved_with_others_unsolved
     tickets = Tickets.new
     before = Nokogiri::XML(
