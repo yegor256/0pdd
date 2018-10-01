@@ -239,6 +239,7 @@ end
 get '/ping-github' do
   content_type 'text/plain'
   gh = settings.github
+  return if gh.rate_limit.remaining < 1000
   invitations = GithubInvitations.new(gh)
   invitations.accept
   invitations.accept_orgs
