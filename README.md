@@ -135,6 +135,8 @@ the necessary puzzle from the source code and let us close the issue.
 
 It is a Ruby project.
 First, install
+[Java SDK 8+](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html),
+[Maven 3.2+](https://maven.apache.org/),
 [Ruby 2.3+](https://www.ruby-lang.org/en/documentation/installation/),
 [Rubygems](https://rubygems.org/pages/download),
 and
