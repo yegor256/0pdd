@@ -28,9 +28,7 @@ class GithubInvitations
 
   def accept
     @github.user_repository_invitations.each do |i|
-      if @github.accept_repository_invitation(i['id'])
-        puts "Repository invitation #{i['id']} accepted"
-      end
+      puts "Repository invitation #{i['id']} accepted" if @github.accept_repository_invitation(i['id'])
     end
   end
 

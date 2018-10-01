@@ -247,8 +247,8 @@ get '/ping-github' do
     repo = n['repository']['full_name']
     puts "GitHub notification in #{repo}: #{reason}"
     if reason == 'mention'
-      issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
-      comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '')
+      issue = n['subject']['url'].gsub(%r{^.+/issues/}, '').to_i
+      comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '').to_i
       json = gh.issue_comment(repo, comment)
       body = json['body']
       if body.start_with?("@#{gh.login}") && json['user']['login'] != gh.login

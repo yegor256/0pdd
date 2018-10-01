@@ -90,9 +90,7 @@ source code, that's why I closed this issue." +
   def title(puzzle)
     yaml = @sources.config
     format = []
-    if !yaml.nil? && yaml['format'] && yaml['format'].is_a?(Array)
-      format += yaml['format'].map(&:strip).map(&:downcase)
-    end
+    format += yaml['format'].map(&:strip).map(&:downcase) if !yaml.nil? && yaml['format'].is_a?(Array)
     len = format.find { |i| i =~ /title-length=\d+/ }
     Truncated.new(
       if format.include?('short-title')
