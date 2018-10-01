@@ -11,6 +11,8 @@ release:
     - config.yml
   script: |-
     pdd -f /dev/null
+    export GEM_HOME=~/.ruby
+    export GEM_PATH=$GEM_HOME:$GEM_PATH
     bundle install
     ruby -v
     rake
