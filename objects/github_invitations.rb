@@ -34,11 +34,13 @@ class GithubInvitations
 
   def accept_orgs
     @github.organization_memberships('state' => 'pending').each do |m|
-      @github.update_organization_membership(
-        m['organization']['login'],
-        'state' => 'active'
-      )
-      puts "Invitation for organization #{m['organization']['login']} accepted"
+      org = m['organization']['login']
+      begin
+        @github.update_organization_membership(org, 'state' => 'active')
+        puts "Invitation for @#{org} accepted"
+      rescue Octokit::NotFound => e
+        puts "Failed to join @#{org} organization: #{e.message}"
+      end
     end
   end
 end
