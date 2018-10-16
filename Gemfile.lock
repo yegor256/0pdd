@@ -197,7 +197,7 @@ DEPENDENCIES
   aws-sdk-dynamodb (~> 1.6)
   aws-sdk-s3 (~> 1.12)
   codecov (~> 0.1)
-  glogin (~> 0.4)
+  glogin (~> 0)
   haml (~> 5.0)
   mail (~> 2.7)
   mocha (~> 1.7)

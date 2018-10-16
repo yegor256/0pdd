@@ -247,7 +247,7 @@ get '/ping-github' do
   gh.notifications.map do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
-    puts "GitHub notification in #{repo}: #{reason}"
+    puts "GitHub notification in #{repo}: #{reason} #{n['updated_at']} #{n['subject']['type']}"
     if reason == 'mention'
       issue = n['subject']['url'].gsub(%r{^.+/issues/}, '').to_i
       comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '').to_i

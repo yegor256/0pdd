@@ -23,7 +23,7 @@ ruby '2.5.1'
 gem 'aws-sdk-dynamodb', '~>1.6'
 gem 'aws-sdk-s3', '~>1.12'
 gem 'codecov', '~>0.1'
-gem 'glogin', '~>0.4'
+gem 'glogin', '~>0'
 gem 'haml', '~>5.0'
 gem 'mail', '~>2.7'
 gem 'mocha', '~>1.7', require: false
