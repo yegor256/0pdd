@@ -150,6 +150,7 @@ get '/' do
     title: '0pdd',
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
+    remaining: settings.github.rate_limit.remaining,
     tail: Exec.new(
       "(sort /tmp/0pdd-done.txt 2>/dev/null || echo '')\
       | uniq\

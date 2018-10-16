@@ -77,6 +77,15 @@ class FakeGithub
     { email: 'foobar@example.com' }
   end
 
+  def rate_limit
+    limit = Object.new
+
+    def limit.remaining
+      100
+    end
+    limit
+  end
+
   def list_commits(_)
     [{ 'sha' => '123456' }]
   end
