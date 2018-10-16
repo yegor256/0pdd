@@ -20,8 +20,14 @@
 
 require 'octokit'
 
+trace = TracePoint.new(:call) do |tp|
+  puts "#{tp.defined_class}##{tp.method_id}" if tp.defined_class.name == 'Octokit::Client'
+end
+trace.enable
+
 #
 # Github client
+# API: http://octokit.github.io/octokit.rb/method_list.html
 #
 class Github
   def initialize(config = {})

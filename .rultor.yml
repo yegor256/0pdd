@@ -22,9 +22,6 @@ release:
     mv ../id_rsa ../id_rsa.pub ~/.ssh
     chmod -R 600 ~/.ssh/*
     echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
-    sed -i -s 's|Gemfile.lock||g' .gitignore
-    git add Gemfile.lock
-    git add .gitignore
     git fetch
     sed -i "s/BUILD/${tag}/g" ./version.rb
     git add ./version.rb
