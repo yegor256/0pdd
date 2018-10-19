@@ -46,6 +46,7 @@ class SentryTickets
     @tickets.submit(puzzle)
   rescue UserError => e
     puts e.message
+    true
   rescue Exception => e
     Raven.capture_exception(e)
     email(e)
@@ -56,6 +57,7 @@ class SentryTickets
     @tickets.close(puzzle)
   rescue UserError => e
     puts e.message
+    true
   rescue Exception => e
     Raven.capture_exception(e)
     email(e)
