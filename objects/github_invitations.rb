@@ -28,12 +28,14 @@ class GithubInvitations
 
   def accept
     @github.user_repository_invitations.each do |i|
+      break if @github.rate_limit.remaining < 1000
       puts "Repository invitation #{i['id']} accepted" if @github.accept_repository_invitation(i['id'])
     end
   end
 
   def accept_orgs
     @github.organization_memberships('state' => 'pending').each do |m|
+      break if @github.rate_limit.remaining < 1000
       org = m['organization']['login']
       begin
         @github.update_organization_membership(org, 'state' => 'active')

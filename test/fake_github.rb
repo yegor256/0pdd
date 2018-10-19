@@ -81,7 +81,7 @@ class FakeGithub
     limit = Object.new
 
     def limit.remaining
-      100
+      4096
     end
     limit
   end
