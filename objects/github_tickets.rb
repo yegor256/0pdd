@@ -39,6 +39,8 @@ class GithubTickets
       @repo, issue,
       "@#{@github.issue(@repo, issue)['user']['login']} #{message}"
     )
+  rescue Octokit::NotFound => e
+    puts "The issue most probably is not found, can't coment: #{e.message}"
   end
 
   def submit(puzzle)
@@ -68,6 +70,9 @@ class GithubTickets
 source code, that's why I closed this issue." +
       (users.empty? ? '' : ' //cc ' + users.join(' '))
     )
+    true
+  rescue Octokit::NotFound => e
+    puts "The issue most probably is not found, can't close: #{e.message}"
     true
   end
 
