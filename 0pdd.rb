@@ -41,6 +41,7 @@ require_relative 'objects/job_starred'
 require_relative 'objects/job_commiterrors'
 require_relative 'objects/log'
 require_relative 'objects/github'
+require_relative 'objects/user_error'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_invitations'
 require_relative 'objects/github_tickets'
@@ -372,7 +373,7 @@ end
 error do
   status 503
   e = env['sinatra.error']
-  Raven.capture_exception(e)
+  Raven.capture_exception(e) unless e.is_a?(UserError)
   haml(
     :error,
     layout: :layout,
