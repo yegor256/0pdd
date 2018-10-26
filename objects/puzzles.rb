@@ -73,9 +73,7 @@ class Puzzles
       )
       break if puzzles.empty?
       puzzle = puzzles[0]
-      if tickets.close(puzzle)
-        puzzle.search('issue')[0]['closed'] = Time.now.iso8601
-      end
+      puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
       save(xml)
     end
     seen = []

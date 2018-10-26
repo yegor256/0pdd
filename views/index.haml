@@ -30,10 +30,12 @@
   %p.versions
     %img{src:url('/images/logo.svg'), alt:'Currently deployed version'}
     %span{title:'Currently deployed version'}
-      =ver
+      = ver
     %img{src:url('/images/git-logo.svg'), alt:'Git version on the server'}
     %span{title:'Git version on the server'}
-      =git_version
+      = git_version
     %img{src:url('/images/ruby-logo.svg'), alt:'Ruby version on the server'}
     %span{title:'Ruby version on the server'}
-    =ruby_version
+    = ruby_version
+  %p
+    %span{style: 'color:' + (remaining < 1000 ? 'red' : 'green'), title: 'GitHub API remaining quota'}= remaining

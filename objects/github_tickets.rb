@@ -39,6 +39,8 @@ class GithubTickets
       @repo, issue,
       "@#{@github.issue(@repo, issue)['user']['login']} #{message}"
     )
+  rescue Octokit::NotFound => e
+    puts "The issue most probably is not found, can't coment: #{e.message}"
   end
 
   def submit(puzzle)
@@ -69,6 +71,9 @@ source code, that's why I closed this issue." +
       (users.empty? ? '' : ' //cc ' + users.join(' '))
     )
     true
+  rescue Octokit::NotFound => e
+    puts "The issue most probably is not found, can't close: #{e.message}"
+    true
   end
 
   private
@@ -90,9 +95,7 @@ source code, that's why I closed this issue." +
   def title(puzzle)
     yaml = @sources.config
     format = []
-    if !yaml.nil? && yaml['format'] && yaml['format'].is_a?(Array)
-      format += yaml['format'].map(&:strip).map(&:downcase)
-    end
+    format += yaml['format'].map(&:strip).map(&:downcase) if !yaml.nil? && yaml['format'].is_a?(Array)
     len = format.find { |i| i =~ /title-length=\d+/ }
     Truncated.new(
       if format.include?('short-title')

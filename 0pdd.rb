@@ -41,13 +41,16 @@ require_relative 'objects/job_starred'
 require_relative 'objects/job_commiterrors'
 require_relative 'objects/log'
 require_relative 'objects/github'
+require_relative 'objects/user_error'
 require_relative 'objects/git_repo'
+require_relative 'objects/github_invitations'
 require_relative 'objects/github_tickets'
 require_relative 'objects/github_tagged_tickets'
 require_relative 'objects/emailed_tickets'
 require_relative 'objects/logged_tickets'
 require_relative 'objects/commit_tickets'
 require_relative 'objects/sentry_tickets'
+require_relative 'objects/milestone_tickets'
 require_relative 'objects/safe_storage'
 require_relative 'objects/logged_storage'
 require_relative 'objects/versioned_storage'
@@ -132,8 +135,10 @@ before '/*' do
 end
 
 get '/github-callback' do
+  code = params[:code]
+  redirect('/') if code.nil?
   cookies[:glogin] = GLogin::Cookie::Open.new(
-    settings.glogin.user(params[:code]),
+    settings.glogin.user(code),
     settings.config['github']['encryption_secret']
   ).to_s
   redirect to('/')
@@ -149,6 +154,7 @@ get '/' do
     title: '0pdd',
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
+    remaining: settings.github.rate_limit.remaining,
     tail: Exec.new(
       "(sort /tmp/0pdd-done.txt 2>/dev/null || echo '')\
       | uniq\
@@ -236,17 +242,17 @@ end
 get '/ping-github' do
   content_type 'text/plain'
   gh = settings.github
-  gh.user_repository_invitations.each do |i|
-    gh.accept_repository_invitation(i['id'])
-    puts "Repository invitation #{i['id']} accepted"
-  end
+  return if gh.rate_limit.remaining < 1000
+  invitations = GithubInvitations.new(gh)
+  invitations.accept
+  invitations.accept_orgs
   gh.notifications.map do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
-    puts "GitHub notification in #{repo}: #{reason}"
+    puts "GitHub notification in #{repo}: #{reason} #{n['updated_at']} #{n['subject']['type']}"
     if reason == 'mention'
-      issue = n['subject']['url'].gsub(%r{^.+/issues/}, '')
-      comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '')
+      issue = n['subject']['url'].gsub(%r{^.+/issues/}, '').to_i
+      comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '').to_i
       json = gh.issue_comment(repo, comment)
       body = json['body']
       if body.start_with?("@#{gh.login}") && json['user']['login'] != gh.login
@@ -262,9 +268,6 @@ I see you're talking to me, but I can't reply since I'm not a chat bot."
     gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
     "#{repo}: #{reason}"
   end.join("\n") + "\n"
-  # @todo #194:30min Need to figure out the correct way to accept the
-  #  Organization Invitation. It's not quite clear.
-  #  Octokit Doc Link: https://bit.ly/2qFkfpU
 end
 
 get '/hook/github' do
@@ -370,7 +373,7 @@ end
 error do
   status 503
   e = env['sinatra.error']
-  Raven.capture_exception(e)
+  Raven.capture_exception(e) unless e.is_a?(UserError)
   haml(
     :error,
     layout: :layout,

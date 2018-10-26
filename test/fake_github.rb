@@ -19,6 +19,44 @@
 # SOFTWARE.
 
 class FakeGithub
+  def initialize(options = {})
+    @memberships = if options[:memberships]
+      options[:memberships]
+    else
+      [
+        {
+          'state' => 'pending',
+          'organization' => {
+            'login' => 'github'
+          }
+        }, {
+          'state' => 'pending',
+          'organization' => {
+            'login' => 'zerocracy'
+          }
+        }
+      ]
+    end
+    @invitations = if options[:invitations]
+      options[:invitations]
+    else
+      [
+        {
+          'id' => 1001,
+          'repository' => {
+            'name' => 'yegor256/0pdd'
+          }
+        }, {
+          'id' => 1023,
+          'repository' => {
+            'name' => 'yegor256/sixnines'
+          }
+        }
+      ]
+    end
+    @repositories = options[:repositories] ? options[:repositories] : []
+  end
+
   def issue(_, _)
     { 'state' => 'open' }
   end
@@ -39,7 +77,46 @@ class FakeGithub
     { email: 'foobar@example.com' }
   end
 
+  def rate_limit
+    limit = Object.new
+
+    def limit.remaining
+      4096
+    end
+    limit
+  end
+
   def list_commits(_)
     [{ 'sha' => '123456' }]
+  end
+
+  def update_organization_membership(org, options = {})
+    return unless options['state']
+    @memberships.find do |m|
+      m['organization']['login'] == org
+    end['state'] = options['state']
+  end
+
+  def organization_memberships(options = {})
+    if options['state']
+      @memberships.find_all { |m| m['state'] == options['state'] }
+    else
+      @memberships
+    end
+  end
+
+  def user_repository_invitations(_options = {})
+    @invitations
+  end
+
+  def accept_repository_invitation(id, _options = {})
+    invitation = @invitations.find { |i| i['id'] == id }
+    return false if invitation.nil?
+    @repositories = @repositories.push(invitation['repository']['name'])
+    true
+  end
+
+  def repositories(user = nil, _options = {})
+    return @repositories unless user
   end
 end

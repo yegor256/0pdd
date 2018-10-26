@@ -22,6 +22,7 @@ require 'octokit'
 
 #
 # Github client
+# API: http://octokit.github.io/octokit.rb/method_list.html
 #
 class Github
   def initialize(config = {})
@@ -29,7 +30,7 @@ class Github
   end
 
   def client
-    if @config['testing']
+    client = if @config['testing']
       require_relative '../test/fake_github'
       FakeGithub.new
     else
@@ -47,5 +48,9 @@ class Github
       Octokit.auto_paginate = true
       Octokit::Client.new(args)
     end
+    TracePoint.new(:call) do |tp|
+      puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
+    end.enable
+    client
   end
 end

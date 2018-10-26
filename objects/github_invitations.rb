@@ -18,30 +18,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'nokogiri'
-
 #
-# Safe, XSD validated, storage.
+# Invitations in Github
 #
-class SafeStorage
-  def initialize(origin)
-    @origin = origin
-    @xsd = Nokogiri::XML::Schema(File.read('assets/xsd/puzzles.xsd'))
+class GithubInvitations
+  def initialize(github)
+    @github = github
   end
 
-  def load
-    @origin.load
+  def accept
+    @github.user_repository_invitations.each do |i|
+      break if @github.rate_limit.remaining < 1000
+      puts "Repository invitation #{i['id']} accepted" if @github.accept_repository_invitation(i['id'])
+    end
   end
 
-  def save(xml)
-    @origin.save(valid(xml))
-  end
-
-  private
-
-  def valid(xml)
-    errors = @xsd.validate(xml).each(&:message)
-    raise "XML has #{errors.length} errors\nw#{errors.join("\n")}\n#{xml}" unless errors.empty?
-    xml
+  def accept_orgs
+    @github.organization_memberships('state' => 'pending').each do |m|
+      break if @github.rate_limit.remaining < 1000
+      org = m['organization']['login']
+      begin
+        @github.update_organization_membership(org, 'state' => 'active')
+        puts "Invitation for @#{org} accepted"
+      rescue Octokit::NotFound => e
+        puts "Failed to join @#{org} organization: #{e.message}"
+      end
+    end
   end
 end

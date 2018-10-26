@@ -18,30 +18,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'nokogiri'
+require_relative 'github_organization_invitation'
 
 #
-# Safe, XSD validated, storage.
+# Invitations to join Github organizations
 #
-class SafeStorage
-  def initialize(origin)
-    @origin = origin
-    @xsd = Nokogiri::XML::Schema(File.read('assets/xsd/puzzles.xsd'))
+class GithubOrganizationInvitations
+  def initialize(github)
+    @github = github
   end
 
-  def load
-    @origin.load
-  end
-
-  def save(xml)
-    @origin.save(valid(xml))
-  end
-
-  private
-
-  def valid(xml)
-    errors = @xsd.validate(xml).each(&:message)
-    raise "XML has #{errors.length} errors\nw#{errors.join("\n")}\n#{xml}" unless errors.empty?
-    xml
+  def all
+    @github.organization_memberships(state: 'pending').collect do |membership|
+      GithubOrganizationInvitation.new(membership, @github)
+    end
   end
 end
