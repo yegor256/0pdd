@@ -18,21 +18,49 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if Gem.win_platform? then
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-    SimpleCov::Formatter::HTMLFormatter
-  ]
-  SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/features/"
+require 'test/unit'
+require 'yaml'
+require_relative 'test__helper'
+require_relative '../objects/commit_tickets'
+
+# CommitTickets test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2016-2018 Yegor Bugayenko
+# License:: MIT
+class TestCommitTickets < Test::Unit::TestCase
+  def test_submits_tickets
+    sources = Object.new
+    def sources.config
+      YAML.safe_load(
+        "
+alerts:
+  suppress:
+    - on-found-puzzle"
+      )
+    end
+    tickets = Object.new
+    def tickets.submit(_)
+      {}
+    end
+    tickets = CommitTickets.new('yegor256/0pdd', sources, nil, nil, tickets)
+    tickets.submit(nil)
   end
-else
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
-    SimpleCov::Formatter::HTMLFormatter
-  )
-  SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/features/"
-#    minimum_coverage 30
+
+  def test_closes_tickets
+    sources = Object.new
+    def sources.config
+      YAML.safe_load(
+        "
+alerts:
+  suppress:
+    - on-lost-puzzle"
+      )
+    end
+    tickets = Object.new
+    def tickets.close(_)
+      {}
+    end
+    tickets = CommitTickets.new('yegor256/0pdd', sources, nil, nil, tickets)
+    tickets.close(nil)
   end
 end

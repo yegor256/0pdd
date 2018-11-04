@@ -36,7 +36,7 @@ class CommitTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
-    unless @sources.config.dig('alerts', 'suppress', 'on-found-puzzle')
+    unless (@sources.config.dig('alerts', 'suppress') || []).include?('on-found-puzzle')
       @github.create_commit_comment(
         @repo, @commit,
         "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
@@ -52,7 +52,7 @@ class CommitTickets
 
   def close(puzzle)
     done = @tickets.close(puzzle)
-    if done && !@sources.config.dig('alerts', 'suppress', 'on-lost-puzzle')
+    if done && !(@sources.config.dig('alerts', 'suppress') || []).include?('on-lost-puzzle')
       @github.create_commit_comment(
         @repo, @commit,
         "Puzzle `#{puzzle.xpath('id')[0].text}` disappeared from \
