@@ -36,7 +36,14 @@ class Job
     @repo.push
     before = @storage.load
     Puzzles.new(@repo, @storage).deploy(@tickets)
-    return if @repo.config.dig('alerts', 'suppress', 'on-scope')
+    return if opts.include?('on-scope')
     Diff.new(before, @storage.load).notify(@tickets)
+  end
+
+  private
+
+  def opts
+    array = @repo.config.dig('alerts', 'suppress')
+    array.nil? || !array.is_a?(Array) ? [] : array
   end
 end
