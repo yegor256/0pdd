@@ -5,6 +5,8 @@ AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.5.1
 
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
 Naming/UncommunicativeMethodParamName:
   MinNameLength: 1
 Style/CommandLiteral:

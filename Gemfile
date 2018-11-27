@@ -20,26 +20,26 @@
 source 'https://rubygems.org'
 ruby '2.5.1'
 
-gem 'aws-sdk-dynamodb', '~>1'
-gem 'aws-sdk-s3', '~>1'
-gem 'codecov', '~>0'
-gem 'glogin', '~>0'
-gem 'haml', '~>5'
-gem 'mail', '~>2'
-gem 'mocha', '~>1', require: false
-gem 'nokogiri', '~>1'
-gem 'octokit', '~>4'
+gem 'aws-sdk-dynamodb', '1.17.0'
+gem 'aws-sdk-s3', '1.27.0'
+gem 'codecov', '0.1.14'
+gem 'glogin', '0.4.7'
+gem 'haml', '5.0.4'
+gem 'mail', '2.7.1'
+gem 'mocha', '1.7.0', require: false
+gem 'nokogiri', '1.8.2'
+gem 'octokit', '4.13.0'
 gem 'pdd', '0.20.3'
-gem 'rack', '~>2'
-gem 'rack-test', '~>1'
-gem 'rake', '~>12', require: false
-gem 'rspec-rails', '~>3', require: false
-gem 'rubocop', '0.55.0', require: false
-gem 'rubocop-rspec', '~>1', require: false
-gem 'sass', '~>3'
-gem 'sentry-raven', '~>2'
-gem 'sinatra', '~>2'
-gem 'sinatra-contrib', '~>2'
-gem 'sprockets', '~>3'
-gem 'test-unit', '~>3', require: false
-gem 'xcop', '~>0'
+gem 'rack', '2.0.6'
+gem 'rack-test', '1.1.0'
+gem 'rake', '12.3.1'
+gem 'rspec-rails', '3.8.1', require: false
+gem 'rubocop', '0.60.0', require: false
+gem 'rubocop-rspec', '1.30.1', require: false
+gem 'sass', '3.7.2'
+gem 'sentry-raven', '2.7.4'
+gem 'sinatra', '2.0.4'
+gem 'sinatra-contrib', '2.0.4'
+gem 'sprockets', '3.7.2'
+gem 'test-unit', '3.2.8', require: false
+gem 'xcop', '0.6'

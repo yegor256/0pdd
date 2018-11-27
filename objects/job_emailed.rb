@@ -35,7 +35,7 @@ class JobEmailed
     @job.proceed
   rescue Exception => e
     yaml = @repo.config
-    emails = yaml['errors'] ? yaml['errors'] : []
+    emails = yaml['errors'] || []
     emails << 'admin@0pdd.com'
     trace = e.message + "\n\n" + e.backtrace.join("\n")
     name = @name

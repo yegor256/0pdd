@@ -20,41 +20,33 @@
 
 class FakeGithub
   def initialize(options = {})
-    @memberships = if options[:memberships]
-      options[:memberships]
-    else
-      [
-        {
-          'state' => 'pending',
-          'organization' => {
-            'login' => 'github'
-          }
-        }, {
-          'state' => 'pending',
-          'organization' => {
-            'login' => 'zerocracy'
-          }
+    @memberships = options[:memberships] || [
+      {
+        'state' => 'pending',
+        'organization' => {
+          'login' => 'github'
         }
-      ]
-    end
-    @invitations = if options[:invitations]
-      options[:invitations]
-    else
-      [
-        {
-          'id' => 1001,
-          'repository' => {
-            'name' => 'yegor256/0pdd'
-          }
-        }, {
-          'id' => 1023,
-          'repository' => {
-            'name' => 'yegor256/sixnines'
-          }
+      }, {
+        'state' => 'pending',
+        'organization' => {
+          'login' => 'zerocracy'
         }
-      ]
-    end
-    @repositories = options[:repositories] ? options[:repositories] : []
+      }
+    ]
+    @invitations = options[:invitations] || [
+      {
+        'id' => 1001,
+        'repository' => {
+          'name' => 'yegor256/0pdd'
+        }
+      }, {
+        'id' => 1023,
+        'repository' => {
+          'name' => 'yegor256/sixnines'
+        }
+      }
+    ]
+    @repositories = options[:repositories] || []
   end
 
   def issue(_, _)
