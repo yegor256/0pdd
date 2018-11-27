@@ -130,6 +130,11 @@ class AppTest < Test::Unit::TestCase
     )
   end
 
+  def test_rejects_invalid_repo_name
+    get('/svg?name=yego256/pdd+a')
+    assert(!last_response.ok?)
+  end
+
   def test_not_found
     get('/unknown_path')
     assert(last_response.status == 404)

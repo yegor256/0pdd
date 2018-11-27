@@ -189,8 +189,7 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  name = repo_name(params[:name])
-  storage(name).load.to_s
+  storage(repo_name(params[:name])).load.to_s
 end
 
 get '/log' do
@@ -390,7 +389,7 @@ private
 
 def repo_name(name)
   error 404 if name.nil?
-  error 404 unless name =~ %r{[a-zA-Z0-9_]+/[a-zA-Z0-9_]+}
+  error 404 unless name =~ %r{^[a-zA-Z0-9_]+/[a-zA-Z0-9_]+$}
   name
 end
 
