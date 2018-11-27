@@ -255,16 +255,20 @@ get '/ping-github' do
     if reason == 'mention'
       issue = n['subject']['url'].gsub(%r{^.+/issues/}, '').to_i
       comment = n['subject']['latest_comment_url'].gsub(%r{^.+/comments/}, '').to_i
-      json = gh.issue_comment(repo, comment)
-      body = json['body']
-      if body.start_with?("@#{gh.login}") && json['user']['login'] != gh.login
-        gh.add_comment(
-          repo,
-          issue,
-          "> #{body.gsub(/\s+/, ' ').gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
-I see you're talking to me, but I can't reply since I'm not a chat bot."
-        )
-        puts "Replied to #{repo}##{issue}"
+      begin
+        json = gh.issue_comment(repo, comment)
+        body = json['body']
+        if body.start_with?("@#{gh.login}") && json['user']['login'] != gh.login
+          gh.add_comment(
+            repo,
+            issue,
+            "> #{body.gsub(/\s+/, ' ').gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
+  I see you're talking to me, but I can't reply since I'm not a chat bot."
+          )
+          puts "Replied to #{repo}##{issue}"
+        end
+      rescue Octokit::NotFound
+        next
       end
     end
     gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
