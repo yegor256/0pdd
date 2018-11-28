@@ -82,7 +82,7 @@ class AppTest < Test::Unit::TestCase
   def test_it_understands_push_from_github
     post(
       '/hook/github',
-      '{"repository":{"full_name":"yegor256/pdd"}, "ref":"refs/heads/master"}',
+      '{"repository":{"full_name":"yegor256-one/0pdd-test"}, "ref":"refs/heads/master"}',
       'CONTENT_TYPE' => 'application/json'
     )
     assert(last_response.ok?)
