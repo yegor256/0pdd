@@ -18,7 +18,7 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.5.1'
+ruby '2.6.0'
 
 gem 'aws-sdk-dynamodb', '1.17.0'
 gem 'aws-sdk-s3', '1.27.0'
