@@ -394,7 +394,7 @@ private
 
 def repo_name(name)
   error 404 if name.nil?
-  error 404 unless name =~ %r{^[a-zA-Z0-9-_]+/[a-zA-Z0-9-_]+$}
+  error 404 unless name =~ %r{^[a-zA-Z0-9\-_]+/[a-zA-Z0-9\-_.]+$}
   name
 end
 
