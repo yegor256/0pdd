@@ -32,8 +32,7 @@ gem 'octokit', '4.13.0'
 gem 'pdd', '0.20.4'
 gem 'rack', '2.0.6'
 gem 'rack-test', '1.1.0'
-gem 'rake', '12.3.1'
-gem 'rspec-rails', '3.8.1'
+gem 'rake', '12.3.1', require: false
 gem 'rubocop', '0.62.0', require: false
 gem 'rubocop-rspec', '1.31.0', require: false
 gem 'sass', '3.7.2'
