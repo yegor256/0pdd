@@ -1,3 +1,5 @@
+readers:
+  - "urn:github:526301"
 assets:
   config.yml: zerocracy/home#assets/0pdd/config.yml
   id_rsa: zerocracy/home#assets/heroku-key
