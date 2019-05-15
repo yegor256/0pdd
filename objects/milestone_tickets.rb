@@ -48,8 +48,8 @@ class MilestoneTickets
             @repo, num,
             milestone: parent['milestone']['number']
           )
-          unless config.dig('alerts', 'suppress')&.
-                 include?('on-inherited-milestone')
+          unless config.dig('alerts', 'suppress')
+            &.include?('on-inherited-milestone')
             @github.add_comment(
               @repo, submitted[:number],
               "This puzzle inherited milestone \

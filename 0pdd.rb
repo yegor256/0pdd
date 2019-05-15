@@ -128,7 +128,7 @@ before '/*' do
         cookies[:glogin],
         settings.config['github']['encryption_secret']
       ).to_user
-    rescue OpenSSL::Cipher::CipherError => _
+    rescue OpenSSL::Cipher::CipherError
       @locals.delete(:user)
     end
   end
