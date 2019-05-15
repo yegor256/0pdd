@@ -293,7 +293,11 @@ post '/hook/github' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  return unless json['ref'] == 'refs/heads/master'
+  unless json['ref'] == 'refs/heads/master' &&
+    json['head_commit'] && json['head_commit']['id'] &&
+    json['repository'] && json['repository']['full_name']
+    return 'Thanks'
+  end
   name = repo_name(json['repository']['full_name'])
   unless ENV['RACK_ENV'] == 'test'
     repo = repo(name)
