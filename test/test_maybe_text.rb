@@ -39,4 +39,8 @@ class TestMaybeText < Test::Unit::TestCase
   def test_present_input_then_output
     assert_equal('output', MaybeText.new('output', 'input').to_s)
   end
+
+  def test_show_output_when_exclude_if_is_present
+    assert_equal('output', MaybeText.new('output', 'input', 'output').to_s)
+  end
 end
