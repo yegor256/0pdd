@@ -10,9 +10,23 @@ image: Visual Studio 2017
 
 init:
   # To avoid duplicated executables in PATH, see https://github.com/ruby/spec/pull/468
-  - set PATH=C:\Ruby%ruby_version%\bin;C:\msys64\usr\bin;C:\Program Files\7-Zip;C:\Program Files\AppVeyor\BuildAgent;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Program Files;C:\Windows
+  - set PATH=C:\Ruby26-x64\bin;C:\msys64\usr\bin;C:\Program Files\7-Zip;C:\Program Files\AppVeyor\BuildAgent;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Program Files;C:\Windows
+  # https://www.yegor256.com/2015/01/10/windows-appveyor-maven.html
+  - ps: |
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      if (!(Test-Path -Path "C:\maven" )) {
+        (new-object System.Net.WebClient).DownloadFile(
+          'http://www.us.apache.org/dist/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.zip',
+          'C:\maven-bin.zip'
+        )
+        [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\maven-bin.zip", "C:\maven")
+      }
+  - SET PATH=C:\maven\apache-maven-3.2.5\bin;%JAVA_HOME%\bin;%PATH%
+  - SET MAVEN_OPTS=-XX:MaxPermSize=2g -Xmx4g
+  - SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
 
 install:
+  - gem install bundler
   - ruby --version
   - git --version
 build_script:
@@ -25,7 +39,3 @@ test_script:
 cache:
   - C:\Ruby200\bin -> pdd.gemspec
   - C:\Ruby200\lib\ruby\gems\2.0.0 -> pdd.gemspec
-environment:
-  matrix:
-    - ruby_version: 26-x64
-    - ruby_version: 26
