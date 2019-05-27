@@ -7,10 +7,13 @@ branches:
   except:
     - gh-pages
 os: Windows Server 2012
+init:
+  # To avoid duplicated executables in PATH, see https://github.com/ruby/spec/pull/468
+  - set PATH=C:\Ruby%ruby_version%\bin;C:\msys64\usr\bin;C:\Program Files\7-Zip;C:\Program Files\AppVeyor\BuildAgent;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Program Files;C:\Windows
+
 install:
-  - cmd: SET PATH=C:\Ruby26-x64\bin;%PATH%
-  - cmd: ruby --version
-  - cmd: git --version
+  - ruby --version
+  - git --version
 build_script:
   - bundle update
   - bundle install
@@ -21,3 +24,7 @@ test_script:
 cache:
   - C:\Ruby200\bin -> pdd.gemspec
   - C:\Ruby200\lib\ruby\gems\2.0.0 -> pdd.gemspec
+environment:
+  matrix:
+    - ruby_version: 26-x64
+    - ruby_version: 26
