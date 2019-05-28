@@ -29,7 +29,7 @@ class MaybeText
   end
 
   def to_s
-    if @maybe.nil? || @maybe.empty? || @maybe <=> @exclude_if
+    if @maybe.nil? || @maybe.empty? || @maybe == @exclude_if
       ''
     else
       @text
