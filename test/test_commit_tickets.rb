@@ -63,4 +63,22 @@ alerts:
     tickets = CommitTickets.new('yegor256/0pdd', sources, nil, nil, tickets)
     tickets.close(nil)
   end
+
+  def test_scope_supressed_repo_should_be_quiet
+    sources = Object.new
+    def sources.config
+      YAML.safe_load(
+        "
+alerts:
+  suppress:
+    - on-scope"
+      )
+    end
+    tickets = Object.new
+    def tickets.submit(_)
+      {}
+    end
+    tickets = CommitTickets.new('yegor256/0pdd', sources, nil, nil, tickets)
+    tickets.submit(nil)
+  end
 end
