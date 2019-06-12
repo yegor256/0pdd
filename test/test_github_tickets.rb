@@ -60,7 +60,7 @@ format:
         '<puzzle>
           <id>23-ab536de</id>
           <file>/a/b/c/test.txt</file>
-          <time>01-01-2017</time>
+          <time>01-01-2019</time>
           <author>yegor</author>
           <body>привет дорогой друг, как твои дела?</body>
           <ticket>123</ticket>
@@ -95,7 +95,7 @@ format:
         '<puzzle>
           <id>55-ab536de</id>
           <file>/a/bz.txt</file>
-          <time>01-05-2017</time>
+          <time>01-05-2019</time>
           <author>yegor</author>
           <body>как дела? hey, how are you, please see this title!</body>
           <ticket>123</ticket>
@@ -133,7 +133,7 @@ format:
         '<puzzle>
           <id>55-ab536de</id>
           <file>/a/bz.txt</file>
-          <time>01-05-2017</time>
+          <time>01-05-2019</time>
           <author>yegor</author>
           <body>как дела? hey, how are you, please see this title!</body>
           <ticket>123</ticket>
@@ -168,7 +168,7 @@ format:
         '<puzzle>
           <id>55-ab536de</id>
           <file>/a/bz.txt</file>
-          <time>01-05-2017</time>
+          <time>01-05-2019</time>
           <author>yegor</author>
           <body>как дела? hey, how are you, please see this title!</body>
           <ticket>123</ticket>

@@ -65,7 +65,7 @@ alerts:
         '<puzzle>
           <id>23-ab536de</id>
           <file>/a/b/c/test.txt</file>
-          <time>01-01-2017</time>
+          <time>01-01-2019</time>
           <author>yegor</author>
           <body>привет дорогой друг, как твои дела?</body>
           <ticket>456</ticket>
@@ -110,7 +110,7 @@ alerts:
         '<puzzle>
           <id>23-ab536de</id>
           <file>/a/b/c/test.txt</file>
-          <time>01-01-2017</time>
+          <time>01-01-2019</time>
           <author>yegor</author>
           <body>привет дорогой друг, как твои дела?</body>
           <ticket>123</ticket>
@@ -158,7 +158,7 @@ tickets:
         '<puzzle>
           <id>23-ab536de</id>
           <file>/a/b/c/test.txt</file>
-          <time>01-01-2017</time>
+          <time>01-01-2019</time>
           <author>yegor</author>
           <body>привет дорогой друг, как твои дела?</body>
           <ticket>123</ticket>
