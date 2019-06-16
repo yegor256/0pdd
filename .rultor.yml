@@ -5,7 +5,7 @@ assets:
   id_rsa: yegor256/home#assets/heroku-key
   id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
-  sudo gem install pdd
+  sudo gem install pdd -v 0.20.5
   git config --global user.email "server@0pdd.com"
   git config --global user.name "0pdd.com"
   export GEM_HOME=~/.ruby
