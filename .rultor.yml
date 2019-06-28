@@ -10,14 +10,14 @@ install: |-
   git config --global user.name "0pdd.com"
   export GEM_HOME=~/.ruby
   export GEM_PATH=$GEM_HOME:$GEM_PATH
+  ruby -v
+  bundle install --no-color
 release:
   sensitive:
     - config.yml
   script: |-
     pdd -f /dev/null
-    bundle install --no-color
-    ruby -v
-    rake
+    bundle exec rake
     git remote add heroku git@heroku.com:zeropdd.git
     rm -rf ~/.ssh
     mkdir ~/.ssh
@@ -36,14 +36,11 @@ release:
     git reset HEAD~1
     rm -rf config.yml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0pdd.com > /dev/null
-  commanders:
-  - yegor256
-architect:
-- yegor256
 merge:
-  commanders: []
   script: |-
     pdd -f /dev/null
-    bundle install
-    rake
-deploy: {}
+    bundle exec rake
+deploy:
+  script: |-
+    echo 'There is nothing to deploy'
+    exit -1
