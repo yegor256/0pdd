@@ -36,17 +36,17 @@ class CommitTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
-    unless opts.include?('on-found-puzzle')
-      @github.create_commit_comment(
-        @repo, @commit,
-        "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
+    return done if suppressed_repo?
+
+    @github.create_commit_comment(
+      @repo, @commit,
+      "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
   [`#{puzzle.xpath('file')[0].text}`](\
   https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
   and submitted as ##{done[:number]}. Please, remember that the puzzle was not \
   necessarily added in this particular commit. Maybe it was added earlier, but \
   we discovered it only now."
-      )
-    end
+    )
     done
   end
 
@@ -72,5 +72,10 @@ only now."
   def opts
     array = @sources.config.dig('alerts', 'suppress')
     array.nil? || !array.is_a?(Array) ? [] : array
+  end
+
+  def suppressed_repo?
+    suppressed_options = ['on-found-puzzle', 'on-scope']
+    suppressed_options.any? { |item| opts.include?(item) }
   end
 end
