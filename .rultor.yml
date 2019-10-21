@@ -18,7 +18,7 @@ release:
   script: |-
     pdd -f /dev/null
     bundle exec rake
-    git remote add heroku git@heroku.com:zeropdd.git
+    git remote add dokku dokku@dokku.0pdd.com:zeropdd
     rm -rf ~/.ssh
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
@@ -32,7 +32,7 @@ release:
     git add config.yml
     ruby test/test_credentials.rb
     git commit -m 'config.yml'
-    git push -f heroku $(git symbolic-ref --short HEAD):master
+    git push -f dokku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     rm -rf config.yml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0pdd.com > /dev/null
