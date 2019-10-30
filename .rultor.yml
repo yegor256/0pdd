@@ -35,7 +35,7 @@ release:
     git push -f dokku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     rm -rf config.yml
-    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.0pdd.com > /dev/null
+    curl -f --connect-timeout 15 -k --retry 5 --retry-delay 30 https://www.0pdd.com > /dev/null
 merge:
   script: |-
     pdd -f /dev/null

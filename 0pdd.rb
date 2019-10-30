@@ -110,7 +110,7 @@ configure do
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
-    'http://www.0pdd.com/github-callback'
+    'https://www.0pdd.com/github-callback'
   )
   set :ruby_version, Exec.new('ruby -e "print RUBY_VERSION"').run
   set :git_version, Exec.new('git --version | cut -d" " -f 3').run

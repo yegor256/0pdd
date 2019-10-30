@@ -4,27 +4,27 @@
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![Managed by Zerocracy](https://www.0crat.com/badge/C3T46CUJJ.svg)](https://www.0crat.com/p/C3T46CUJJ)
-[![DevOps By Rultor.com](http://www.rultor.com/b/yegor256/0pdd)](http://www.rultor.com/p/yegor256/0pdd)
+[![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/0pdd)](https://www.rultor.com/p/yegor256/0pdd)
 [![We recommend RubyMine](https://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
 
 [![Availability at SixNines](https://www.sixnines.io/b/574a)](https://www.sixnines.io/h/574a)
-[![Webhook via ReHTTP](http://www.rehttp.net/b?u=http%3A%2F%2Fwww.0pdd.com%2Fhook%2Fgithub)](http://www.rehttp.net/i?u=http%3A%2F%2Fwww.0pdd.com%2Fhook%2Fgithub)
+[![Webhook via ReHTTP](https://www.rehttp.net/b?u=http%3A%2F%2Fwww.0pdd.com%2Fhook%2Fgithub)](https://www.rehttp.net/i?u=http%3A%2F%2Fwww.0pdd.com%2Fhook%2Fgithub)
 
 [![Build Status](https://travis-ci.org/yegor256/0pdd.svg)](https://travis-ci.org/yegor256/0pdd)
 [![Build status](https://ci.appveyor.com/api/projects/status/j84qweo34e11rprr?svg=true)](https://ci.appveyor.com/project/yegor256/0pdd)
-[![PDD status](http://www.0pdd.com/svg?name=yegor256/0pdd)](http://www.0pdd.com/p?name=yegor256/0pdd)
+[![PDD status](https://www.0pdd.com/svg?name=yegor256/0pdd)](https://www.0pdd.com/p?name=yegor256/0pdd)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7462387124cf5f9b8ef8/maintainability)](https://codeclimate.com/github/yegor256/0pdd/maintainability)
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/0pdd.svg)](https://codecov.io/github/yegor256/0pdd?branch=master)
 
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/0pdd)](https://hitsofcode.com/view/github/yegor256/0pdd)
 
-Read this blog post first: [PDD in Action](http://www.yegor256.com/2017/04/05/pdd-in-action.html)
+Read this blog post first: [PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html)
 
-[0pdd.com](http://www.0pdd.com) is a hosted service that
+[0pdd.com](https://www.0pdd.com) is a hosted service that
 finds new "puzzles" in your repository and posts them as GitHub
 issues. To start using it just create a
 [Webhook](https://developer.github.com/webhooks/creating/) in your repository
-just for `push` events  with `http://www.0pdd.com/hook/github` payload URL and
+just for `push` events  with `https://www.0pdd.com/hook/github` payload URL and
 `application/json` content type.
 
 Then, add [@0pdd](https://github.com/0pdd) GitHub user as a
@@ -32,14 +32,14 @@ Then, add [@0pdd](https://github.com/0pdd) GitHub user as a
 to your repository, if it's private
 (you don't need this for a public repository).
 
-Then, add a `@todo` [puzzle](http://www.yegor256.com/2009/03/04/pdd.html)
+Then, add a `@todo` [puzzle](https://www.yegor256.com/2009/03/04/pdd.html)
 to the source code (format it [right](https://github.com/teamed/pdd)).
 
 Then, `git push` something and see what happens. You should see a new
 issue created in your repository by [@0pdd](https://github.com/0pdd).
 
 The dependency tree of all puzzles in your repository you can find
-here: http://www.0pdd.com/p?name=yegor256/0pdd (just replace the name
+here: https://www.0pdd.com/p?name=yegor256/0pdd (just replace the name
 of the repo in the URL).
 
 Don't forget to add that cute little badge to your `README.md`, just
@@ -48,7 +48,7 @@ will look like this (replace `yegor256/0pdd` with GitHub coordinates
 of your own repository):
 
 ```markdown
-[![PDD status](http://www.0pdd.com/svg?name=yegor256/0pdd)](http://www.0pdd.com/p?name=yegor256/0pdd)
+[![PDD status](https://www.0pdd.com/svg?name=yegor256/0pdd)](https://www.0pdd.com/p?name=yegor256/0pdd)
 ```
 
 ## How to configure?
