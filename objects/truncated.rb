@@ -29,11 +29,11 @@ class Truncated
   end
 
   def to_s
-    clean = @text.gsub(/^\s+|\s+$/, ' ')
+    clean = @text.gsub(/\s+/, ' ').strip
     if @max < clean.length
       limit = @max - @tail.length
       stop = clean.rindex(' ', limit) || 0
-      "#{@text[0...stop]}#{@tail}"
+      "#{clean[0...stop]}#{@tail}"
     else
       clean
     end

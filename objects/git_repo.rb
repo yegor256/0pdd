@@ -98,14 +98,14 @@ class GitRepo
     Exec.new(
       [
         "cd #{@path}",
+        "master=#{Shellwords.escape(@master)}",
         'git config --local core.autocrlf false',
-        "git reset #{Shellwords.escape('origin/' + @master)} --hard --quiet",
+        'git reset origin/${master} --hard --quiet',
         'git clean --force -d',
         'git fetch --quiet',
-        "git checkout #{Shellwords.escape(@master)}",
+        'git checkout origin/${master}',
         'git rebase --abort || true',
-        "git rebase --autostash --strategy-option=theirs \
-#{Shellwords.escape("origin/#{@master}")}"
+        'git rebase --autostash --strategy-option=theirs origin/${master}'
       ].join(' && ')
     ).run
   end
