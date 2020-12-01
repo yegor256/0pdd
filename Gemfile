@@ -29,7 +29,7 @@ gem 'mail', '2.7.1'
 gem 'mocha', '1.11.2', require: false
 gem 'nokogiri', '1.10.3'
 gem 'octokit', '4.19.0'
-gem 'pdd', '0.20.5'
+gem 'pdd', '0.20.6'
 gem 'rack', '2.2.3'
 gem 'rack-test', '1.1.0'
 gem 'rake', '12.3.3', require: false
@@ -41,4 +41,4 @@ gem 'sinatra', '2.1.0'
 gem 'sinatra-contrib', '2.1.0'
 gem 'sprockets', '4.0.2'
 gem 'test-unit', '3.3.7', require: false
-gem 'xcop', '0.6'
+gem 'xcop', '0.6.2'

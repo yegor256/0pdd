@@ -56,8 +56,7 @@ class CredentialsTest < Test::Unit::TestCase
   def test_connects_to_github
     cfg = config
     github = Octokit::Client.new(
-      login: cfg['github']['login'],
-      password: cfg['github']['pwd']
+      access_token: cfg['github']['token']
     )
     tickets = GithubTickets.new(
       'yegor256/0pdd', github, nil
