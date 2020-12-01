@@ -35,10 +35,7 @@ class Github
       FakeGithub.new
     else
       args = {}
-      if @config['github']
-        args[:login] = @config['github']['login']
-        args[:password] = @config['github']['pwd']
-      end
+      args[:access_token] = @config['github']['token'] if @config['github']
       Octokit.connection_options = {
         request: {
           timeout: 20,

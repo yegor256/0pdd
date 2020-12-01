@@ -67,8 +67,7 @@ configure do
     {
       'testing' => true,
       'github' => {
-        'login' => '0pdd',
-        'pwd' => '--the-secret--',
+        'token' => '--the-token--',
         'client_id' => '?',
         'client_secret' => '?'
       },
