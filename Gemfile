@@ -22,7 +22,7 @@ ruby '2.6.0'
 
 gem 'aws-sdk-dynamodb', '1.27.0'
 gem 'aws-sdk-s3', '1.37.0'
-gem 'codecov', '0.1.14'
+gem 'codecov', '0.2.11'
 gem 'glogin', '0.5.1'
 gem 'haml', '5.0.4'
 gem 'mail', '2.7.1'
