@@ -27,7 +27,7 @@ gem 'glogin', '0.7.0'
 gem 'haml', '5.2.1'
 gem 'mail', '2.7.1'
 gem 'mocha', '1.11.2', require: false
-gem 'nokogiri', '1.11.4'
+gem 'nokogiri', '1.12.5'
 gem 'octokit', '4.20.0'
 gem 'pdd', '0.20.6'
 gem 'rack', '2.2.3'
