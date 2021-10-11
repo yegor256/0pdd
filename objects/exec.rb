@@ -56,6 +56,7 @@ class Exec
           out += stdout.read_nonblock(8) until stdout.eof?
           err = stderr.read
           code = thr.value.exitstatus
+          code = 1 if !thr.value.exited
           unless code.zero?
             raise Error.new(
               code, "#{c} [#{code}]:\n#{err}\n#{out}"
