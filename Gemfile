@@ -18,7 +18,7 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.6.0'
+ruby '~> 2.6.0'
 
 gem 'aws-sdk-dynamodb', '1.59.0'
 gem 'aws-sdk-s3', '1.90.0'
@@ -29,6 +29,7 @@ gem 'mail', '2.7.1'
 gem 'mocha', '1.11.2', require: false
 gem 'nokogiri', '1.11.4'
 gem 'octokit', '4.20.0'
+gem 'gitlab', '4.17.0'
 gem 'pdd', '0.20.6'
 gem 'rack', '2.2.3'
 gem 'rack-test', '1.1.0'
