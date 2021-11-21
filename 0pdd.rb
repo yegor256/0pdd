@@ -69,15 +69,13 @@ require_relative 'test/fake_github'
 require_relative 'test/fake_storage'
 require_relative 'test/fake_tickets'
 
-ENV['RACK_ENV'] = 'test'
-
 configure do
   Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
     {
-      'testing' => false,
+      'testing' => true,
       'github' => {
-        'token' => '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',
+        'token' => '--the-token--',
         'client_id' => '?',
         'client_secret' => '?'
       },
