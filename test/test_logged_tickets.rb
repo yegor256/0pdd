@@ -33,7 +33,7 @@ require_relative '../objects/logged_tickets'
 class TestLoggedTickets < Test::Unit::TestCase
   def test_submits_tickets
     log = FakeLog.new
-    tickets = LoggedTickets.new(log, 'yegor256/0pdd', FakeTickets.new)
+    tickets = LoggedTickets.new('yegor256/0pdd', log, FakeTickets.new)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -53,7 +53,7 @@ class TestLoggedTickets < Test::Unit::TestCase
 
   def test_closes_tickets
     log = FakeLog.new
-    tickets = LoggedTickets.new(log, 'yegor256/0pdd', FakeTickets.new)
+    tickets = LoggedTickets.new('yegor256/0pdd', log, FakeTickets.new)
     tickets.close(
       Nokogiri::XML(
         '<puzzle>

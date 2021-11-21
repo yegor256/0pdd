@@ -23,15 +23,14 @@
 # API: http://octokit.github.io/octokit.rb/method_list.html
 #
 class JobStarred
-  def initialize(name, github, job)
-    @name = name
-    @github = github
+  def initialize(vcs, job)
+    @vcs = vcs
     @job = job
   end
 
   def proceed
     output = @job.proceed
-    @github.star(@name)
+    @vcs.star
     output
   end
 end

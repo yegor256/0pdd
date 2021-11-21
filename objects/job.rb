@@ -26,16 +26,16 @@ require_relative 'diff'
 # One job.
 #
 class Job
-  def initialize(repo, storage, tickets)
-    @repo = repo
+  def initialize(vcs, storage, tickets)
+    @vcs = vcs
     @storage = storage
     @tickets = tickets
   end
 
   def proceed
-    @repo.push
+    @vcs.repo.push
     before = @storage.load
-    Puzzles.new(@repo, @storage).deploy(@tickets)
+    Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
     return if opts.include?('on-scope')
     Diff.new(before, @storage.load).notify(@tickets)
   end
@@ -43,7 +43,7 @@ class Job
   private
 
   def opts
-    array = @repo.config.dig('alerts', 'suppress')
+    array = @vcs.repo.config.dig('alerts', 'suppress')
     array.nil? || !array.is_a?(Array) ? [] : array
   end
 end

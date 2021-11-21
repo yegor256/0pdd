@@ -40,12 +40,13 @@ require_relative 'objects/job_recorded'
 require_relative 'objects/job_starred'
 require_relative 'objects/job_commiterrors'
 require_relative 'objects/log'
-require_relative 'objects/github'
+require_relative 'objects/clients/github'
+require_relative 'objects/vcs/github'
 require_relative 'objects/user_error'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_invitations'
-require_relative 'objects/github_tickets'
-require_relative 'objects/github_tagged_tickets'
+require_relative 'objects/tickets'
+require_relative 'objects/tagged_tickets'
 require_relative 'objects/emailed_tickets'
 require_relative 'objects/logged_tickets'
 require_relative 'objects/commit_tickets'
@@ -61,13 +62,22 @@ require_relative 'objects/once_storage'
 require_relative 'objects/s3'
 require_relative 'objects/dynamo'
 
+# # Delete later
+require_relative 'test/fake_log'
+require_relative 'test/fake_repo'
+require_relative 'test/fake_github'
+require_relative 'test/fake_storage'
+require_relative 'test/fake_tickets'
+
+ENV['RACK_ENV'] = 'test'
+
 configure do
   Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
     {
-      'testing' => true,
+      'testing' => false,
       'github' => {
-        'token' => '--the-token--',
+        'token' => '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',
         'client_id' => '?',
         'client_secret' => '?'
       },
@@ -104,7 +114,7 @@ configure do
     end
   end
   set :server_settings, timeout: 25
-  set :github, Github.new(config).client
+  set :github, GithubClient.new(config)
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -214,6 +224,7 @@ end
 get '/log-item' do
   repo = repo_name(params[:repo])
   tag = params[:tag]
+  vcs = params[:vcs]
   error 404 if tag.nil?
   log = Log.new(settings.dynamo, repo)
   error 404 unless log.exists(tag)
@@ -292,72 +303,13 @@ post '/hook/github' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  unless json['ref'] == 'refs/heads/master' &&
-    json['head_commit'] && json['head_commit']['id'] &&
-    json['repository'] && json['repository']['full_name']
-    return 'Thanks'
-  end
-  name = repo_name(json['repository']['full_name'])
+  github = GithubHelper.new(settings.github, json, settings.config)
+  return 'Thanks' unless github.is_valid
   unless ENV['RACK_ENV'] == 'test'
-    repo = repo(name)
-    JobDetached.new(
-      repo,
-      JobCommitErrors.new(
-        name,
-        settings.github,
-        json['head_commit']['id'],
-        JobEmailed.new(
-          name,
-          settings.github,
-          repo,
-          JobRecorded.new(
-            name,
-            settings.github,
-            JobStarred.new(
-              name,
-              settings.github,
-              Job.new(
-                repo,
-                storage(name),
-                SentryTickets.new(
-                  EmailedTickets.new(
-                    name,
-                    CommitTickets.new(
-                      name,
-                      repo,
-                      settings.github,
-                      json['head_commit']['id'],
-                      GithubTaggedTickets.new(
-                        name,
-                        settings.github,
-                        repo,
-                        LoggedTickets.new(
-                          Log.new(settings.dynamo, name),
-                          name,
-                          MilestoneTickets.new(
-                            name,
-                            repo,
-                            settings.github,
-                            GithubTickets.new(
-                              name,
-                              settings.github,
-                              repo
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    ).proceed
-    puts "GitHub hook from #{name}"
+    process_request(github)
+    puts "GitHub hook from #{github.repo.name}"
   end
-  "Thanks #{name}"
+  "Thanks #{github.repo.name}"
 end
 
 get '/css/*.css' do
@@ -453,4 +405,45 @@ def storage(repo)
       VERSION
     )
   )
+end
+
+def process_request(vcs)
+  JobDetached.new(
+    vcs,
+    JobCommitErrors.new(
+      vcs,
+      JobEmailed.new(
+        vcs,
+        JobRecorded.new(
+          vcs,
+          JobStarred.new(
+            vcs,
+            Job.new(
+              vcs,
+              storage(vcs.repo.name),
+              SentryTickets.new(
+                EmailedTickets.new(
+                  vcs,
+                  CommitTickets.new(
+                    vcs,
+                    TaggedTickets.new(
+                      vcs,
+                      LoggedTickets.new(
+                        vcs,
+                        Log.new(settings.dynamo, vcs.repo.name),
+                        MilestoneTickets.new(
+                          vcs,
+                          Tickets.new(vcs)
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  ).proceed
 end

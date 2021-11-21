@@ -18,17 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'octokit'
-
-#
-# Tickets in Github with tags.
-# API: http://octokit.github.io/octokit.rb/method_list.html
-#
-class GithubTaggedTickets
-  def initialize(repo, github, sources, tickets)
-    @repo = repo
-    @github = github
-    @sources = sources
+class TaggedTickets
+  def initialize(vcs, tickets)
+    @vcs = vcs
     @tickets = tickets
   end
 
@@ -39,29 +31,29 @@ class GithubTaggedTickets
   def submit(puzzle)
     done = @tickets.submit(puzzle)
     issue = done[:number]
-    yaml = @sources.config
+    yaml = @vcs.repo.config
     if yaml['tags']&.is_a?(Array)
       tags = yaml['tags'].map(&:strip).map(&:downcase)
-      labels = @github.labels(@repo)
+      labels = @vcs.labels()
         .map { |json| json['name'] }
         .map(&:strip).map(&:downcase)
       needed = tags - labels
       begin
-        needed.each { |t| @github.add_label(@repo, t, 'F74219') }
-        @github.add_labels_to_an_issue(@repo, issue, tags)
-      rescue Octokit::NotFound => e
-        @github.add_comment(
-          @repo, issue,
-          "I can't create GitHub labels `#{needed.join('`, `')}`. \
-Most likely I don't have necessary permissions to `#{@repo}` repository. \
+        needed.each { |t| @vcs.add_label(t, 'F74219') }
+        @vcs.add_labels_to_an_issue(issue, tags)
+      rescue => e
+        @vcs.add_comment(
+          issue,
+          "I can't create #{@vcs.name} labels `#{needed.join('`, `')}`. \
+Most likely I don't have necessary permissions to `#{@vcs.repo.name}` repository. \
 Please, make sure @0pdd user is in the \
-[list of collaborators](https://github.com/#{@repo}/settings/collaboration):\
+[list of collaborators](#{@vcs.collaborators_link}):\
 \n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
         )
-      rescue Octokit::Error => e
-        @github.add_comment(
-          @repo, issue,
-          "For some reason I wasn't able to add GitHub labels \
+      rescue => e
+        @vcs.add_comment(
+          issue,
+          "For some reason I wasn't able to add #{@vcs.name} labels \
 `#{needed.join('`, `')}` to this issue \
 (required=`#{tags.join('`, `')}`; existing=`#{labels.join('`, `')}`). \
 Please, [submit a ticket](https://github.com/yegor256/0pdd/issues/new) \

@@ -22,8 +22,8 @@
 # Tickets that email when submitted or closed.
 #
 class EmailedTickets
-  def initialize(repo, tickets)
-    @repo = repo
+  def initialize(vcs, tickets)
+    @vcs = vcs
     @tickets = tickets
   end
 
@@ -33,7 +33,6 @@ class EmailedTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
-    r = @repo
     Mail.new do
       from '0pdd <no-reply@0pdd.com>'
       to 'admin@0pdd.com'
@@ -45,7 +44,7 @@ Issue #{done[:href]} opened.\n\n\
 ID: #{puzzle.xpath('id')[0].text}\n\
 File: #{puzzle.xpath('file')[0].text}\n\
 Lines: #{puzzle.xpath('lines')[0].text}\n\
-Here: https://github.com/#{r}/blob/master/#{puzzle.xpath('file')[0].text}\
+Here: #{@vcs.file_link(puzzle.xpath('file')[0].text)}\
 ##{puzzle.xpath('lines')[0].text.gsub(/(\d+)/, 'L\1')}\n\
 Author: #{puzzle.xpath('author')[0].text}\n\
 Time: #{puzzle.xpath('time')[0].text}\n\
@@ -62,16 +61,15 @@ Thanks,\n\
   def close(puzzle)
     done = @tickets.close(puzzle)
     if done
-      r = @repo
       issue = puzzle.xpath('issue')[0].text
       Mail.new do
         from '0pdd <no-reply@0pdd.com>'
         to 'admin@0pdd.com'
-        subject "#{r}##{issue} closed"
+        subject "#{@vcs.repo.name}##{issue} closed"
         text_part do
           content_type 'text/plain; charset=UTF-8'
           body "Hey,\n\n\
-Issue https://github.com/#{r}/issues/#{issue} closed.\n\n\
+Issue #{@vcs.issue_link} closed.\n\n\
 Thanks,\n\
 0pdd"
         end

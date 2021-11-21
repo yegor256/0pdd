@@ -27,13 +27,13 @@ require_relative 'dynamo'
 # Log.
 #
 class Log
-  def initialize(aws, repo)
+  def initialize(dynamo, repo)
+    @dynamo = dynamo
     @repo = repo
-    @aws = aws
   end
 
   def put(tag, text)
-    @aws.put_item(
+    @dynamo.put_item(
       table_name: '0pdd-events',
       item: {
         'repo' => @repo,
@@ -45,7 +45,7 @@ class Log
   end
 
   def get(tag)
-    @aws.query(
+    @dynamo.query(
       table_name: '0pdd-events',
       index_name: 'tags',
       select: 'ALL_ATTRIBUTES',
@@ -59,7 +59,7 @@ class Log
   end
 
   def exists(tag)
-    !@aws.query(
+    !@dynamo.query(
       table_name: '0pdd-events',
       index_name: 'tags',
       select: 'ALL_ATTRIBUTES',
@@ -73,7 +73,7 @@ class Log
   end
 
   def delete(time, tag)
-    @aws.delete_item(
+    @dynamo.delete_item(
       table_name: '0pdd-events',
       key: {
         'repo' => @repo,
@@ -87,7 +87,7 @@ class Log
   end
 
   def list(since = Time.now.to_i)
-    @aws.query(
+    @dynamo.query(
       table_name: '0pdd-events',
       select: 'ALL_ATTRIBUTES',
       limit: 25,

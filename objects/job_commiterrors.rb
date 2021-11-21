@@ -22,23 +22,20 @@ require_relative 'truncated'
 
 #
 # Job that posts exceptions as commit messages.
-# API: http://octokit.github.io/octokit.rb/method_list.html
 #
 class JobCommitErrors
-  def initialize(name, github, commit, job)
-    @name = name
-    @github = github
-    @commit = commit
+  def initialize(vcs, job)
+    @vcs = vcs
     @job = job
   end
 
   def proceed
     @job.proceed
   rescue Exception => e
-    done = @github.create_commit_comment(
-      @name, @commit,
+    done = @vcs.create_commit_comment(
+      @vcs.repo.head_commit_hash,
       "I wasn't able to retrieve PDD puzzles from the code base and \
-submit them to GitHub. If you \
+submit them to #{@vcs.name}. If you \
 think that it's a bug on our side, please submit it to \
 [yegor256/0pdd](https://github.com/yegor256/0pdd/issues):\n\n\
 > #{Truncated.new(e.message.gsub(/\s/, ' '), 300)}\n\n

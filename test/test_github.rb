@@ -20,7 +20,7 @@
 
 require 'test/unit'
 require_relative 'test__helper'
-require_relative '../objects/github'
+require_relative '../objects/clients/github'
 
 # Github test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -28,7 +28,7 @@ require_relative '../objects/github'
 # License:: MIT
 class TestGithub < Test::Unit::TestCase
   def test_configures_everything_right
-    github = Github.new.client
+    github = Github.new
     assert_equal('0pdd', github.user('0pdd')[:login])
   end
 end

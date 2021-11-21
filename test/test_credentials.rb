@@ -25,7 +25,7 @@ require 'tmpdir'
 require 'aws-sdk-dynamodb'
 require_relative 'test__helper'
 require_relative '../objects/s3'
-require_relative '../objects/github_tickets'
+require_relative '../objects/tickets'
 require_relative '../objects/log'
 require_relative '../objects/git_repo'
 
@@ -58,7 +58,7 @@ class CredentialsTest < Test::Unit::TestCase
     github = Octokit::Client.new(
       access_token: cfg['github']['token']
     )
-    tickets = GithubTickets.new(
+    tickets = Tickets.new(
       'yegor256/0pdd', github, nil
     )
     tickets.close(

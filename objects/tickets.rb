@@ -19,40 +19,27 @@
 # SOFTWARE.
 
 require 'haml'
-require 'octokit'
 require_relative 'truncated'
 require_relative 'maybe_text'
 
-#
-# Tickets in Github.
-# API: http://octokit.github.io/octokit.rb/method_list.html
-#
-class GithubTickets
-  def initialize(repo, github, sources)
-    @repo = repo
-    @github = github
-    @sources = sources
+class Tickets
+  def initialize(vcs)
+    @vcs = vcs
   end
 
   def notify(issue, message)
-    @github.add_comment(
-      @repo, issue,
-      "@#{@github.issue(@repo, issue)['user']['login']} #{message}"
+    @vcs.add_comment(
+      issue,
+      "@#{@vcs.issue(issue)['user']['login']} #{message}"
     )
-  rescue Octokit::NotFound => e
-    puts "The issue most probably is not found, can't coment: #{e.message}"
   end
 
   def submit(puzzle)
-    json = @github.create_issue(
-      @repo,
-      title(puzzle),
-      body(puzzle)
-    )
+    json = @vcs.create_issue(title(puzzle), body(puzzle))
     issue = json['number']
     unless users.empty?
-      @github.add_comment(
-        @repo, issue,
+      @vcs.add_comment(
+        issue,
         users.join(' ') + ' please pay attention to this new issue.'
       )
     end
@@ -61,27 +48,23 @@ class GithubTickets
 
   def close(puzzle)
     issue = puzzle.xpath('issue')[0].text
-    return true if @github.issue(@repo, issue)['state'] == 'closed'
-    @github.close_issue(@repo, issue)
-    @github.add_comment(
-      @repo,
+    return true if @vcs.issue(issue)['state'] == 'closed'
+    @vcs.close_issue(issue)
+    @vcs.add_comment(
       issue,
       "The puzzle `#{puzzle.xpath('id')[0].text}` has disappeared from the \
 source code, that's why I closed this issue." +
       (users.empty? ? '' : ' //cc ' + users.join(' '))
     )
     true
-  rescue Octokit::NotFound => e
-    puts "The issue most probably is not found, can't close: #{e.message}"
-    true
   end
 
   private
 
   def users
-    yaml = @sources.config
-    if !yaml.nil? && yaml['alerts'] && yaml['alerts']['github']
-      yaml['alerts']['github']
+    yaml = @vcs.repo.config
+    if !yaml.nil? && yaml['alerts'] && yaml['alerts'][@vcs.name.lower]
+      yaml['alerts'][@vcs.name.lower]
         .map(&:strip)
         .map(&:downcase)
         .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
@@ -93,7 +76,7 @@ source code, that's why I closed this issue." +
   end
 
   def title(puzzle)
-    yaml = @sources.config
+    yaml = @vcs.repo.config
     format = []
     format += yaml['format'].map(&:strip).map(&:downcase) if !yaml.nil? && yaml['format'].is_a?(Array)
     len = format.find { |i| i =~ /title-length=\d+/ }
@@ -115,8 +98,8 @@ source code, that's why I closed this issue." +
   def body(puzzle)
     file = puzzle.xpath('file')[0].text
     start, stop = puzzle.xpath('lines')[0].text.split('-')
-    sha = @github.list_commits(@repo)[0]['sha']
-    url = "https://github.com/#{@repo}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
+    sha = @vcs.list_commits()[0]['sha']
+    url = "https://github.com/#{@vcs.repo.name}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
     template = File.read(
       File.join(File.dirname(__FILE__), 'templates/github_tickets_body.haml')
     )

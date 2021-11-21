@@ -22,7 +22,7 @@ require 'test/unit'
 require 'nokogiri'
 require 'yaml'
 require_relative 'test__helper'
-require_relative '../objects/github_tickets'
+require_relative '../objects/tickets'
 
 # GithubTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -54,7 +54,7 @@ format:
     class << github
       attr_accessor :body, :title
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new('yegor256/0pdd', github, sources)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -89,7 +89,7 @@ format:
     class << github
       attr_accessor :body, :title
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new('yegor256/0pdd', github, sources)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -127,7 +127,7 @@ format:
     class << github
       attr_accessor :body, :title
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new('yegor256/0pdd', github, sources)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -162,7 +162,7 @@ format:
     class << github
       attr_accessor :body, :title
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new('yegor256/0pdd', github, sources)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -188,7 +188,7 @@ format:
       YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
     end
     require_relative 'fake_github'
-    tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
+    tickets = Tickets.new('yegor256/0pdd', FakeGithub.new, sources)
     tickets.close(
       Nokogiri::XML(
         '<puzzle><id>xx</id><issue>1</issue></puzzle>'

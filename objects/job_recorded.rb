@@ -22,17 +22,16 @@
 # Job that records all requests.
 #
 class JobRecorded
-  def initialize(name, github, job)
-    @name = name
-    @github = github
+  def initialize(vcs, job)
+    @vcs = vcs
     @job = job
   end
 
   def proceed
     @job.proceed
-    return if @github.repository(@name)['private']
+    return if @vcs.repository()['private']
     open('/tmp/0pdd-done.txt', 'a+') do |f|
-      f.puts(@name)
+      f.puts(@vcs.repo.name)
     end
   end
 end

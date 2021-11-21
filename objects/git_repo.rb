@@ -31,17 +31,20 @@ require_relative 'user_error'
 # Repository in Git
 #
 class GitRepo
+  attr_reader :name, :uri, :head_commit_hash
   def initialize(
     name:, dir: Dir.mktmpdir('0pdd'),
     uri: "git@github.com:#{name}",
     id_rsa: '',
-    master: 'master'
+    master: 'master',
+    head_commit_hash: ''
   )
     @name = name
     @path = "#{dir}/#{@name}"
     @uri = uri
     @id_rsa = id_rsa
     @master = master
+    @head_commit_hash = head_commit_hash
   end
 
   def lock
