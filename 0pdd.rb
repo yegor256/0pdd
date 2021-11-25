@@ -292,9 +292,9 @@ post '/hook/github' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  unless json['ref'] == 'refs/heads/master' &&
-    json['head_commit'] && json['head_commit']['id'] &&
-    json['repository'] && json['repository']['full_name']
+  unless json['repository'] && json['repository']['full_name'] &&
+    json['ref'] == "refs/heads/#{json['repository']['default_branch'] || 'master'}" &&
+    json['head_commit'] && json['head_commit']['id']
     return 'Thanks'
   end
   name = repo_name(json['repository']['full_name'])
