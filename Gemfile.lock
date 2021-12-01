@@ -143,6 +143,7 @@ GEM
       slop (~> 4.4)
 
 PLATFORMS
+  ruby
   x86_64-darwin-19
 
 DEPENDENCIES
