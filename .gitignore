@@ -7,4 +7,3 @@ coverage/
 rdoc/
 .sass-cache/
 *.iml
-Gemfile.lock
