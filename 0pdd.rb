@@ -176,8 +176,8 @@ get '/invitation' do
   ghi = GithubInvitations.new(settings.github)
   invitations = ghi.accept_single_invitation(repo)
   return invitations.join('\n') unless invitations.empty?
-  "Could not find invitation for @#{repo}. It is either invitation already 
-  accepted OR 0pdd is not added as a collaborator"
+  "Could not find invitation for @#{repo}. It is either invitation already
+   accepted OR 0pdd is not added as a collaborator"
 end
 
 get '/p' do
