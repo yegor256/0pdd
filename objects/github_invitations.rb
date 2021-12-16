@@ -33,6 +33,14 @@ class GithubInvitations
     end
   end
 
+  def accept_single_invitation(repo)
+    invitations = @github.user_repository_invitations(repo: repo)
+    invitations.map do |i|
+      break if @github.rate_limit.remaining < 1000
+      "Repository invitation #{repo} accepted" if @github.accept_repository_invitation(i['id'])
+    end
+  end
+
   def accept_orgs
     @github.organization_memberships('state' => 'pending').each do |m|
       break if @github.rate_limit.remaining < 1000

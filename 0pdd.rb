@@ -171,6 +171,15 @@ get '/version' do
   VERSION
 end
 
+get '/invitation' do
+  repo = repo_name(params[:repo])
+  ghi = GithubInvitations.new(settings.github)
+  invitations = ghi.accept_single_invitation(repo)
+  return invitations.join('\n') unless invitations.empty?
+  "Could not find invitation for @#{repo}. It is either invitation already
+   accepted OR 0pdd is not added as a collaborator"
+end
+
 get '/p' do
   name = repo_name(params[:name])
   xml = storage(name).load
