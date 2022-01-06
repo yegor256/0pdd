@@ -39,6 +39,7 @@ class JobEmailed
     name = @vcs.repo.name
     repo_owner_login = repo_user_login()
     repo_owner_email = user_email(repo_owner_login)
+    repository_link = @vcs.repository_link
     emails.each do |email|
       mail = Mail.new do
         from '0pdd <no-reply@0pdd.com>'
@@ -47,7 +48,7 @@ class JobEmailed
         text_part do
           content_type 'text/plain; charset=UTF-8'
           body "Hey,\n\n\
-There is a problem in #{@vcs.repository_link}:\n\n\
+There is a problem in #{repository_link}:\n\n\
 #{trace}\n\n\
 If you think it's our bug, please submit it to GitHub: \
 https://github.com/yegor256/0pdd/issues\n\n\
@@ -58,7 +59,7 @@ Sorry,\n\
           content_type 'text/html; charset=UTF-8'
           body "<html><body><p>Hey,</p>
             <p>There is a problem in
-            <a href='#{@vcs.repository_link}'>#{name}</a>:</p>
+            <a href='#{repository_link}'>#{name}</a>:</p>
             <pre>#{trace}</pre>
             <p>If you think it's our bug, please submit it to
             <a href='https://github.com/yegor256/0pdd/issues'>GitHub</a>.

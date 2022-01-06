@@ -49,6 +49,10 @@ class FakeGithub
     @repositories = options[:repositories] || []
   end
 
+  def repository(_)
+    'yegor256/0pdd'
+  end
+
   def issue(_, _)
     { 'state' => 'open' }
   end

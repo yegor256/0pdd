@@ -18,8 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative '../git_repo.rb'
 require_relative 'vcs'
+require_relative '../git_repo'
 require_relative '../clients/gitlab'
 
 #
@@ -38,10 +38,6 @@ class GitlabHelper
     @project = json['project']
     @repo = git_repo()
     @id = json['project']['id']
-  end
-
-  def repo_name()
-    repo_name(@project['path_with_namespace'])
   end
 
   private def git_repo()

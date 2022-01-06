@@ -38,10 +38,6 @@ module VCS
     fail NotImplementedError, "A canine class must be able to #bark!" 
   end
 
-  def repo_name
-    fail NotImplementedError, "Should return full repository name" 
-  end
-
   def issue(issue_id)
     # issue_id -> Number | String
     fail NotImplementedError, "Should accept issue_id and return { state, user: { login }}" 

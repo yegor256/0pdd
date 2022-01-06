@@ -36,7 +36,6 @@ class GithubHelper
     @client = client
     @config = config
     @json = json
-    @id = @json['repository']['full_name']
     @is_valid = json['repository'] && json['repository']['full_name'] &&
     json['ref'] == "refs/heads/#{json['repository']['master_branch']}" &&
     json['head_commit'] && json['head_commit']['id']
@@ -44,36 +43,12 @@ class GithubHelper
     @repo = git_repo() if @is_valid
   end
 
-  private def git_repo()
-    uri = @json['repository']['ssh_url'] || @json['repository']['url']
-    name = @id
-    head_commit_hash = @json['head_commit']['id']
-    begin
-      repo = @client.repository
-    rescue Octokit::InvalidRepository => e
-      raise "Repository #{name} is not available: #{e.message}"
-    rescue Octokit::NotFound
-      error 400
-    end
-    GitRepo.new(
-      uri: uri,
-      name: name,
-      id_rsa: @config['id_rsa'],
-      master: repo['default_branch'],
-      head_commit_hash: head_commit_hash
-    )
-  end
-
-  def repo_name
-    @json['repository']['full_name']
-  end
-
   def issue(issue_id) # returns {state, user:{login}}
-    @client.issue(@id, issue_id)
+    @client.issue(@repo.name, issue_id)
   end
 
   def close_issue(issue_id) # returns void
-    @client.close_issue(@id, issue_id)
+    @client.close_issue(@repo.name, issue_id)
   rescue Octokit::NotFound => e
     puts "The issue most probably is not found, can't close: #{e.message}"
   end
@@ -83,37 +58,37 @@ class GithubHelper
     # :assignee_id (Integer) — The ID of a user to assign issue.
     # :milestone_id (Integer) — The ID of a milestone to assign issue.
     # :labels (String) — Comma-separated label names for an issue.
-    @client.create_issue(@id, title, body)
+    @client.create_issue(@repo.name, title, body)
   end
 
   def update_issue(issue_id, data)
-    @client.update_issue(@id, issue_id, data)
+    @client.update_issue(@repo.name, issue_id, data)
   end
 
   def labels() # returns void
-    @client.labels(@id)
+    @client.labels(@repo.name)
   end
 
   def add_label(label, color, options = {}) # returns void
-    @client.add_label(@id, label, color, options)
+    @client.add_label(@repo.name, label, color, options)
   end
 
   def add_labels_to_an_issue(issue_id, tags) # returns void
-    @client.add_labels_to_an_issue(@id, issue_id, tags)
+    @client.add_labels_to_an_issue(@repo.name, issue_id, tags)
   end
 
   def add_comment(issue_id, comment)  # returns void
-    @client.add_comment(@id, issue_id, comment)
+    @client.add_comment(@repo.name, issue_id, comment)
   rescue Octokit::NotFound => e
     puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 
   def create_commit_comment(hash, comment) # returns void
-    @client.create_commit_comment(@id, hash, comment)
+    @client.create_commit_comment(@repo.name, hash, comment)
   end
 
   def list_commits()
-    @client.commits(@id)
+    @client.commits(@repo.name)
   end
 
   def user(username)
@@ -121,11 +96,11 @@ class GithubHelper
   end
 
   def star()
-    @client.star(@id)
+    @client.star(@repo.name)
   end
 
   def repository()
-    @client.repository(@id)
+    @client.repository(@repo.name)
   end
 
   def repository_link
@@ -142,5 +117,27 @@ class GithubHelper
 
   def issue_link(issue_id)
     "https://github.com/#{@repo.name}/issues/#{issue_id}"
+  end
+
+  private
+
+  def git_repo()
+    uri = @json['repository']['ssh_url'] || @json['repository']['url']
+    name = @json['repository']['full_name']
+    head_commit_hash = @json['head_commit']['id']
+    begin
+      repo = @client.repository(name)
+    rescue Octokit::InvalidRepository => e
+      raise "Repository #{name} is not available: #{e.message}"
+    rescue Octokit::NotFound
+      error 400
+    end
+    GitRepo.new(
+      uri: uri,
+      name: name,
+      id_rsa: @config['id_rsa'],
+      master: repo['default_branch'],
+      head_commit_hash: head_commit_hash
+    )
   end
 end
