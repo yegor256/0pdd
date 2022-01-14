@@ -45,7 +45,7 @@ this puzzle was already seen in the code and \
 you're trying to create it again. We would recommend you to re-phrase \
 the text of the puzzle and push again. If this doesn't work, pleas let us know \
 in GitHub: https://github.com/yegor256/0pdd/issues. More details here: \
-http://www.0pdd.com/log-item?repo=#{CGI.escape(@vcs.repo.name)}&tag=#{CGI.escape(tag)}&vcs=#{@vcs.name.lower} ."
+http://www.0pdd.com/log-item?repo=#{CGI.escape(@vcs.repo.name)}&tag=#{CGI.escape(tag)}&vcs=#{@vcs.name.downcase} ."
     end
     done = @tickets.submit(puzzle)
     @log.put(
@@ -65,7 +65,7 @@ at #{puzzle.xpath('file')[0].text}; #{puzzle.xpath('lines')[0].text}"
         raise UserError, "Tag \"#{tag}\" already exists, won't close again. \
 This is a rare and rather unusual bug. Please report it to us: \
 https://github.com/yegor256/0pdd/issues. More details here: \
-http://www.0pdd.com/log-item?repo=#{CGI.escape(@vcs.repo.name)}&tag=#{CGI.escape(tag)}&vcs=#{@vcs.name.lower} ."
+http://www.0pdd.com/log-item?repo=#{CGI.escape(@vcs.repo.name)}&tag=#{CGI.escape(tag)}&vcs=#{@vcs.name.downcase} ."
       end
       @log.put(
         tag,

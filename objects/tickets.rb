@@ -30,20 +30,20 @@ class Tickets
   def notify(issue, message)
     @vcs.add_comment(
       issue,
-      "@#{@vcs.issue(issue)['user']['login']} #{message}"
+      "@#{@vcs.issue(issue)['author']['username']} #{message}"
     )
   end
 
   def submit(puzzle)
-    json = @vcs.create_issue(title(puzzle), body(puzzle))
-    issue = json['number']
+    data = { title: title(puzzle), description: body(puzzle) }
+    issue = @vcs.create_issue(data)
     unless users.empty?
       @vcs.add_comment(
-        issue,
+        issue['number'],
         users.join(' ') + ' please pay attention to this new issue.'
       )
     end
-    { number: issue, href: json['html_url'] }
+    { number: issue['number'], href: issue['html_url'] }
   end
 
   def close(puzzle)
@@ -63,8 +63,8 @@ source code, that's why I closed this issue." +
 
   def users
     yaml = @vcs.repo.config
-    if !yaml.nil? && yaml['alerts'] && yaml['alerts'][@vcs.name.lower]
-      yaml['alerts'][@vcs.name.lower]
+    if !yaml.nil? && yaml['alerts'] && yaml['alerts'][@vcs.name.downcase]
+      yaml['alerts'][@vcs.name.downcase]
         .map(&:strip)
         .map(&:downcase)
         .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
@@ -98,8 +98,8 @@ source code, that's why I closed this issue." +
   def body(puzzle)
     file = puzzle.xpath('file')[0].text
     start, stop = puzzle.xpath('lines')[0].text.split('-')
-    sha = @vcs.list_commits()[0]['sha']
-    url = "https://github.com/#{@vcs.repo.name}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
+    sha = @vcs.repo.head_commit_hash || vcs.repo.master
+    url = @vcs.puzzle_link_for_commit(sha, file, start, stop)
     template = File.read(
       File.join(File.dirname(__FILE__), 'templates/github_tickets_body.haml')
     )

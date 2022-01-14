@@ -40,8 +40,6 @@ require_relative 'objects/job_recorded'
 require_relative 'objects/job_starred'
 require_relative 'objects/job_commiterrors'
 require_relative 'objects/log'
-require_relative 'objects/clients/github'
-require_relative 'objects/vcs/github'
 require_relative 'objects/user_error'
 require_relative 'objects/git_repo'
 require_relative 'objects/github_invitations'
@@ -62,6 +60,12 @@ require_relative 'objects/once_storage'
 require_relative 'objects/s3'
 require_relative 'objects/dynamo'
 
+require_relative 'objects/vcs/github'
+require_relative 'objects/vcs/gitlab'
+
+require_relative 'objects/clients/github'
+require_relative 'objects/clients/gitlab'
+
 # # Delete later
 require_relative 'test/fake_log'
 require_relative 'test/fake_repo'
@@ -75,6 +79,11 @@ configure do
     {
       'testing' => true,
       'github' => {
+        'token' => 'token' => '--the-token--',
+        'client_id' => '?',
+        'client_secret' => '?'
+      },
+      'gitlab' => {
         'token' => '--the-token--',
         'client_id' => '?',
         'client_secret' => '?'
@@ -86,7 +95,7 @@ configure do
         'key' => '?',
         'secret' => '?'
       },
-      'id_rsa' => ''
+      'id_rsa' => '',
     }
   else
     YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
@@ -113,6 +122,7 @@ configure do
   end
   set :server_settings, timeout: 25
   set :github, GithubClient.new(config)
+  set :gitlab, GitlabClient.new(config)
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -310,6 +320,27 @@ post '/hook/github' do
   "Thanks #{github.repo.name}"
 end
 
+post '/hook/gitlab' do
+  request.body.rewind
+  json = JSON.parse(
+    case request.content_type
+    when 'application/x-www-form-urlencoded'
+      params[:payload]
+    when 'application/json'
+      request.body.read
+    else
+      raise "Invalid content-type: \"#{request.content_type}\""
+    end
+  )
+  gitlab = GitlabHelper.new(settings.gitlab, json, settings.config)
+  return 'Thanks' unless gitlab.is_valid
+  unless ENV['RACK_ENV'] != 'test'
+    process_request(gitlab)
+    puts "Gitlab hook from #{gitlab.repo.name}"
+  end
+  "Thanks #{gitlab.repo.name}"
+end
+
 get '/css/*.css' do
   content_type 'text/css', charset: 'utf-8'
   file = params[:splat].first
@@ -357,6 +388,7 @@ def merged(hash)
   out
 end
 
+# TODO: Refactor this to be VCS independent (loose coupling)
 def repo(name)
   begin
     master = settings.github.repository(name)['default_branch']

@@ -19,12 +19,13 @@
 # SOFTWARE.
 
 require 'octokit'
-require_relative '../git_repo.rb'
+
 require_relative 'base'
+require_relative '../git_repo'
 require_relative '../clients/gitlab'
 
 #
-# Gitlab client
+# Github helper
 # API: https://github.com/NARKOZ/gitlab
 #
 class GithubHelper
@@ -43,48 +44,55 @@ class GithubHelper
     @repo = git_repo() if @is_valid
   end
 
-  def issue(issue_id) # returns {state, user:{login}}
-    @client.issue(@repo.name, issue_id)
+  def issue(issue_id)
+    hash = @client.issue(@repo.name, issue_id).to_attrs
+    id, username = hash[:user].values_at(:id, :login) if hash[:user]
+    { 
+      state: hash[:state],
+      author: {
+        id: id,
+        username: username,
+      },
+      milestone: hash[:milestone],
+    }
   end
 
-  def close_issue(issue_id) # returns void
+  def close_issue(issue_id)
+    puts "\n\nClosing issue #{issue_id} on #{@repo.name}\n\n"
     @client.close_issue(@repo.name, issue_id)
   rescue Octokit::NotFound => e
     puts "The issue most probably is not found, can't close: #{e.message}"
   end
 
-  def create_issue(title, body)
-    # :description (String) — The description of an issue.
-    # :assignee_id (Integer) — The ID of a user to assign issue.
-    # :milestone_id (Integer) — The ID of a milestone to assign issue.
-    # :labels (String) — Comma-separated label names for an issue.
-    @client.create_issue(@repo.name, title, body)
+  def create_issue(data)
+    options = data.reject {|k,v| k == 'title' || k == 'description'}
+    @client.create_issue(@repo.name, data[:title], data[:description], options)
   end
 
   def update_issue(issue_id, data)
     @client.update_issue(@repo.name, issue_id, data)
   end
 
-  def labels() # returns void
+  def labels
     @client.labels(@repo.name)
   end
 
-  def add_label(label, color, options = {}) # returns void
-    @client.add_label(@repo.name, label, color, options)
+  def add_label(label, color)
+    @client.add_label(@repo.name, label, color)
   end
 
-  def add_labels_to_an_issue(issue_id, tags) # returns void
-    @client.add_labels_to_an_issue(@repo.name, issue_id, tags)
+  def add_labels_to_an_issue(issue_id, labels)
+    @client.add_labels_to_an_issue(@repo.name, issue_id, labels)
   end
 
-  def add_comment(issue_id, comment)  # returns void
+  def add_comment(issue_id, comment)
     @client.add_comment(@repo.name, issue_id, comment)
   rescue Octokit::NotFound => e
     puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 
-  def create_commit_comment(hash, comment) # returns void
-    @client.create_commit_comment(@repo.name, hash, comment)
+  def create_commit_comment(sha, comment)
+    @client.create_commit_comment(@repo.name, sha, comment)
   end
 
   def list_commits()
@@ -95,11 +103,11 @@ class GithubHelper
     @client.user(username)
   end
 
-  def star()
+  def star
     @client.star(@repo.name)
   end
 
-  def repository()
+  def repository
     @client.repository(@repo.name)
   end
 
@@ -115,6 +123,10 @@ class GithubHelper
     "https://github.com/#{@repo.name}/blob/#{@repo.master}/#{file})"
   end
 
+  def puzzle_link_for_commit(sha, file, start, stop)
+    "https://github.com/#{@repo.name}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
+  end
+
   def issue_link(issue_id)
     "https://github.com/#{@repo.name}/issues/#{issue_id}"
   end
@@ -124,9 +136,10 @@ class GithubHelper
   def git_repo()
     uri = @json['repository']['ssh_url'] || @json['repository']['url']
     name = @json['repository']['full_name']
+    default_branch = @json['repository']['master_branch']
     head_commit_hash = @json['head_commit']['id']
     begin
-      repo = @client.repository(name)
+      @client.repository(name)
     rescue Octokit::InvalidRepository => e
       raise "Repository #{name} is not available: #{e.message}"
     rescue Octokit::NotFound
@@ -136,7 +149,7 @@ class GithubHelper
       uri: uri,
       name: name,
       id_rsa: @config['id_rsa'],
-      master: repo['default_branch'],
+      master: default_branch,
       head_commit_hash: head_commit_hash
     )
   end

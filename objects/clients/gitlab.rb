@@ -49,18 +49,3 @@ class GitlabClient
     end
   end
 end
-
-# gitlab = GitlabClient.new({
-#     'testing' => false,   
-#     'gitlab' => {
-#         'token' => 'glpat-h8U8h-quRwGsxWxxzQek',
-#         'client_id' => '?',
-#         'client_secret' => '?'
-#     },
-# })
-
-# p gitlab.git_repo({
-#   :path_with_namespace => "mbao01/ayomidebakare.com",
-#   :default_branch => "master",
-#   :url => "git@gitlab.com:mbao01/ayomidebakare.com.git"
-# })

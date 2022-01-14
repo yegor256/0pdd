@@ -18,11 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'fileutils'
 require 'pdd'
+require 'yaml'
+require 'base64'
 require 'tmpdir'
 require 'tempfile'
-require 'yaml'
+require 'fileutils'
 require 'shellwords'
 require_relative 'exec'
 require_relative 'user_error'
@@ -31,7 +32,7 @@ require_relative 'user_error'
 # Repository in Git
 #
 class GitRepo
-  attr_reader :name, :uri, :head_commit_hash
+  attr_reader :uri, :name, :master, :head_commit_hash
   def initialize(
     name:, dir: Dir.mktmpdir('0pdd'),
     uri: "git@github.com:#{name}",
@@ -48,7 +49,8 @@ class GitRepo
   end
 
   def lock
-    "/tmp/0pdd-locks/#{@name}.txt"
+    file_name = Base64.encode64(@name)
+    "/tmp/0pdd-locks/#{file_name}.txt"
   end
 
   def config

@@ -18,7 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'vcs'
+require 'gitlab'
+
+require_relative 'base'
 require_relative '../git_repo'
 require_relative '../clients/gitlab'
 
@@ -28,22 +30,123 @@ require_relative '../clients/gitlab'
 #
 class GitlabHelper
   include VCS
-  attr_reader :repo, :name
+  attr_reader :is_valid, :repo, :name
 
   def initialize(client, json, config = {})
-    @name = 'gitlab'
+    @name = 'GITLAB'
     @client = client
     @config = config
     @json = json
-    @project = json['project']
-    @repo = git_repo()
-    @id = json['project']['id']
+    @is_valid = json['project'] && json['project']['path_with_namespace'] &&
+    json['ref'] == "refs/heads/#{json['project']['default_branch']}" &&
+    json['checkout_sha']
+
+    @repo = git_repo() if @is_valid
   end
 
-  private def git_repo()
-    uri = @project['url']
-    name = @project['path_with_namespace']
-    branch = @project['default_branch']
+  def issue(issue_id)
+    hash = @client.issue(@repo.name, issue_id).to_hash
+    number, title = hash['milestone'].values_at(:id, :title) if hash['milestone']
+    { 
+      state: hash['state'],
+      author: hash['author'],
+      milestone: {
+        number: number,
+        title: title,
+      }
+    }
+  rescue Gitlab::Error::NotFound => e
+    puts "The issue most probably is not found, can' comment: #{e.message}"
+  end
+
+  def close_issue(issue_id)
+    @client.close_issue(@repo.name, issue_id)
+  rescue Gitlab::Error::NotFound => e
+    puts "The issue most probably is not found, can't close: #{e.message}"
+  end
+
+  def create_issue(data)
+    options = data.reject {|k,v| k == 'title'}
+    hash = @client.create_issue(@repo.name, data[:title], options).to_hash
+    { number: hash['iid'], html_url: hash['web_url'] }
+  end
+
+  def update_issue(issue_id, data)
+    @client.edit_issue(@repo.name, issue_id, data)
+  end
+
+  def labels
+    @client.labels(@repo.name)
+  end
+
+  def add_label(label, color)
+    @client.add_label(@repo.name, label, color)
+  end
+
+  def add_labels_to_an_issue(issue_id, labels)
+    @client.edit_issue(@repo.name, issue_id, { labels: labels })
+  end
+
+  def add_comment(issue_id, comment) 
+    @client.create_issue_note(@repo.name, issue_id, comment)
+  rescue Gitlab::Error::NotFound => e
+    puts "The issue most probably is not found, can't comment: #{e.message}"
+  end
+
+  def create_commit_comment(sha, comment)
+    hash = @client.create_commit_comment(@repo.name, sha, comment)
+    hash[:html_url] = "https://gitlab.com/#{@repo.name}/commit/#{sha}"
+    hash
+  end
+
+  def list_commits
+    commits = @client.commits(@repo.name)
+    commits.map do |commit|
+      commit = commit.to_hash
+      { sha: commit['id'], html_url: commit['web_url'] }
+    end
+  end
+
+  def user(username)
+    hash = @client.user(username)
+    hash[:email] = hash.values_at(:public_email)
+    hash
+  end
+
+  def star
+    @client.star_project(@repo.name)
+  end
+
+  def repository
+    @client.project(@repo.name)
+  end
+
+  def repository_link
+    "https://gitlab.com/#{@repo.name}"
+  end
+
+  def collaborators_link
+    "https://gitlab.com/#{@repo.name}/project_members"
+  end
+
+  def file_link(file)
+    "https://gitlab.com/#{@repo.name}/blob/#{@repo.master}/#{file})"
+  end
+
+  def puzzle_link_for_commit(sha, file, start, stop)
+    "https://gitlab.com/#{@repo.name}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
+  end
+
+  def issue_link(issue_id)
+    "https://gitlab.com/#{@repo.name}/issues/#{issue_id}"
+  end
+
+  private
+
+  def git_repo()
+    uri = @json['project']['url']
+    name = @json['project']['path_with_namespace']
+    default_branch = @json['project']['default_branch']
     head_commit_hash = @json['checkout_sha']
     begin
       @client.project(name)
@@ -57,78 +160,8 @@ class GitlabHelper
       uri: uri,
       name: name,
       id_rsa: @config['id_rsa'],
-      master: branch,
+      master: default_branch,
       head_commit_hash: head_commit_hash
     )
-  end
-
-  def issue(repo, puzzle)
-    fail NotImplementedError, "A canine class must be able to #bark!" 
-  end
-
-  def close_issue(repo, issue)
-    @client.close_issue(@id, issue['id'])
-  end
-
-  def create_issue(repo, issue)
-    # :description (String) — The description of an issue.
-    # :assignee_id (Integer) — The ID of a user to assign issue.
-    # :milestone_id (Integer) — The ID of a milestone to assign issue.
-    # :labels (String) — Comma-separated label names for an issue.
-    @client.create_issue(@id, issue['title'], issue)
-  end
-
-  def update_issue(repo, issue)
-    # :title (String) — The title of an issue.
-    # :description (String) — The description of an issue.
-    # :assignee_id (Integer) — The ID of a user to assign issue.
-    # :milestone_id (Integer) — The ID of a milestone to assign issue.
-    # :labels (String) — Comma-separated label names for an issue.
-    # :state_event (String) — The state event of an issue ('close' or 'reopen').
-    @client.edit_issue(@id, issue['id'], issue)
-  end
-
-  def labels(repo)
-
-  end
-
-  def add_label(repo)
-
-  end
-
-  def add_labels_to_an_issue(repo, issue, tags)
-    @client.add_labels_to_an_issue(@id, issue['id'], tags)
-  end
-
-  def add_comment(repo, issue, comment) 
-    @client.create_issue_note(@id, issue['id'], comment)
-  end
-
-  def create_commit_comment(repo, sha, comment)
-    @client.create_commit_comment(@id, sha, comment)
-  end
-
-  def list_commits(repo)
-    @client.commits(@id)
-  end
-
-  def user(username)
-    @client.user(username)
-  end
-
-  def star(name)
-    @client.project(name)
-  end
-
-  def repository(name)
-    @client.project(name)
-  end
-
-  def collaborators_link
-    "https://gitlab.com/#{@repo.name}/project_members"
-  end
-
-  def file_link(file)
-    "https://gitlab.com/#{@repo.name}/blob/#{@repo.master}/#{file})"
   end
 end

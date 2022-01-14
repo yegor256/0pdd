@@ -33,10 +33,12 @@ class EmailedTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
+    issue_link = @vcs.issue_link(done[:number])
+    file_link = @vcs.file_link(puzzle.xpath('file')[0].text)
     Mail.new do
       from '0pdd <no-reply@0pdd.com>'
       to 'admin@0pdd.com'
-      subject "#{r}##{done[:number]} opened"
+      subject "#{issue_link} opened"
       text_part do
         content_type 'text/plain; charset=UTF-8'
         body "Hey,\n\n\
@@ -44,7 +46,7 @@ Issue #{done[:href]} opened.\n\n\
 ID: #{puzzle.xpath('id')[0].text}\n\
 File: #{puzzle.xpath('file')[0].text}\n\
 Lines: #{puzzle.xpath('lines')[0].text}\n\
-Here: #{@vcs.file_link(puzzle.xpath('file')[0].text)}\
+Here: #{file_link}\
 ##{puzzle.xpath('lines')[0].text.gsub(/(\d+)/, 'L\1')}\n\
 Author: #{puzzle.xpath('author')[0].text}\n\
 Time: #{puzzle.xpath('time')[0].text}\n\
@@ -61,15 +63,16 @@ Thanks,\n\
   def close(puzzle)
     done = @tickets.close(puzzle)
     if done
-      issue = puzzle.xpath('issue')[0].text
+      issue_number = puzzle.xpath('issue')[0].text
+      issue_link = @vcs.issue_link(issue_number)
       Mail.new do
         from '0pdd <no-reply@0pdd.com>'
         to 'admin@0pdd.com'
-        subject "#{@vcs.repo.name}##{issue} closed"
+        subject "#{issue_link} closed"
         text_part do
           content_type 'text/plain; charset=UTF-8'
           body "Hey,\n\n\
-Issue #{@vcs.issue_link} closed.\n\n\
+Issue #{issue_link} closed.\n\n\
 Thanks,\n\
 0pdd"
         end
