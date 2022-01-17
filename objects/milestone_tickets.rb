@@ -38,25 +38,25 @@ class MilestoneTickets
        puzzle.xpath('ticket')[0].text =~ /[0-9]+/
       num = puzzle.xpath('ticket')[0].text.to_i
       parent = @vcs.issue(num)
-      unless parent.nil? || parent['milestone'].nil?
+      unless parent.nil? || parent[:milestone].nil?
         begin
           @vcs.update_issue(
             num,
-            milestone: parent['milestone']['number']
+            milestone: parent[:milestone][:number]
           )
           unless config.dig('alerts', 'suppress')
             &.include?('on-inherited-milestone')
             @vcs.add_comment(
               submitted[:number],
               "This puzzle inherited milestone \
-`#{parent['milestone']['title']}` from issue ##{num}."
+`#{parent[:milestone][:title]}` from issue ##{num}."
             )
           end
         rescue => e
           @vcs.add_comment(
             submitted[:number],
             "For some reason I wasn't able to set milestone \
-`#{parent['milestone']['title']}`, inherited from `#{num}`, \
+`#{parent[:milestone][:title]}`, inherited from `#{num}`, \
 to this issue. Please, \
 [submit a ticket](https://github.com/yegor256/0pdd/issues/new) \
 to us with the text you see below:\

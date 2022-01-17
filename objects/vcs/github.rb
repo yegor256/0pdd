@@ -45,8 +45,8 @@ class GithubHelper
   end
 
   def issue(issue_id)
-    hash = @client.issue(@repo.name, issue_id).to_attrs
-    id, username = hash[:user].values_at(:id, :login) if hash[:user]
+    hash = @client.issue(@repo.name, issue_id)
+    id, username = [hash[:user][:id], hash[:user][:login]] if hash[:user]
     { 
       state: hash[:state],
       author: {
@@ -58,15 +58,19 @@ class GithubHelper
   end
 
   def close_issue(issue_id)
-    puts "\n\nClosing issue #{issue_id} on #{@repo.name}\n\n"
     @client.close_issue(@repo.name, issue_id)
   rescue Octokit::NotFound => e
     puts "The issue most probably is not found, can't close: #{e.message}"
   end
 
   def create_issue(data)
-    options = data.reject {|k,v| k == 'title' || k == 'description'}
-    @client.create_issue(@repo.name, data[:title], data[:description], options)
+    options = data.reject {|k,v| k == :title || k == :description}
+    @client.create_issue(
+      @repo.name,
+      data[:title],
+      data[:description],
+      options
+    )
   end
 
   def update_issue(issue_id, data)
@@ -95,7 +99,7 @@ class GithubHelper
     @client.create_commit_comment(@repo.name, sha, comment)
   end
 
-  def list_commits()
+  def list_commits
     @client.commits(@repo.name)
   end
 
@@ -107,8 +111,10 @@ class GithubHelper
     @client.star(@repo.name)
   end
 
-  def repository
-    @client.repository(@repo.name)
+  def repository(name = nil)
+    @client.repository(name || @repo.name)
+  rescue Octokit::NotFound => e
+    raise "Repository #{name} is not available: #{e.message}"
   end
 
   def repository_link
@@ -133,18 +139,12 @@ class GithubHelper
 
   private
 
-  def git_repo()
+  def git_repo
     uri = @json['repository']['ssh_url'] || @json['repository']['url']
     name = @json['repository']['full_name']
     default_branch = @json['repository']['master_branch']
     head_commit_hash = @json['head_commit']['id']
-    begin
-      @client.repository(name)
-    rescue Octokit::InvalidRepository => e
-      raise "Repository #{name} is not available: #{e.message}"
-    rescue Octokit::NotFound
-      error 400
-    end
+    repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
       name: name,

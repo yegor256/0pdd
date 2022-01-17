@@ -45,11 +45,14 @@ class GitlabHelper
   end
 
   def issue(issue_id)
-    hash = @client.issue(@repo.name, issue_id).to_hash
-    number, title = hash['milestone'].values_at(:id, :title) if hash['milestone']
+    hash = JSON.parse(
+      @client.issue(@repo.name, issue_id).to_hash.to_json,
+      symbolize_names: true
+    )
+    number, title = hash[:milestone].values_at(:id, :title) if hash[:milestone]
     { 
-      state: hash['state'],
-      author: hash['author'],
+      state: hash[:state],
+      author: hash[:author],
       milestone: {
         number: number,
         title: title,
@@ -66,9 +69,12 @@ class GitlabHelper
   end
 
   def create_issue(data)
-    options = data.reject {|k,v| k == 'title'}
-    hash = @client.create_issue(@repo.name, data[:title], options).to_hash
-    { number: hash['iid'], html_url: hash['web_url'] }
+    options = data.reject {|k,v| k == :title}
+    hash = JSON.parse(
+      @client.create_issue(@repo.name, data[:title], options).to_hash.to_json,
+      symbolize_names: true
+    )
+    { number: hash[:iid], html_url: hash[:web_url] }
   end
 
   def update_issue(issue_id, data)
@@ -76,7 +82,16 @@ class GitlabHelper
   end
 
   def labels
-    @client.labels(@repo.name)
+    result = []
+    @client.labels(@repo.name).each_page do |page|
+      page.each do |label|
+        result << JSON.parse(
+          label.to_hash.to_json,
+          symbolize_names: true
+        )
+      end
+    end
+    result
   end
 
   def add_label(label, color)
@@ -94,22 +109,30 @@ class GitlabHelper
   end
 
   def create_commit_comment(sha, comment)
-    hash = @client.create_commit_comment(@repo.name, sha, comment)
+    hash = JSON.parse(
+      @client.create_commit_comment(@repo.name, sha, comment).to_hash.to_json,
+      symbolize_names: true
+    )
     hash[:html_url] = "https://gitlab.com/#{@repo.name}/commit/#{sha}"
     hash
   end
 
   def list_commits
-    commits = @client.commits(@repo.name)
-    commits.map do |commit|
-      commit = commit.to_hash
-      { sha: commit['id'], html_url: commit['web_url'] }
+    commits = []
+    @client.commits(@repo.name).each_page do |page|
+      page.each do |commit|
+        commits << { sha: commit.id, html_url: commit.web_url }
+      end
     end
+    commits
   end
 
   def user(username)
-    hash = @client.user(username)
-    hash[:email] = hash.values_at(:public_email)
+    hash = JSON.parse(
+      @client.user(username).to_hash.to_json,
+      symbolize_names: true
+    )
+    hash[:email] = hash[:public_email]
     hash
   end
 
@@ -117,8 +140,17 @@ class GitlabHelper
     @client.star_project(@repo.name)
   end
 
-  def repository
-    @client.project(@repo.name)
+  def repository(name = nil)
+    hash = JSON.parse(
+      @client.project(name || @repo.name).to_hash.to_json,
+      symbolize_names: true
+    )
+    hash[:private] = hash[:visibility] == 'private'
+    hash
+  rescue Gitlab::Error::NotFound => e
+    raise "Repository #{name} is not available: #{e.message}"
+  rescue Gitlab::Error::Forbidden => e
+    raise "Repository #{name} is not accessible: #{e.message}"
   end
 
   def repository_link
@@ -143,19 +175,12 @@ class GitlabHelper
 
   private
 
-  def git_repo()
+  def git_repo
     uri = @json['project']['url']
     name = @json['project']['path_with_namespace']
     default_branch = @json['project']['default_branch']
     head_commit_hash = @json['checkout_sha']
-    begin
-      @client.project(name)
-    rescue Gitlab::Error::NotFound => e
-      raise "Repository #{name} is not available: #{e.message}"
-    rescue Gitlab::Error::Forbidden => e
-        raise "Repository #{name} is not accessible: #{e.message}"
-      error 400
-    end
+    repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
       name: name,

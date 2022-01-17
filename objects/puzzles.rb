@@ -64,35 +64,44 @@ class Puzzles
   end
 
   def expose(xml, tickets)
+    exceptions = [] # TODO: Send exceptions to the user's email or admin
     seen = []
     Kernel.loop do
-      puzzles = xml.xpath(
-        '//puzzle[@alive="false" and issue
-        and issue != "unknown" and not(issue/@closed)' +
-        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
-      )
-      break if puzzles.empty?
-      puzzle = puzzles[0]
-      puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
-      save(xml)
+      begin
+        puzzles = xml.xpath(
+          '//puzzle[@alive="false" and issue
+          and issue != "unknown" and not(issue/@closed)' +
+          seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
+        )
+        break if puzzles.empty?
+        puzzle = puzzles[0]
+        puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
+        save(xml)
+      rescue Exception => e
+        exceptions << e
+      end
     end
     seen = []
     Kernel.loop do
-      puzzles = xml.xpath(
-        '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
-        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
-      )
-      break if puzzles.empty?
-      puzzle = puzzles[0]
-      id = puzzle.xpath('id')[0].text
-      seen << id
-      issue = tickets.submit(puzzle)
-      next if issue.nil?
-      puzzle.search('issue').remove
-      puzzle.add_child(
-        "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
-      )
-      save(xml)
+      begin
+        puzzles = xml.xpath(
+          '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
+          seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
+        )
+        break if puzzles.empty?
+        puzzle = puzzles[0]
+        id = puzzle.xpath('id')[0].text
+        seen << id
+        issue = tickets.submit(puzzle)
+        next if issue.nil?
+        puzzle.search('issue').remove
+        puzzle.add_child(
+          "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
+        )
+        save(xml)
+      rescue Exception => e
+        exceptions << e
+      end
     end
   end
 end

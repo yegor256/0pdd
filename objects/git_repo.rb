@@ -49,7 +49,7 @@ class GitRepo
   end
 
   def lock
-    file_name = Base64.encode64(@name)
+    file_name = Base64.encode64(@name + @uri)
     "/tmp/0pdd-locks/#{file_name}.txt"
   end
 
@@ -88,13 +88,7 @@ class GitRepo
   def clone
     prepare_key
     prepare_git
-    Exec.new(
-      'git clone',
-      '--depth=1',
-      @uri,
-      @path,
-      '--quiet'
-    ).run
+    Exec.new('git clone', '--depth=1', @uri, @path, '--quiet').run
   end
 
   def pull

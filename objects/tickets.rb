@@ -30,7 +30,7 @@ class Tickets
   def notify(issue, message)
     @vcs.add_comment(
       issue,
-      "@#{@vcs.issue(issue)['author']['username']} #{message}"
+      "@#{@vcs.issue(issue)[:author][:username]} #{message}"
     )
   end
 
@@ -39,16 +39,16 @@ class Tickets
     issue = @vcs.create_issue(data)
     unless users.empty?
       @vcs.add_comment(
-        issue['number'],
+        issue[:number],
         users.join(' ') + ' please pay attention to this new issue.'
       )
     end
-    { number: issue['number'], href: issue['html_url'] }
+    { number: issue[:number], href: issue[:html_url] }
   end
 
   def close(puzzle)
     issue = puzzle.xpath('issue')[0].text
-    return true if @vcs.issue(issue)['state'] == 'closed'
+    return true if @vcs.issue(issue)[:state] == 'closed'
     @vcs.close_issue(issue)
     @vcs.add_comment(
       issue,

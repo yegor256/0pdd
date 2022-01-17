@@ -29,21 +29,21 @@ class TaggedTickets
   end
 
   def submit(puzzle)
-    done = @tickets.submit(puzzle)
-    issue = done[:number]
+    issue = @tickets.submit(puzzle)
+    issue_id = issue[:number]
     yaml = @vcs.repo.config
     if yaml['tags']&.is_a?(Array)
       tags = yaml['tags'].map(&:strip).map(&:downcase)
       labels = @vcs.labels
-        .map { |json| json['name'] }
+        .map { |json| json[:name] }
         .map(&:strip).map(&:downcase)
       needed = tags - labels
       begin
         needed.each { |t| @vcs.add_label(t, 'F74219') }
-        @vcs.add_labels_to_an_issue(issue, tags)
+        @vcs.add_labels_to_an_issue(issue_id, tags)
       rescue => e
         @vcs.add_comment(
-          issue,
+          issue_id,
           "I can't create #{@vcs.name} labels `#{needed.join('`, `')}`. \
 Most likely I don't have necessary permissions to `#{@vcs.repo.name}` repository. \
 Please, make sure @0pdd user is in the \
@@ -52,7 +52,7 @@ Please, make sure @0pdd user is in the \
         )
       rescue => e
         @vcs.add_comment(
-          issue,
+          issue_id,
           "For some reason I wasn't able to add #{@vcs.name} labels \
 `#{needed.join('`, `')}` to this issue \
 (required=`#{tags.join('`, `')}`; existing=`#{labels.join('`, `')}`). \
@@ -62,7 +62,7 @@ to us with the text you see below:\
         )
       end
     end
-    done
+    issue
   end
 
   def close(puzzle)

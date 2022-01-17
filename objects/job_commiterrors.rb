@@ -42,7 +42,7 @@ think that it's a bug on our side, please submit it to \
 Please, copy and paste this stack trace to GitHub:\n\n
 ```\n#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
     )
-    puts "Comment posted about an error: #{done['html_url']}"
+    puts "Comment posted about an error: #{done[:html_url]}"
     raise e
   end
 end

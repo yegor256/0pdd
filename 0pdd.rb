@@ -79,7 +79,7 @@ configure do
     {
       'testing' => true,
       'github' => {
-        'token' => 'token' => '--the-token--',
+        'token' => '--the-token--',
         'client_id' => '?',
         'client_secret' => '?'
       },
@@ -300,6 +300,12 @@ get '/hook/github' do
 end
 
 post '/hook/github' do
+  is_from_github = request.env['HTTP_USER_AGENT'].start_with?('GitHub-Hookshot')
+  is_push_event = request.env['HTTP_X_GITHUB_EVENT'] == 'push'
+  return [
+    400,
+    'Please, only register push events from GitHub webhook'
+  ] unless (is_from_github && is_push_event)
   request.body.rewind
   json = JSON.parse(
     case request.content_type
@@ -321,6 +327,13 @@ post '/hook/github' do
 end
 
 post '/hook/gitlab' do
+  is_from_gitlab = request.env['HTTP_USER_AGENT'].start_with?('GitLab')
+  is_push_event = request.env['HTTP_X_GITLAB_EVENT'] == 'Push Hook'
+  return [
+    400,
+    'Please, only register push events from Gitlab webhook'
+  ] unless (is_from_gitlab && is_push_event)
+
   request.body.rewind
   json = JSON.parse(
     case request.content_type
@@ -392,10 +405,8 @@ end
 def repo(name)
   begin
     master = settings.github.repository(name)['default_branch']
-  rescue Octokit::InvalidRepository => e
+  rescue Octokit::InvalidRepository, Octokit::NotFound => e
     raise "Repository #{name} is not available: #{e.message}"
-  rescue Octokit::NotFound
-    error 400
   end
   GitRepo.new(
     name: name,

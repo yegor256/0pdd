@@ -179,8 +179,14 @@ module VCS
     fail NotImplementedError, "A canine class must be able to #bark!" 
   end
 
-  def repository()
-    # returns { default_branch, private }
+  def repository(name = nil)
+    # Input:
+    # name -> String = nil
+    #
+    # Output:
+    # {
+    #   private: Boolean,
+    # }
     fail NotImplementedError, "A canine class must be able to #bark!" 
   end
 
@@ -230,6 +236,8 @@ module VCS
 
   # TODO::
   def git_repo
+    # Output:
+    # repo -> GitRepo
     fail NotImplementedError, "A canine class must be able to #bark!" 
   end
 end
