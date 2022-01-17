@@ -18,8 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'aws-sdk-dynamodb'
+require 'base64'
 require 'nokogiri'
+require 'aws-sdk-dynamodb'
+
 require_relative '../version'
 require_relative 'dynamo'
 
@@ -27,15 +29,25 @@ require_relative 'dynamo'
 # Log.
 #
 class Log
-  def initialize(dynamo, repo)
+  def initialize(dynamo, repo, vcs_name = 'github')
     @dynamo = dynamo
     @repo = repo
+    @vcs_name = vcs_name.downcase
+    # TODO: Must perform seamless migration of existing DB
+    @key = Base64.encode64(@repo + @vcs_name)
+
+    raise 'You need to specify your cloud VCS' unless [
+      'gitlab',
+      'github'
+    ].include?(string)
   end
 
   def put(tag, text)
     @dynamo.put_item(
       table_name: '0pdd-events',
       item: {
+        'key' => @key,
+        'vcs' => @vcs_name,
         'repo' => @repo,
         'time' => Time.now.to_i,
         'tag' => tag,
@@ -51,10 +63,10 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @repo,
+        ':k' => @key,
         ':t' => tag
       },
-      key_condition_expression: 'repo=:r and tag=:t'
+      key_condition_expression: 'key=:k and tag=:t'
     ).items[0]
   end
 
@@ -65,10 +77,10 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @repo,
+        ':k' => @key,
         ':t' => tag
       },
-      key_condition_expression: 'repo=:r and tag=:t'
+      key_condition_expression: 'key=:k and tag=:t'
     ).items.empty?
   end
 
@@ -76,7 +88,7 @@ class Log
     @dynamo.delete_item(
       table_name: '0pdd-events',
       key: {
-        'repo' => @repo,
+        'key' => @key,
         'time' => time
       },
       expression_attribute_values: {
@@ -96,10 +108,10 @@ class Log
         '#time' => 'time'
       },
       expression_attribute_values: {
-        ':r' => @repo,
+        ':k' => @key,
         ':t' => since
       },
-      key_condition_expression: 'repo=:r and #time<:t'
+      key_condition_expression: 'key=:k and #time<:t'
     )
   end
 end

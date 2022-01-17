@@ -2,7 +2,15 @@
   "TableName": "0pdd-events",
   "AttributeDefinitions": [
     {
+      "AttributeName": "key",
+      "AttributeType": "S"
+    },
+    {
       "AttributeName": "repo",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "vcs",
       "AttributeType": "S"
     },
     {
@@ -16,7 +24,7 @@
   ],
   "KeySchema": [
     {
-      "AttributeName": "repo",
+      "AttributeName": "key",
       "KeyType": "HASH"
     },
     {

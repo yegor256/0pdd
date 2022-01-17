@@ -98,7 +98,9 @@ configure do
       'id_rsa' => '',
     }
   else
-    YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+    config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+    raise 'Missing configuration file config.yml' if config.nil?
+    config
   end
   if ENV['RACK_ENV'] != 'test'
     Raven.configure do |c|
@@ -190,13 +192,14 @@ get '/version' do
 end
 
 get '/p' do
-  name = repo_name(params[:name])
-  xml = storage(name).load
+  repo = repo_name(params[:name])
+  vcs_name = params[:vcs]
+  xml = storage(repo, vcs_name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
     [
       'version', "'#{VERSION}'",
-      'project', "'#{name}'",
+      'project', "'#{repo}'",
       'length', xml.to_s.length.to_s
     ]
   ).to_s
@@ -207,15 +210,16 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  storage(repo_name(params[:name])).load.to_s
+  storage(repo_name(params[:name]), params[:vcs]).load.to_s
 end
 
 get '/log' do
   repo = repo_name(params[:name])
+  vcs_name = params[:vcs]
   haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
-    log: Log.new(settings.dynamo, repo),
+    log: Log.new(settings.dynamo, repo, vcs_name),
     since: params[:since] ? params[:since].to_i : Time.now.to_i + 1
   )
 end
@@ -232,9 +236,9 @@ end
 get '/log-item' do
   repo = repo_name(params[:repo])
   tag = params[:tag]
-  vcs = params[:vcs]
+  vcs_name = params[:vcs]
   error 404 if tag.nil?
-  log = Log.new(settings.dynamo, repo)
+  log = Log.new(settings.dynamo, repo, vcs_name)
   error 404 unless log.exists(tag)
   haml :item, layout: :layout, locals: merged(
     title: tag,
@@ -246,7 +250,8 @@ end
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = repo_name(params[:name])
-  Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
+  vcs_name = params[:vcs]
+  Log.new(settings.dynamo, repo, vcs_name).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
 
@@ -254,8 +259,9 @@ get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
   name = repo_name(params[:name])
+  vcs_name = params[:vcs]
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
-    storage(name).load, ['project', "'#{name}'"]
+    storage(name, vcs_name).load, ['project', "'#{name}'"]
   ).to_s
 end
 
@@ -416,7 +422,7 @@ def repo(name)
   )
 end
 
-def storage(repo)
+def storage(repo, vcs_name)
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(
@@ -434,7 +440,7 @@ def storage(repo)
                     settings.config['s3']['key'],
                     settings.config['s3']['secret']
                   ),
-                  Log.new(settings.dynamo, repo)
+                  Log.new(settings.dynamo, repo, vcs_name)
                 )
               end,
               VERSION
@@ -461,7 +467,7 @@ def process_request(vcs)
             vcs,
             Job.new(
               vcs,
-              storage(vcs.repo.name),
+              storage(vcs.repo.name, vcs.name),
               SentryTickets.new(
                 EmailedTickets.new(
                   vcs,
