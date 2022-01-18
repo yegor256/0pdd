@@ -6,14 +6,6 @@
       "AttributeType": "S"
     },
     {
-      "AttributeName": "repo",
-      "AttributeType": "S"
-    },
-    {
-      "AttributeName": "vcs",
-      "AttributeType": "S"
-    },
-    {
       "AttributeName": "time",
       "AttributeType": "N"
     },
@@ -41,7 +33,7 @@
       "IndexName": "tags",
       "KeySchema": [
         {
-          "AttributeName": "repo",
+          "AttributeName": "key",
           "KeyType": "HASH"
         },
         {
