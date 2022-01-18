@@ -34,14 +34,16 @@ require_relative 'user_error'
 class GitRepo
   attr_reader :uri, :name, :master, :head_commit_hash
   def initialize(
-    name:, dir: Dir.mktmpdir('0pdd'),
-    uri: "git@github.com:#{name}",
+    uri:,
+    name:,
+    dir: Dir.mktmpdir('0pdd'),
     id_rsa: '',
     master: 'master',
     head_commit_hash: ''
   )
+    @key = Base64.encode64(uri).gsub(/[\s=\/]+/, '')
     @name = name
-    @path = "#{dir}/#{@name}"
+    @path = "#{dir}/#{@key}"
     @uri = uri
     @id_rsa = id_rsa
     @master = master
@@ -49,8 +51,7 @@ class GitRepo
   end
 
   def lock
-    file_name = Base64.encode64(@name + @uri)
-    "/tmp/0pdd-locks/#{file_name}.txt"
+    "/tmp/0pdd-locks/#{@key}.txt"
   end
 
   def config
@@ -88,7 +89,7 @@ class GitRepo
   def clone
     prepare_key
     prepare_git
-    Exec.new('git clone', '--depth=1', @uri, @path, '--quiet').run
+    Exec.new('git clone', '--depth=1', '--quiet', @uri, @path).run
   end
 
   def pull

@@ -226,7 +226,18 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  repo = repo(repo_name(params[:name]))
+  name = repo_name(params[:name])
+  vcs_name = params[:vcs]
+  master = params[:branch]
+  uri = "git@github.com:#{name}.git"
+  uri = "git@gitlab.com:#{name}.git" if vcs_name == 'gitlab'
+  repo = GitRepo.new(
+    uri: uri,
+    name: name,
+    id_rsa: settings.config['id_rsa'],
+    dir: settings.temp_dir,
+    master: master || 'master'
+  )
   repo.push
   xml = repo.xml
   xml.xpath('//processing-instruction("xml-stylesheet")').remove
@@ -353,7 +364,7 @@ post '/hook/gitlab' do
   )
   gitlab = GitlabHelper.new(settings.gitlab, json, settings.config)
   return 'Thanks' unless gitlab.is_valid
-  unless ENV['RACK_ENV'] != 'test'
+  unless ENV['RACK_ENV'] == 'test'
     process_request(gitlab)
     puts "Gitlab hook from #{gitlab.repo.name}"
   end
@@ -398,28 +409,13 @@ private
 def repo_name(name)
   error 404 if name.nil?
   error 404 unless name =~ %r{^[a-zA-Z0-9\-_]+/[a-zA-Z0-9\-_.]+$}
-  name
+  name.strip
 end
 
 def merged(hash)
   out = @locals.merge(hash)
   out[:local_assigns] = out
   out
-end
-
-# TODO: Refactor this to be VCS independent (loose coupling)
-def repo(name)
-  begin
-    master = settings.github.repository(name)['default_branch']
-  rescue Octokit::InvalidRepository, Octokit::NotFound => e
-    raise "Repository #{name} is not available: #{e.message}"
-  end
-  GitRepo.new(
-    name: name,
-    id_rsa: settings.config['id_rsa'],
-    dir: settings.temp_dir,
-    master: master
-  )
 end
 
 def storage(repo, vcs_name)

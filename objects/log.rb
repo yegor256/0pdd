@@ -34,7 +34,7 @@ class Log
     @repo = repo
     @vcs_name = vcs_name.downcase
     # TODO: Must perform seamless migration of existing DB
-    @key = Base64.encode64(@repo + @vcs_name)
+    @key = Base64.encode64(@repo + @vcs_name).gsub(/[\s=\/]+/, '')
 
     raise 'You need to specify your cloud VCS' unless [
       'gitlab',
