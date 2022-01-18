@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -66,13 +66,11 @@ require_relative 'objects/invitations/github_invitations'
 
 require_relative 'test/fake_storage'
 
-ENV['RACK_ENV'] = 'test'
-
 configure do
   Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
     {
-      'testing' => false,
+      'testing' => true,
       'github' => {
         'token' => '--the-token--',
         'client_id' => '?',
@@ -184,6 +182,15 @@ end
 
 get '/version' do
   VERSION
+end
+
+get '/invitation' do
+  repo = repo_name(params[:repo])
+  ghi = GithubInvitations.new(settings.github)
+  invitations = ghi.accept_single_invitation(repo)
+  return invitations.join('\n') unless invitations.empty?
+  "Could not find invitation for @#{repo}. It is either invitation already
+   accepted OR 0pdd is not added as a collaborator"
 end
 
 get '/p' do
