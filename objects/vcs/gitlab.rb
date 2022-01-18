@@ -19,7 +19,6 @@
 # SOFTWARE.
 
 require 'gitlab'
-
 require_relative 'base'
 require_relative '../git_repo'
 require_relative '../clients/gitlab'

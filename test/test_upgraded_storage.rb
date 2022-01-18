@@ -23,9 +23,9 @@ require 'nokogiri'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
-require_relative '../objects/safe_storage'
-require_relative '../objects/upgraded_storage'
-require_relative '../objects/versioned_storage'
+require_relative '../objects/storage/safe_storage'
+require_relative '../objects/storage/upgraded_storage'
+require_relative '../objects/storage/versioned_storage'
 
 # UpgradedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

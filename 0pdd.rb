@@ -33,51 +33,46 @@ require 'tmpdir'
 require 'glogin'
 
 require_relative 'version'
-require_relative 'objects/job'
-require_relative 'objects/job_detached'
-require_relative 'objects/job_emailed'
-require_relative 'objects/job_recorded'
-require_relative 'objects/job_starred'
-require_relative 'objects/job_commiterrors'
 require_relative 'objects/log'
-require_relative 'objects/user_error'
-require_relative 'objects/git_repo'
-require_relative 'objects/github_invitations'
-require_relative 'objects/tickets'
-require_relative 'objects/tagged_tickets'
-require_relative 'objects/emailed_tickets'
-require_relative 'objects/logged_tickets'
-require_relative 'objects/commit_tickets'
-require_relative 'objects/sentry_tickets'
-require_relative 'objects/milestone_tickets'
-require_relative 'objects/safe_storage'
-require_relative 'objects/sync_storage'
-require_relative 'objects/logged_storage'
-require_relative 'objects/versioned_storage'
-require_relative 'objects/upgraded_storage'
-require_relative 'objects/cached_storage'
-require_relative 'objects/once_storage'
-require_relative 'objects/s3'
 require_relative 'objects/dynamo'
-
+require_relative 'objects/git_repo'
+require_relative 'objects/user_error'
 require_relative 'objects/vcs/github'
 require_relative 'objects/vcs/gitlab'
-
 require_relative 'objects/clients/github'
 require_relative 'objects/clients/gitlab'
+require_relative 'objects/jobs/job'
+require_relative 'objects/jobs/job_detached'
+require_relative 'objects/jobs/job_emailed'
+require_relative 'objects/jobs/job_recorded'
+require_relative 'objects/jobs/job_starred'
+require_relative 'objects/jobs/job_commiterrors'
+require_relative 'objects/tickets/tickets'
+require_relative 'objects/tickets/tagged_tickets'
+require_relative 'objects/tickets/emailed_tickets'
+require_relative 'objects/tickets/logged_tickets'
+require_relative 'objects/tickets/commit_tickets'
+require_relative 'objects/tickets/sentry_tickets'
+require_relative 'objects/tickets/milestone_tickets'
+require_relative 'objects/storage/s3'
+require_relative 'objects/storage/safe_storage'
+require_relative 'objects/storage/sync_storage'
+require_relative 'objects/storage/logged_storage'
+require_relative 'objects/storage/versioned_storage'
+require_relative 'objects/storage/upgraded_storage'
+require_relative 'objects/storage/cached_storage'
+require_relative 'objects/storage/once_storage'
+require_relative 'objects/invitations/github_invitations'
 
-# # Delete later
-require_relative 'test/fake_log'
-require_relative 'test/fake_repo'
-require_relative 'test/fake_github'
 require_relative 'test/fake_storage'
-require_relative 'test/fake_tickets'
+
+ENV['RACK_ENV'] = 'test'
 
 configure do
   Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
     {
-      'testing' => true,
+      'testing' => false,
       'github' => {
         'token' => '--the-token--',
         'client_id' => '?',

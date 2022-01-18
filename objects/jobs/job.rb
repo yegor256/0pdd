@@ -18,19 +18,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'github_organization_invitation'
+require 'mail'
+require_relative '../diff'
+require_relative '../puzzles'
 
 #
-# Invitations to join Github organizations
+# One job.
 #
-class GithubOrganizationInvitations
-  def initialize(github)
-    @github = github
+class Job
+  def initialize(vcs, storage, tickets)
+    @vcs = vcs
+    @storage = storage
+    @tickets = tickets
+    @initial_puzzles = nil
   end
 
-  def all
-    @github.organization_memberships(state: 'pending').collect do |membership|
-      GithubOrganizationInvitation.new(membership, @github)
-    end
+  def proceed
+    @vcs.repo.push
+    @initial_puzzles = @storage.load
+    Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
+    return if opts.include?('on-scope')
+    Diff.new(@initial_puzzles, @storage.load).notify(@tickets)
+  rescue Octokit::ClientError, Gitlab::Error => e
+    # TODO: this is a temporary solution, we should use a logger
+    save(@initial_puzzles) if @initial_puzzles
+    throw e
+  end
+
+  private
+
+  def opts
+    array = @vcs.repo.config.dig('alerts', 'suppress')
+    array.nil? || !array.is_a?(Array) ? [] : array
   end
 end

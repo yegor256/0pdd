@@ -18,37 +18,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'mail'
-require_relative 'puzzles'
-require_relative 'diff'
+require 'nokogiri'
+require 'aws-sdk-s3'
+require_relative '../../version'
 
 #
-# One job.
+# S3 storage.
 #
-class Job
-  def initialize(vcs, storage, tickets)
-    @vcs = vcs
-    @storage = storage
-    @tickets = tickets
-    @initial_puzzles = nil
+class S3
+  def initialize(ocket, bucket, region, key, secret)
+    @object = Aws::S3::Resource.new(
+      region: region,
+      credentials: Aws::Credentials.new(key, secret)
+    ).bucket(bucket).object(ocket)
   end
 
-  def proceed
-    @vcs.repo.push
-    @initial_puzzles = @storage.load
-    Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
-    return if opts.include?('on-scope')
-    Diff.new(@initial_puzzles, @storage.load).notify(@tickets)
-  rescue Octokit::ClientError, Gitlab::Error => e
-    # TODO: this is a temporary solution, we should use a logger
-    save(@initial_puzzles) if @initial_puzzles
-    throw e
+  def load
+    Nokogiri::XML(
+      if @object.exists?
+        data = @object.get.body
+        puts "S3 #{data.size} from #{@object.bucket_name}/#{@object.key}"
+        data
+      else
+        puts "Empty puzzles for #{@object.bucket_name}/#{@object.key}"
+        '<puzzles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.0pdd.com/puzzles.xsd"/>'
+      end
+    )
   end
 
-  private
-
-  def opts
-    array = @vcs.repo.config.dig('alerts', 'suppress')
-    array.nil? || !array.is_a?(Array) ? [] : array
+  def save(xml)
+    data = xml.to_s
+    @object.put(body: data)
+    puts "S3 #{data.size} to #{@object.bucket_name}/#{@object.key} \
+(#{xml.xpath('//puzzle').size} puzzles)"
   end
 end
