@@ -28,8 +28,8 @@ require_relative 'fake_tickets'
 require_relative '../version'
 require_relative '../objects/git_repo'
 require_relative '../objects/puzzles'
-require_relative '../objects/safe_storage'
-require_relative '../objects/versioned_storage'
+require_relative '../objects/storage/safe_storage'
+require_relative '../objects/storage/versioned_storage'
 
 # Puzzles test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

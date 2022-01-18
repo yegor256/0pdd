@@ -21,7 +21,7 @@
 require 'test/unit'
 require_relative 'test__helper'
 require_relative 'fake_github'
-require_relative '../objects/github_invitations'
+require_relative '../objects/invitations/github_invitations'
 
 # GithubInvitations test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

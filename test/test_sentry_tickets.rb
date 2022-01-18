@@ -21,7 +21,7 @@
 require 'test/unit'
 require 'mocha/test_unit'
 require_relative 'test__helper'
-require_relative '../objects/sentry_tickets'
+require_relative '../objects/tickets/sentry_tickets'
 
 # SentryTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

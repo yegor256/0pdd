@@ -22,8 +22,8 @@ require 'test/unit'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
-require_relative '../objects/logged_storage'
-require_relative '../objects/versioned_storage'
+require_relative '../objects/storage/logged_storage'
+require_relative '../objects/storage/versioned_storage'
 
 # LoggedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

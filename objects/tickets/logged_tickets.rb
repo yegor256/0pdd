@@ -19,8 +19,8 @@
 # SOFTWARE.
 
 require 'cgi'
-require_relative 'truncated'
-require_relative 'user_error'
+require_relative '../truncated'
+require_relative '../user_error'
 
 #
 # Tickets that are logged.

@@ -25,8 +25,8 @@ require_relative 'test__helper'
 require_relative 'fake_repo'
 require_relative 'fake_tickets'
 require_relative 'fake_storage'
-require_relative '../objects/job'
-require_relative '../objects/safe_storage'
+require_relative '../objects/jobs/job'
+require_relative '../objects/storage/safe_storage'
 
 # Job test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

@@ -19,8 +19,8 @@
 # SOFTWARE.
 
 require 'haml'
-require_relative 'truncated'
-require_relative 'maybe_text'
+require_relative '../truncated'
+require_relative '../maybe_text'
 
 class Tickets
   def initialize(vcs)
