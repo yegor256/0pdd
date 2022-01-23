@@ -100,9 +100,9 @@ class GitRepo
         "cd #{@path}",
         "master=#{Shellwords.escape(@master)}",
         'git config --local core.autocrlf false',
-        'git reset origin/${master} --hard --quiet',
+        'git fetch --force --all --quiet',
+        'git reset --hard --quiet origin/${master}',
         'git clean --force -d',
-        'git fetch --quiet',
         'git checkout origin/${master}',
         'git rebase --abort || true',
         'git rebase --autostash --strategy-option=theirs origin/${master}'
