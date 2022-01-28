@@ -32,7 +32,7 @@ require_relative 'user_error'
 # Repository in Git
 #
 class GitRepo
-  attr_reader :uri, :name, :master, :head_commit_hash
+  attr_reader :uri, :name, :path, :master, :head_commit_hash
   def initialize(
     uri:,
     name:,
@@ -41,9 +41,9 @@ class GitRepo
     master: 'master',
     head_commit_hash: ''
   )
-    @key = Base64.encode64(uri).gsub(/[\s=\/]+/, '')
+    @id = Base64.encode64(uri).gsub(/[\s=\/]+/, '')
     @name = name
-    @path = "#{dir}/#{@key}"
+    @path = "#{dir}/#{@id}"
     @uri = uri
     @id_rsa = id_rsa
     @master = master
@@ -51,7 +51,7 @@ class GitRepo
   end
 
   def lock
-    "/tmp/0pdd-locks/#{@key}.txt"
+    "/tmp/0pdd-locks/#{@id}.txt"
   end
 
   def config

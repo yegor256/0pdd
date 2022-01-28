@@ -18,11 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class FakeGithub
-  attr_reader :name, :repo
-
+class FakeGitlab
   def initialize(options = {})
-    @name = 'GITHUB'
     @memberships = options[:memberships] || [
       {
         'state' => 'pending',
@@ -50,7 +47,30 @@ class FakeGithub
       }
     ]
     @repositories = options[:repositories] || []
-    @repo = options[:repo]
+  end
+
+  def repository(_)
+    'yegor256/0pdd'
+  end
+
+  def issue(_, _)
+    { 'state' => 'open' }
+  end
+
+  def close_issue(_, _)
+    # nothing to do here
+  end
+
+  def create_issue(_, _, _)
+    { 'number' => 555 }
+  end
+
+  def add_comment(_, _, _)
+    # nothing to do here
+  end
+
+  def user(_login)
+    { email: 'foobar@example.com' }
   end
 
   def rate_limit
@@ -60,6 +80,10 @@ class FakeGithub
       4096
     end
     limit
+  end
+
+  def list_commits(_)
+    [{ 'sha' => '123456' }]
   end
 
   def update_organization_membership(org, options = {})
@@ -90,113 +114,5 @@ class FakeGithub
 
   def repositories(user = nil, _options = {})
     return @repositories unless user
-  end
-
-  def issue(_)
-    {
-      state: 'open',
-      author: {
-        id: '1',
-        username: 'yegor256',
-      },
-      milestone: {
-        number: 1,
-        title: 'v0.1',
-      }
-    }
-  end
-
-  def close_issue(_)
-  end
-
-  def create_issue(_)
-    { 
-      number: 1,
-      html_url: 'url'
-    }
-  end
-
-  def update_issue(_, _)
-  end
-
-  def labels
-    [
-      {
-        id: ``,
-        name: 'Dev',
-        color: '#ff00ff',
-      }
-    ]
-  end
-
-  def add_label(_, _)
-  end
-
-  def add_labels_to_an_issue(_, _)
-  end
-
-  def add_comment(_, _)
-  end
-
-  def create_commit_comment(_, _)
-    {
-      html_url: 'url',
-    }
-  end
-
-  def list_commits
-    [
-      {
-        sha: '123456',
-        html_url: 'url',
-      }
-    ]
-  end
-
-  def user(_)
-    { 
-      name: 'foobar',
-      email: 'foobar@example.com',
-    }
-  end
-
-  def star
-  end
-
-  def repository(_ = nil)
-    {
-      private: false,
-    }
-  rescue Octokit::NotFound => e
-    raise "Repository #{name} is not available: #{e.message}"
-  end
-
-  def repository_link
-    "https://github.com/#{@repo.name}"
-  end
-
-  def collaborators_link
-    "https://github.com/#{@repo.name}/settings/collaboration"
-  end
-
-  def file_link(file)
-    "https://github.com/#{@repo.name}/blob/#{@repo.master}/#{file})"
-  end
-
-  def puzzle_link_for_commit(sha, file, start, stop)
-    "https://github.com/#{@repo.name}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
-  end
-
-  def issue_link(issue_id)
-    "https://github.com/#{@repo.name}/issues/#{issue_id}"
-  end
-
-  private
-
-  # TODO::
-  def git_repo
-    # Output:
-    # repo -> GitRepo
-    fail NotImplementedError, "A canine class must be able to #bark!" 
   end
 end

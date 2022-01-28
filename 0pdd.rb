@@ -233,17 +233,21 @@ get '/snapshot' do
   master = params[:branch]
   uri = "git@github.com:#{name}.git"
   uri = "git@gitlab.com:#{name}.git" if vcs_name == 'gitlab'
-  repo = GitRepo.new(
-    uri: uri,
-    name: name,
-    id_rsa: settings.config['id_rsa'],
-    dir: settings.temp_dir,
-    master: master || 'master'
-  )
-  repo.push
-  xml = repo.xml
-  xml.xpath('//processing-instruction("xml-stylesheet")').remove
-  xml.to_s
+  begin
+    repo = GitRepo.new(
+      uri: uri,
+      name: name,
+      id_rsa: settings.config['id_rsa'],
+      dir: settings.temp_dir,
+      master: master || 'master'
+    )
+    repo.push
+    xml = repo.xml
+    xml.xpath('//processing-instruction("xml-stylesheet")').remove
+    xml.to_s
+  rescue
+    error 400, "Could not get snapshot for #{name}"
+  end
 end
 
 get '/log-item' do
@@ -319,7 +323,7 @@ get '/hook/github' do
 end
 
 post '/hook/github' do
-  is_from_github = request.env['HTTP_USER_AGENT'].start_with?('GitHub-Hookshot')
+  is_from_github = request.env['HTTP_USER_AGENT']&.start_with?('GitHub-Hookshot')
   is_push_event = request.env['HTTP_X_GITHUB_EVENT'] == 'push'
   return [
     400,

@@ -101,7 +101,7 @@ source code, that's why I closed this issue." +
     sha = @vcs.repo.head_commit_hash || vcs.repo.master
     url = @vcs.puzzle_link_for_commit(sha, file, start, stop)
     template = File.read(
-      File.join(File.dirname(__FILE__), 'templates/github_tickets_body.haml')
+      File.join(File.dirname(__FILE__), '../templates/github_tickets_body.haml')
     )
     Haml::Engine.new(template).render(
       Object.new, url: url, puzzle: puzzle

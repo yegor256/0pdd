@@ -38,21 +38,21 @@ class TestJobEmailed < Test::Unit::TestCase
 
   def test_simple_scenario
     repo = FakeRepo.new
-    github = FakeGithub.new
+    vcs = FakeGithub.new(:repo => repo)
     job = fake_job
-    JobEmailed.new('yegor256/0pdd', github, repo, job).proceed
+    JobEmailed.new(vcs, job).proceed
   end
 
   def test_exception_mail_to_repo_owner_as_cc
     exception_class = Exception
     repo = FakeRepo.new
-    github = FakeGithub.new
+    vcs = FakeGithub.new(:repo => repo)
     job = fake_job
     job.expects(:proceed).raises(exception_class)
     Mail::Message.any_instance.stubs(:deliver!)
     Mail::Message.any_instance.expects(:cc=).with('foobar@example.com')
     assert_raise Exception do
-      JobEmailed.new('yegor256/0pdd', github, repo, job).proceed
+      JobEmailed.new(vcs, job).proceed
     end
   end
 end

@@ -31,21 +31,22 @@ require_relative '../objects/user_error'
 class TestGitRepo < Test::Unit::TestCase
   def test_clone_and_pull
     Dir.mktmpdir 'test' do |d|
-      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d))
+      _, uri = git(d)
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       repo.push
-      assert(File.exist?(File.join(d, 'yegor256/pdd/.git')))
+      assert(File.exist?(File.join(repo.path, '.git')))
     end
   end
 
   def test_merge_unrelated_histories
     Dir.mktmpdir 'test' do |d|
-      dir = 'repo'
-      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      path, uri = git(d, 'repo')
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       Exec.new("
         set -e
-        cd '#{d}/#{dir}'
+        cd '#{path}'
         git checkout -b temp
         git branch -D master
         git checkout --orphan master
@@ -54,18 +55,18 @@ class TestGitRepo < Test::Unit::TestCase
         git commit --quiet -am 'new master'
       ").run
       repo.push
-      assert(File.exist?(File.join(d, 'yegor256/pdd/new.txt')))
+      assert(File.exist?(File.join(repo.path, 'new.txt')))
     end
   end
 
   def test_fail_with_user_error
     Dir.mktmpdir 'test' do |d|
-      dir = 'repo'
-      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      path, uri = git(d, 'repo')
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       Exec.new("
         set -e
-        cd '#{d}/#{dir}'
+        cd '#{path}'
         echo '...\x40todoBad puzzle' > z1.txt
         echo '\x40todo #1 Good puzzle' > z2.txt
         git add z1.txt z2.txt
@@ -80,29 +81,29 @@ class TestGitRepo < Test::Unit::TestCase
 
   def test_merge_after_ammend
     Dir.mktmpdir 'test' do |d|
-      dir = 'repo'
-      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      path, uri = git(d, 'repo')
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       Exec.new("
         set -e
-        cd '#{d}/#{dir}'
+        cd '#{path}'
         echo 'hello, dude!' > z.txt
         git add z.txt
         git commit --quiet --amend --message 'new fix'
       ").run
       repo.push
-      assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
+      assert(File.exist?(File.join(repo.path, 'z.txt')))
     end
   end
 
   def test_merge_after_force_push
     Dir.mktmpdir 'test' do |d|
-      dir = 'repo'
-      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      path, uri = git(d, 'repo')
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       Exec.new("
         set -e
-        cd '#{d}/#{dir}'
+        cd '#{path}'
         git reset HEAD~2
         git reset --hard
         git clean -fd
@@ -111,18 +112,18 @@ class TestGitRepo < Test::Unit::TestCase
         echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
       ").run
       repo.push
-      assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
+      assert(File.exist?(File.join(repo.path, 'z.txt')))
     end
   end
 
   def test_merge_after_complete_new_master
     Dir.mktmpdir 'test' do |d|
-      dir = 'repo'
-      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      path, uri = git(d, 'repo')
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       Exec.new("
         set -e
-        cd '#{d}/#{dir}'
+        cd '#{path}'
         git checkout -b temp
         git branch -D master
         git checkout --orphan master
@@ -131,8 +132,8 @@ class TestGitRepo < Test::Unit::TestCase
         echo 'hello, new!' >> z2.txt && git add z2.txt && git commit -m ddd
       ").run
       repo.push
-      assert(File.exist?(File.join(d, 'yegor256/pdd/z.txt')))
-      assert(File.exist?(File.join(d, 'yegor256/pdd/z2.txt')))
+      assert(File.exist?(File.join(repo.path, 'z.txt')))
+      assert(File.exist?(File.join(repo.path, 'z2.txt')))
     end
   end
 
@@ -143,18 +144,18 @@ class TestGitRepo < Test::Unit::TestCase
     # in binary files.
     # See also: https://stackoverflow.com/questions/46539254
     Dir.mktmpdir 'test' do |d|
-      dir = 'repo'
-      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: git(d, dir))
+      path, uri = git(d, 'repo')
+      repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       Exec.new("
         set -e
-        cd '#{d}/#{dir}'
+        cd '#{path}'
         git config --local core.autocrlf false
         echo -n -e 'Hello, world!\r\nHow are you?' >> crlf.txt \
           && git add . && git commit -am crlf.txt
       ").run
       repo.push
       assert_equal(
-        File.read(File.join(d, 'yegor256/pdd/crlf.txt')),
+        File.read(File.join(repo.path, 'crlf.txt')),
         "Hello, world!\n\rHow are you?"
       )
     end
@@ -162,16 +163,18 @@ class TestGitRepo < Test::Unit::TestCase
 
   def test_push
     Dir.mktmpdir 'test' do |d|
-      repo = GitRepo.new(name: 'teamed/est', dir: d, uri: git(d))
+      _, uri = git(d)
+      repo = GitRepo.new(name: 'teamed/est', dir: d, uri: uri)
       repo.push
       repo.push
-      assert(File.exist?(File.join(d, 'teamed/est/.git')))
+      assert(File.exist?(File.join(repo.path, '.git')))
     end
   end
 
   def test_fetch_puzzles
     Dir.mktmpdir 'test' do |d|
-      repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: git(d))
+      _, uri = git(d)
+      repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: uri)
       repo.push
       assert(!repo.xml.xpath('/puzzles').empty?)
     end
@@ -182,7 +185,8 @@ class TestGitRepo < Test::Unit::TestCase
     begin
       Dir.mktmpdir 'test' do |d|
         clean_dir = d
-        repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: git(d))
+        _, uri = git(d)
+        repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: uri)
         repo.push
         assert(repo.config['foo'])
       end
@@ -210,6 +214,7 @@ class TestGitRepo < Test::Unit::TestCase
       echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
       echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
     ").run
-    'file://' + File.join(dir, subdir)
+    path = File.join(dir, subdir)
+    [path, 'file://' + path]
   end
 end
