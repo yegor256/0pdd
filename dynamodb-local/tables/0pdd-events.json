@@ -2,7 +2,7 @@
   "TableName": "0pdd-events",
   "AttributeDefinitions": [
     {
-      "AttributeName": "key",
+      "AttributeName": "id",
       "AttributeType": "S"
     },
     {
@@ -16,7 +16,7 @@
   ],
   "KeySchema": [
     {
-      "AttributeName": "key",
+      "AttributeName": "id",
       "KeyType": "HASH"
     },
     {
@@ -33,7 +33,7 @@
       "IndexName": "tags",
       "KeySchema": [
         {
-          "AttributeName": "key",
+          "AttributeName": "id",
           "KeyType": "HASH"
         },
         {

@@ -73,12 +73,8 @@ module VCS
     #
     # Output:
     # {
-    #   id: Number,
-    #   title: String,
-    #   url: String,
+    #   number: String,
     #   html_url: String,
-    #   state: String,
-    #   labels: String[],
     # }
     fail NotImplementedError, "Should accept data and return created issue"
   end

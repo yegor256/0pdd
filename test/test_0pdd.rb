@@ -83,7 +83,11 @@ class AppTest < Test::Unit::TestCase
     post(
       '/hook/github',
       '{"repository":{"full_name":"yegor256-one/com.github.0pdd-test"}, "ref":"refs/heads/master"}',
-      'CONTENT_TYPE' => 'application/json'
+      {
+        'CONTENT_TYPE' => 'application/json',
+        'HTTP_USER_AGENT' => 'GitHub-Hookshot',
+        'HTTP_X_GITHUB_EVENT' => 'push'
+      },
     )
     assert(last_response.ok?)
     assert(last_response.body.include?('Thanks'))
@@ -101,11 +105,7 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_snapshots_unavailable_repo
-    exception_class = Octokit::NotFound
-    FakeGithub.any_instance.expects(:repository).raises(exception_class)
-    assert_nothing_raised(exception_class) do
-      get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
-    end
+    get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
     assert(last_response.status == 400)
   end
 
