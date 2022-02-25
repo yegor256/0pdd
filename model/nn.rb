@@ -10,6 +10,16 @@ class NeuralNet
     def initialize shape
       @shape = shape
     end
+
+    def save file
+      File.open(file, 'wb') {|f| f.write(Marshal.dump(marshal_dump))}
+    end
+
+    def load file
+      marshal_load Marshal.load(
+        File.read(file)
+      )
+    end
   
     def run input
       # Input to this method represents the output of the first layer (i.e., the input layer)
