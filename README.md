@@ -51,6 +51,10 @@ of your own repository):
 [![PDD status](https://www.0pdd.com/svg?name=yegor256/0pdd)](https://www.0pdd.com/p?name=yegor256/0pdd)
 ```
 
+**Note:**
+
+You can limit the number of issues created from the puzzles in your code by adding the `max_issues` query parameter to the webhook e.g `https://www.0pdd.com/hook/github?max_issues=5` - each time the appropriate push event is sent to this webhook, 5 issues will be created regardless of the number of puzzles found in the code. The maximum value allowed for `max_issues` is `99`.
+
 ## How to configure?
 
 The only way to configure 0pdd is to add `.0pdd.yml` file to the
