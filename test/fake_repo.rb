@@ -22,6 +22,12 @@ require 'nokogiri'
 require 'tempfile'
 
 class FakeRepo
+  attr_accessor :max_issues
+  def initialize(max_issues: 100)
+    max_issues = max_issues.to_i
+    @max_issues = max_issues.positive? && max_issues < 100 ? max_issues : 100
+  end
+
   def lock
     Tempfile.new('0pdd-lock')
   end

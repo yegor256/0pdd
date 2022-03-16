@@ -76,13 +76,14 @@ class Puzzles
       puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
       save(xml)
     end
+    submitted = 0
     seen = []
     Kernel.loop do
       puzzles = xml.xpath(
         '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
         seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
       )
-      break if puzzles.empty?
+      break if puzzles.empty? || submitted >= @repo.max_issues
       puzzle = puzzles[0]
       id = puzzle.xpath('id')[0].text
       seen << id
@@ -93,6 +94,7 @@ class Puzzles
         "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
       )
       save(xml)
+      submitted += 1
     end
   end
 end

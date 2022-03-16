@@ -308,7 +308,7 @@ post '/hook/github' do
   end
   name = repo_name(json['repository']['full_name'])
   unless ENV['RACK_ENV'] == 'test'
-    repo = repo(name)
+    repo = repo(name, params[:max_issues])
     JobDetached.new(
       repo,
       JobCommitErrors.new(
@@ -416,7 +416,7 @@ def merged(hash)
   out
 end
 
-def repo(name)
+def repo(name, max_issues = nil)
   begin
     master = settings.github.repository(name)['default_branch']
   rescue Octokit::InvalidRepository => e
@@ -428,6 +428,7 @@ def repo(name)
     name: name,
     id_rsa: settings.config['id_rsa'],
     dir: settings.temp_dir,
+    max_issues: max_issues,
     master: master
   )
 end

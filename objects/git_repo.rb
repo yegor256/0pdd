@@ -31,17 +31,21 @@ require_relative 'user_error'
 # Repository in Git
 #
 class GitRepo
+  attr_accessor :max_issues
   def initialize(
     name:, dir: Dir.mktmpdir('0pdd'),
     uri: "git@github.com:#{name}",
     id_rsa: '',
-    master: 'master'
+    master: 'master',
+    max_issues: 100
   )
     @name = name
     @path = "#{dir}/#{@name}"
     @uri = uri
     @id_rsa = id_rsa
     @master = master
+    max_issues = max_issues.to_i
+    @max_issues = max_issues.positive? && max_issues < 100 ? max_issues : 100
   end
 
   def lock
