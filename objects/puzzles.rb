@@ -27,7 +27,7 @@ class Puzzles
   def initialize(repo, storage)
     @repo = repo
     @storage = storage
-    max_issues = repo.config['max_issues'].to_i
+    max_issues = repo.config && repo.config['max_issues'].to_i
     @max_issues = max_issues.positive? && max_issues < 100 ? max_issues : 100
   end
 
