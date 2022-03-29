@@ -27,6 +27,8 @@ class Puzzles
   def initialize(repo, storage)
     @repo = repo
     @storage = storage
+    max_issues = repo.config['max_issues'].to_i
+    @max_issues = max_issues.positive? && max_issues < 100 ? max_issues : 100
   end
 
   def deploy(tickets)
@@ -83,7 +85,7 @@ class Puzzles
         '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
         seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
       )
-      break if puzzles.empty? || submitted >= @repo.max_issues
+      break if puzzles.empty? || submitted >= @max_issues
       puzzle = puzzles[0]
       id = puzzle.xpath('id')[0].text
       seen << id

@@ -51,10 +51,6 @@ of your own repository):
 [![PDD status](https://www.0pdd.com/svg?name=yegor256/0pdd)](https://www.0pdd.com/p?name=yegor256/0pdd)
 ```
 
-**Note:**
-
-You can limit the number of issues created from the puzzles in your code by adding the `max_issues` query parameter to the webhook e.g `https://www.0pdd.com/hook/github?max_issues=5` - each time the appropriate push event is sent to this webhook, 5 issues will be created regardless of the number of puzzles found in the code. The maximum value allowed for `max_issues` is `99`.
-
 ## How to configure?
 
 The only way to configure 0pdd is to add `.0pdd.yml` file to the
@@ -63,6 +59,7 @@ It has to be a [YAML](https://en.wikipedia.org/wiki/YAML) file with the followin
 optional parameters inside:
 
 ```yaml
+max_issues: 10
 errors:
   - yegor256@gmail.com
 alerts:
@@ -79,6 +76,8 @@ tags:
   - pdd
   - bug
 ```
+
+Section `max_issues` allows you to limit the number of issues created from the puzzles in your code - in the example above, each time the appropriate push event is sent to your webhook 10 issues will be created regardless of the number of puzzles found in the code. The maximum value allowed for `max_issues` is `99`.
 
 Section `errors` allows you to specify a list of email addresses which will
 receive notifications when PDD processing fails for your repo. It's
