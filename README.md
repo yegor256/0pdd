@@ -59,6 +59,7 @@ It has to be a [YAML](https://en.wikipedia.org/wiki/YAML) file with the followin
 optional parameters inside:
 
 ```yaml
+max_issues: 10
 errors:
   - yegor256@gmail.com
 alerts:
@@ -75,6 +76,8 @@ tags:
   - pdd
   - bug
 ```
+
+Section `max_issues` allows you to limit the number of issues created from the puzzles in your code - in the example above, each time the appropriate push event is sent to your webhook 10 issues will be created regardless of the number of puzzles found in the code. The maximum value allowed for `max_issues` is `99`.
 
 Section `errors` allows you to specify a list of email addresses which will
 receive notifications when PDD processing fails for your repo. It's
