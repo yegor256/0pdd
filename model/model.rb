@@ -21,7 +21,7 @@ x_test = x_data.slice(train_size, n)
 y_test = y_data.slice(train_size, n)
 
 # model hyperparameters and metrics
-epsilon = 1e-2
+epsilon = 1e-1
 mse = -> (actual, ideal) {
   errors = actual.zip(ideal).map {|a, i| a - i }
   (errors.inject(0) {|sum, err| sum += err**2}) / errors.length.to_f
@@ -56,8 +56,8 @@ else
   puts "\nTraining the network...\n\n"
   t1 = Time.now
   result = nn.train(x_train, y_train, error_threshold: 0.01, 
-                                      max_iterations: 10_000,
-                                      log_every: 500,
+                                      max_iterations: 1000,
+                                      log_every: 20,
                                       )
   # puts result
   puts "\nDone training the network: #{result[:iterations]} iterations, #{(result[:error] * 100).round(2)}% mse, #{(Time.now - t1).round(1)}s"  
