@@ -76,7 +76,7 @@ end
 desc 'Sleep endlessly after the start of DynamoDB Local server'
 task :sleep do
   loop do
-    sleep(3600)
+    sleep(5)
     puts 'Still alive...'
   end
 end
