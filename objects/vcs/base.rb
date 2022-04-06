@@ -19,9 +19,9 @@
 # SOFTWARE.
 
 #
-# VCS - provides a uniform interface to work with different VCSes
+# AbstractVCS - provides a uniform interface to work with different VCSes
 #
-module VCS
+class AbstractVCS
   attr_reader :is_valid, :repo, :name
 
   def initialize(client, json, config = {})

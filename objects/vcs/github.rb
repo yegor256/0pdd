@@ -24,11 +24,10 @@ require_relative '../git_repo'
 require_relative '../clients/gitlab'
 
 #
-# Github helper
+# Github repo
 # API: https://github.com/NARKOZ/gitlab
 #
-class GithubHelper
-  include VCS # important to include this module
+class GithubRepo < AbstractVCS
   attr_reader :is_valid, :repo, :name
 
   def initialize(client, json, config = {})

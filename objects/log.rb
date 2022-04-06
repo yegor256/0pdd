@@ -32,8 +32,7 @@ class Log
     @dynamo = dynamo
     @repo = repo
     @vcs_name = (vcs_name || 'github').downcase
-    # TODO: Must perform seamless migration of existing DB
-    @id = Base64.encode64(@repo + @vcs_name).gsub(/[\s=\/]+/, '')
+    @id = @vcs_name == 'github' ? @repo : Base64.encode64(@repo + @vcs_name).gsub(/[\s=\/]+/, '')
 
     raise 'You need to specify your cloud VCS' unless [
       'gitlab',
@@ -45,9 +44,8 @@ class Log
     @dynamo.put_item(
       table_name: '0pdd-events',
       item: {
-        'id' => @id,
+        'repo' => @id,
         'vcs' => @vcs_name,
-        'repo' => @repo,
         'time' => Time.now.to_i,
         'tag' => tag,
         'text' => "#{text} /#{VERSION}"
@@ -62,10 +60,10 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':i' => @id,
+        ':r' => @id,
         ':t' => tag
       },
-      key_condition_expression: 'id=:i and tag=:t'
+      key_condition_expression: 'repo=:r and tag=:t'
     ).items[0]
   end
 
@@ -76,10 +74,10 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':i' => @id,
+        ':r' => @id,
         ':t' => tag
       },
-      key_condition_expression: 'id=:i and tag=:t'
+      key_condition_expression: 'repo=:r and tag=:t'
     ).items.empty?
   end
 
@@ -87,7 +85,7 @@ class Log
     @dynamo.delete_item(
       table_name: '0pdd-events',
       key: {
-        'id' => @id,
+        'repo' => @id,
         'time' => time
       },
       expression_attribute_values: {
@@ -107,10 +105,10 @@ class Log
         '#time' => 'time'
       },
       expression_attribute_values: {
-        ':i' => @id,
+        ':r' => @id,
         ':t' => since
       },
-      key_condition_expression: 'id=:i and #time<:t'
+      key_condition_expression: 'repo=:r and #time<:t'
     )
   end
 end

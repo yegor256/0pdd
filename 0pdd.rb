@@ -340,7 +340,7 @@ post '/hook/github' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  github = GithubHelper.new(settings.github, json, settings.config)
+  github = GithubRepo.new(settings.github, json, settings.config)
   return 'Thanks' unless github.is_valid
   unless ENV['RACK_ENV'] == 'test'
     process_request(github)
@@ -368,7 +368,7 @@ post '/hook/gitlab' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  gitlab = GitlabHelper.new(settings.gitlab, json, settings.config)
+  gitlab = GitlabRepo.new(settings.gitlab, json, settings.config)
   return 'Thanks' unless gitlab.is_valid
   unless ENV['RACK_ENV'] == 'test'
     process_request(gitlab)

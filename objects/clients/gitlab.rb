@@ -29,7 +29,7 @@ class GitlabClient
     begin
       client = if config['testing']
         require_relative '../../test/fake_gitlab'
-        FakeGitlab.new # TODO:: implement fake gitlab
+        FakeGitlab.new
       else
         token = config['gitlab']['token'] if config['gitlab']
         Gitlab.client(
