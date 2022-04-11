@@ -78,17 +78,24 @@ class Puzzles
       puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
       save(xml)
     end
-    submitted = 0
     seen = []
+    unique_puzzles = []
     Kernel.loop do
       puzzles = xml.xpath(
         '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
         seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
       )
-      break if puzzles.empty? || submitted >= @max_issues
+      break if puzzles.empty?
       puzzle = puzzles[0]
       id = puzzle.xpath('id')[0].text
+      unique_puzzles.append(puzzle)
       seen << id
+    end
+    submitted = 0
+    ranked_idxs = @repo.rank(unique_puzzles)
+    ranked_idxs.each do |idx|
+      break if submitted >= @max_issues
+      puzzle = unique_puzzles[idx]
       issue = tickets.submit(puzzle)
       next if issue.nil?
       puzzle.search('issue').remove
