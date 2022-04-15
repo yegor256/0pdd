@@ -101,14 +101,17 @@ class Puzzles
       break if puzzles.empty?
       puzzle = puzzles[0]
       id = puzzle.xpath('id')[0].text
-      unique_puzzles.append(puzzle)
+      unique_puzzles.append(puzzle.dup)
       seen << id
     end
     submitted = 0
-    ranked_idxs = rank(unique_puzzles)
-    ranked_idxs.each do |idx|
-      break if submitted >= @max_issues
-      puzzle = unique_puzzles[idx]
+    ranked_idx = rank(unique_puzzles)
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="true" and (not(issue) or issue="unknown")]'
+      )
+      break if puzzles.empty? || ranked_idx.empty? || submitted >= @max_issues
+      puzzle = puzzles.find { |p| p.xpath('id')[0].text == unique_puzzles[ranked_idx.shift].xpath('id')[0].text }
       issue = tickets.submit(puzzle)
       next if issue.nil?
       puzzle.search('issue').remove

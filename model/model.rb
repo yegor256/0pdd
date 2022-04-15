@@ -89,7 +89,8 @@ end
 def process_input(input_path)
   throw 'Please provide a valid input path' unless input_path
   doc = Nokogiri::XML(File.read(input_path))
-  puzzles = Hash.from_xml(doc.to_s)['puzzles']['puzzle']
+  puzzles = Hash.from_xml(doc.to_s)['puzzles']
+  puzzles = puzzles.nil? ? [] : puzzles['puzzle']
   puzzles.nil? ? [] : puzzles
 end
 
