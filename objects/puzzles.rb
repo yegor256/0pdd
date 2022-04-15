@@ -65,6 +65,19 @@ class Puzzles
     )
   end
 
+  def rank(puzzles)
+    doc = Nokogiri.XML('<puzzles></puzzles>')
+    puzzles.each { |puzzle| doc.root << puzzle }
+    file = Tempfile.new('puzzles')
+    file.write(doc.to_xml)
+    file.close
+    Tempfile.open('rank') do |f|
+      Exec.new("ruby model/model.rb -p #{file.path} -f #{f.path}").run
+      idxs = File.read(f).strip
+      idxs.split(' ').map(&:to_i)
+    end
+  end
+
   def expose(xml, tickets)
     seen = []
     Kernel.loop do
@@ -78,17 +91,27 @@ class Puzzles
       puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
       save(xml)
     end
-    submitted = 0
     seen = []
+    unique_puzzles = []
     Kernel.loop do
       puzzles = xml.xpath(
         '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
         seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
       )
-      break if puzzles.empty? || submitted >= @max_issues
+      break if puzzles.empty?
       puzzle = puzzles[0]
       id = puzzle.xpath('id')[0].text
+      unique_puzzles.append(puzzle.dup)
       seen << id
+    end
+    submitted = 0
+    ranked_idx = rank(unique_puzzles)
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="true" and (not(issue) or issue="unknown")]'
+      )
+      break if puzzles.empty? || ranked_idx.empty? || submitted >= @max_issues
+      puzzle = puzzles.find { |p| p.xpath('id')[0].text == unique_puzzles[ranked_idx.shift].xpath('id')[0].text }
       issue = tickets.submit(puzzle)
       next if issue.nil?
       puzzle.search('issue').remove

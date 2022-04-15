@@ -19,6 +19,7 @@
 
 source 'https://rubygems.org'
 
+gem 'activesupport', '6.1.5'
 gem 'aws-sdk-dynamodb', '1.59.0'
 gem 'aws-sdk-s3', '1.90.0'
 gem 'codecov', '0.5.1'
@@ -34,6 +35,7 @@ gem 'rack-test', '1.1.0'
 gem 'rake', '13.0.3', require: false
 gem 'rubocop', '0.69.0', require: false
 gem 'rubocop-rspec', '1.33.0', require: false
+gem 'ruby-fann'
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.1'
 gem 'sinatra', '2.1.0'
