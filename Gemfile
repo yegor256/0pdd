@@ -19,6 +19,7 @@
 
 source 'https://rubygems.org'
 
+gem 'activesupport', '6.1.5'
 gem 'aws-sdk-dynamodb', '1.59.0'
 gem 'aws-sdk-s3', '1.90.0'
 gem 'codecov', '0.5.1'

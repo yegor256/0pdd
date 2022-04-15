@@ -70,19 +70,6 @@ class GitRepo
     end
   end
 
-  def rank(puzzles)
-    doc = Nokogiri.XML('<puzzles></puzzles>')
-    puzzles.each { |puzzle| doc.root << puzzle }
-    file = Tempfile.new('puzzles')
-    file.write(doc.to_xml)
-    file.close
-    Tempfile.open('rank') do |f|
-      Exec.new("ruby model/model.rb -p #{file.path} -f #{f.path}").run
-      idxs = File.read(f).strip
-      idxs.split(' ').map(&:to_i)
-    end
-  end
-
   def push
     if File.exist?(@path)
       pull

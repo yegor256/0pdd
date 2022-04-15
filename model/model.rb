@@ -20,6 +20,7 @@ end
 
 # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 def run_model(inputs)
+  inputs = [inputs] if inputs.is_a?(Hash)
   rows = File.readlines(DATA_FNAME).map { |l| l.chomp.split(',') }
   rows.slice!(0) # remove header of csv file
   rows = rows.transpose[1..].transpose # drop first column containing repo id
@@ -28,13 +29,13 @@ def run_model(inputs)
   y_data = rows.map { |row| row[-1..].map(&:to_f) } # array of array of numeric values
   x_train, y_train, x_test, y_test = split_data(x_data, y_data)
   epsilon = 1e-1 # model hyperparameters and metrics
-  mse = lambda(actual, ideal) {
+  mse = lambda { |actual, ideal|
     errors = actual.zip(ideal).map { |a, i| a - i }
     (errors.inject(0) { |sum, err| sum + err**2 }) / errors.length.to_f
   }
-  error_rate = lambda(errors, total) { ((errors / total.to_f) * 100).round }
-  prediction_success = lambda(actual, ideal) { actual >= (ideal - epsilon) && actual <= (ideal + epsilon) }
-  run_test = lambda(nn, test_inputs, expected_outputs) {
+  error_rate = ->(errors, total) { ((errors / total.to_f) * 100).round }
+  prediction_success = ->(actual, ideal) { actual >= (ideal - epsilon) && actual <= (ideal + epsilon) }
+  run_test = lambda { |nn, test_inputs, expected_outputs|
     success = 0
     failure = 0
     errsum = 0
@@ -79,7 +80,7 @@ def run_model(inputs)
   puts "Trained classification success: #{success}, failure: #{failure}
    (classification error: #{error_rate.call(failure, x_test.length)}%, mse: #{(avg_mse * 100).round(2)}%)"
 
-  estimates = inputs.map { |p| p['estimate'] || Infinity }
+  estimates = inputs.map { |p| p['estimate'].to_i || Infinity }
   rank_output = estimates.map.with_index.sort.map(&:last) # sort estimates from minimum to maximum
   rank_output
 end
@@ -88,8 +89,8 @@ end
 def process_input(input_path)
   throw 'Please provide a valid input path' unless input_path
   doc = Nokogiri::XML(File.read(input_path))
-  puzzles = Hash.from_xml(doc.to_s)['puzzles']
-  puzzles['puzzle'] || []
+  puzzles = Hash.from_xml(doc.to_s)['puzzles']['puzzle']
+  puzzles.nil? ? [] : puzzles
 end
 
 begin

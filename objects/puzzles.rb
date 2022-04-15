@@ -65,6 +65,19 @@ class Puzzles
     )
   end
 
+  def rank(puzzles)
+    doc = Nokogiri.XML('<puzzles></puzzles>')
+    puzzles.each { |puzzle| doc.root << puzzle }
+    file = Tempfile.new('puzzles')
+    file.write(doc.to_xml)
+    file.close
+    Tempfile.open('rank') do |f|
+      Exec.new("ruby model/model.rb -p #{file.path} -f #{f.path}").run
+      idxs = File.read(f).strip
+      idxs.split(' ').map(&:to_i)
+    end
+  end
+
   def expose(xml, tickets)
     seen = []
     Kernel.loop do
@@ -92,7 +105,7 @@ class Puzzles
       seen << id
     end
     submitted = 0
-    ranked_idxs = @repo.rank(unique_puzzles)
+    ranked_idxs = rank(unique_puzzles)
     ranked_idxs.each do |idx|
       break if submitted >= @max_issues
       puzzle = unique_puzzles[idx]

@@ -14,9 +14,11 @@ class NeuralNet
   end
 
   def load(file)
-    marshal_load Marshal.dump(
+    # rubocop:disable Security/MarshalLoad
+    marshal_load Marshal.load(
       File.read(file)
     )
+    # rubocop:enable Security/MarshalLoad
   end
 
   def run(input)
