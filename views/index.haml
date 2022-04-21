@@ -5,14 +5,16 @@
   %p
     PDD puzzles collector.
   %p
-    %a{href:'http://www.yegor256.com/2017/04/05/pdd-in-action.html'} How it works?
+    %a{href:'http://www.yegor256.com/2017/04/05/pdd-in-action.html'} How does it work?
   - if !tail.empty?
     %p
       Recent commits:
       %br
-      - tail.each_with_index do |r, i|
+      - tail.each_with_index do |r|
         %span
           %a{href:'https://github.com/' + r}>= r
+    %p
+      Total projects using 0pdd: tail.value
   %p
     Made by
     %a{href:'https://www.yegor256.com'} @yegor256

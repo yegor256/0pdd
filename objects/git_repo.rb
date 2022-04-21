@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -103,9 +103,9 @@ class GitRepo
         "cd #{@path}",
         "master=#{Shellwords.escape(@master)}",
         'git config --local core.autocrlf false',
-        'git reset origin/${master} --hard --quiet',
+        'git fetch --force --all --quiet',
+        'git reset --hard --quiet origin/${master}',
         'git clean --force -d',
-        'git fetch --quiet',
         'git checkout origin/${master}',
         'git rebase --abort || true',
         'git rebase --autostash --strategy-option=theirs origin/${master}'

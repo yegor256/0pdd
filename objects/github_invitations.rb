@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -30,6 +30,14 @@ class GithubInvitations
     @github.user_repository_invitations.each do |i|
       break if @github.rate_limit.remaining < 1000
       puts "Repository invitation #{i['id']} accepted" if @github.accept_repository_invitation(i['id'])
+    end
+  end
+
+  def accept_single_invitation(repo)
+    invitations = @github.user_repository_invitations(repo: repo)
+    invitations.map do |i|
+      break if @github.rate_limit.remaining < 1000
+      "Repository invitation #{repo} accepted" if @github.accept_repository_invitation(i['id'])
     end
   end
 

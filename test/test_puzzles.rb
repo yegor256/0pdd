@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -33,7 +33,7 @@ require_relative '../objects/versioned_storage'
 
 # Puzzles test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright:: Copyright (c) 2016-2022 Yegor Bugayenko
 # License:: MIT
 class TestPuzzles < Test::Unit::TestCase
   def test_all_xml
@@ -55,7 +55,8 @@ class TestPuzzles < Test::Unit::TestCase
     Dir.mktmpdir 'test' do |dir|
       Puzzles.new(
         OpenStruct.new(
-          xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s)
+          xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s),
+          config: {}
         ),
         FakeStorage.new(
           dir,
@@ -79,7 +80,8 @@ class TestPuzzles < Test::Unit::TestCase
       '0.0.1'
     )
     repo = OpenStruct.new(
-      xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s)
+      xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s),
+      config: {}
     )
     tickets = FakeTickets.new
     Puzzles.new(repo, storage).deploy(tickets)

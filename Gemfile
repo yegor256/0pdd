@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -18,8 +18,8 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.6.0'
 
+gem 'activesupport', '6.1.5'
 gem 'aws-sdk-dynamodb', '1.59.0'
 gem 'aws-sdk-s3', '1.90.0'
 gem 'codecov', '0.5.1'
@@ -27,7 +27,7 @@ gem 'glogin', '0.7.0'
 gem 'haml', '5.2.1'
 gem 'mail', '2.7.1'
 gem 'mocha', '1.11.2', require: false
-gem 'nokogiri', '1.11.4'
+gem 'nokogiri', '1.13.4'
 gem 'octokit', '4.20.0'
 gem 'pdd', '0.20.6'
 gem 'rack', '2.2.3'
@@ -35,6 +35,7 @@ gem 'rack-test', '1.1.0'
 gem 'rake', '13.0.3', require: false
 gem 'rubocop', '0.69.0', require: false
 gem 'rubocop-rspec', '1.33.0', require: false
+gem 'ruby-fann'
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.1'
 gem 'sinatra', '2.1.0'
