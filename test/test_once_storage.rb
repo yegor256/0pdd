@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -25,7 +25,7 @@ require_relative '../objects/once_storage'
 
 # OnceStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright:: Copyright (c) 2016-2022 Yegor Bugayenko
 # License:: MIT
 class TestOnceStorage < Test::Unit::TestCase
   def test_never_saves_duplicates

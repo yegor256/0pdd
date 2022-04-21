@@ -30,7 +30,7 @@ just for `push` events  with `https://www.0pdd.com/hook/github` payload URL and
 Then, add [@0pdd](https://github.com/0pdd) GitHub user as a
 [collaborator](https://help.github.com/articles/inviting-collaborators-to-a-personal-repository/)
 to your repository, if it's private
-(you don't need this for a public repository).
+(you don't need this for a public repository). If your invitation is not accepted by [@0pdd](https://github.com/0pdd) in 30mins, please visit this address https://0pdd.com/invitation?repo={REPO_FULL_NAME} - `REPO_FULL_NAME` is the full name of your repo e.g `yegor256/0pdd`
 
 Then, add a `@todo` [puzzle](https://www.yegor256.com/2009/03/04/pdd.html)
 to the source code (format it [right](https://github.com/teamed/pdd)).
@@ -59,6 +59,7 @@ It has to be a [YAML](https://en.wikipedia.org/wiki/YAML) file with the followin
 optional parameters inside:
 
 ```yaml
+max_issues: 10
 errors:
   - yegor256@gmail.com
 alerts:
@@ -75,6 +76,8 @@ tags:
   - pdd
   - bug
 ```
+
+Section `max_issues` allows you to limit the number of issues created from the puzzles in your code - in the example above, each time the appropriate push event is sent to your webhook 10 issues will be created regardless of the number of puzzles found in the code. The maximum value allowed for `max_issues` is `99`.
 
 Section `errors` allows you to specify a list of email addresses which will
 receive notifications when PDD processing fails for your repo. It's

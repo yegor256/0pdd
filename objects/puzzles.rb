@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -27,6 +27,8 @@ class Puzzles
   def initialize(repo, storage)
     @repo = repo
     @storage = storage
+    max_issues = repo.config && repo.config['max_issues'].to_i
+    @max_issues = max_issues.positive? && max_issues < 100 ? max_issues : 100
   end
 
   def deploy(tickets)
@@ -63,6 +65,19 @@ class Puzzles
     )
   end
 
+  def rank(puzzles)
+    doc = Nokogiri.XML('<puzzles></puzzles>')
+    puzzles.each { |puzzle| doc.root << puzzle }
+    file = Tempfile.new('puzzles')
+    file.write(doc.to_xml)
+    file.close
+    Tempfile.open('rank') do |f|
+      Exec.new("ruby model/model.rb -p #{file.path} -f #{f.path}").run
+      idxs = File.read(f).strip
+      idxs.split(' ').map(&:to_i)
+    end
+  end
+
   def expose(xml, tickets)
     seen = []
     Kernel.loop do
@@ -77,6 +92,7 @@ class Puzzles
       save(xml)
     end
     seen = []
+    unique_puzzles = []
     Kernel.loop do
       puzzles = xml.xpath(
         '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
@@ -85,7 +101,17 @@ class Puzzles
       break if puzzles.empty?
       puzzle = puzzles[0]
       id = puzzle.xpath('id')[0].text
+      unique_puzzles.append(puzzle.dup)
       seen << id
+    end
+    submitted = 0
+    ranked_idx = rank(unique_puzzles)
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="true" and (not(issue) or issue="unknown")]'
+      )
+      break if puzzles.empty? || ranked_idx.empty? || submitted >= @max_issues
+      puzzle = puzzles.find { |p| p.xpath('id')[0].text == unique_puzzles[ranked_idx.shift].xpath('id')[0].text }
       issue = tickets.submit(puzzle)
       next if issue.nil?
       puzzle.search('issue').remove
@@ -93,6 +119,7 @@ class Puzzles
         "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
       )
       save(xml)
+      submitted += 1
     end
   end
 end

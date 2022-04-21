@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Yegor Bugayenko
+# Copyright (c) 2016-2022 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -56,6 +56,7 @@ class Exec
           out += stdout.read_nonblock(8) until stdout.eof?
           err = stderr.read
           code = thr.value.exitstatus
+          code = 1 unless thr.value.exited?
           unless code.zero?
             raise Error.new(
               code, "#{c} [#{code}]:\n#{err}\n#{out}"
