@@ -41,10 +41,10 @@ class GithubHelper
     json['ref'] == "refs/heads/#{json['repository']['master_branch']}" &&
     json['head_commit'] && json['head_commit']['id']
 
-    @repo = git_repo() if @is_valid
+    @repo = git_repo if @is_valid
   end
 
-  private def git_repo()
+  private def git_repo
     uri = @json['repository']['ssh_url'] || @json['repository']['url']
     name = @id
     head_commit_hash = @json['head_commit']['id']
@@ -68,11 +68,13 @@ class GithubHelper
     @json['repository']['full_name']
   end
 
-  def issue(issue_id) # returns {state, user:{login}}
+  def issue(issue_id)
+    # returns {state, user:{login}}
     @client.issue(@id, issue_id)
   end
 
-  def close_issue(issue_id) # returns void
+  def close_issue(issue_id)
+    # returns void
     @client.close_issue(@id, issue_id)
   rescue Octokit::NotFound => e
     puts "The issue most probably is not found, can't close: #{e.message}"
@@ -90,29 +92,34 @@ class GithubHelper
     @client.update_issue(@id, issue_id, data)
   end
 
-  def labels() # returns void
+  def labels
+    # returns void
     @client.labels(@id)
   end
 
-  def add_label(label, color, options = {}) # returns void
+  def add_label(label, color, options = {})
+    # returns void
     @client.add_label(@id, label, color, options)
   end
 
-  def add_labels_to_an_issue(issue_id, tags) # returns void
+  def add_labels_to_an_issue(issue_id, tags)
+    # returns void
     @client.add_labels_to_an_issue(@id, issue_id, tags)
   end
 
-  def add_comment(issue_id, comment)  # returns void
+  def add_comment(issue_id, comment)
+    # returns void
     @client.add_comment(@id, issue_id, comment)
   rescue Octokit::NotFound => e
     puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 
-  def create_commit_comment(hash, comment) # returns void
+  def create_commit_comment(hash, comment)
+    # returns void
     @client.create_commit_comment(@id, hash, comment)
   end
 
-  def list_commits()
+  def list_commits
     @client.commits(@id)
   end
 
@@ -120,11 +127,11 @@ class GithubHelper
     @client.user(username)
   end
 
-  def star()
+  def star
     @client.star(@id)
   end
 
-  def repository()
+  def repository
     @client.repository(@id)
   end
 
