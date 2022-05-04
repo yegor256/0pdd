@@ -23,7 +23,7 @@ require 'nokogiri'
 require 'yaml'
 require 'fake_github'
 require_relative 'test__helper'
-require_relative '../objects/milestone_tickets'
+require_relative '../objects/tickets/milestone_tickets'
 
 # MilestoneTickets test.
 # Author:: George Aristy (george.aristy@gmail.com)
@@ -32,9 +32,7 @@ require_relative '../objects/milestone_tickets'
 class TestGithubTickets < Test::Unit::TestCase
   def test_sets_milestone
     milestone = 123
-    sources = Object.new
-    def sources.config
-      YAML.safe_load(
+    config = YAML.safe_load(
         "
 tickets:
   - inherit-milestone
@@ -43,23 +41,22 @@ alerts:
     - on-inherited-milestone
     "
       )
-    end
-    github = FakeGithub.new
-    def github.issue(_, _)
-      { 'milestone' => { 'number' => 123, 'title' => 'v1.0' } }
+    vcs = FakeGithub.new(:repo => object({ config: config }))
+    def vcs.issue(_)
+      { milestone: { number: 123, title: 'v1.0' } }
     end
 
-    def github.update_issue(_, _, options)
+    def vcs.update_issue(_, options)
       @milestone = options[:milestone]
     end
-    class << github
+    class << vcs
       attr_accessor :milestone
     end
     tickets = Object.new
     def tickets.submit(_)
       { number: 456, href: 'http://0pdd.com' }
     end
-    test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
+    test = MilestoneTickets.new(vcs, tickets)
     test.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -75,36 +72,33 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert_equal(milestone, github.milestone)
+    assert_equal(milestone, vcs.milestone)
   end
 
   def test_does_not_set_milestone
-    sources = Object.new
-    def sources.config
-      YAML.safe_load(
+    config = YAML.safe_load(
         '
 alerts:
   suppress:
     - on-inherited-milestone
     '
       )
-    end
-    github = FakeGithub.new
-    def github.issue(_, _)
+    vcs = FakeGithub.new(:repo => object({ config: config }))
+    def vcs.issue(_)
       { 'milestone' => { 'number' => 123, 'title' => 'v1.0' } }
     end
 
-    def github.update_issue(_, _, _)
+    def vcs.update_issue(_, _)
       @updated = true
     end
-    class << github
+    class << vcs
       attr_accessor :updated
     end
     tickets = Object.new
     def tickets.submit(_)
       { number: 123, href: 'http://0pdd.com' }
     end
-    test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
+    test = MilestoneTickets.new(vcs, tickets)
     test.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -120,39 +114,36 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(!github.updated)
+    assert(!vcs.updated)
   end
 
   def test_adds_comment
-    sources = Object.new
-    def sources.config
-      YAML.safe_load(
+    config = YAML.safe_load(
         '
 tickets:
   - inherit-milestone
 '
       )
-    end
-    github = FakeGithub.new
-    def github.issue(_, _)
-      { 'milestone' => { 'number' => 123, 'title' => 'v1.0' } }
+    vcs = FakeGithub.new(:repo => object({ config: config }))
+    def vcs.issue(_)
+      { milestone: { number: 123, title: 'v1.0' } }
     end
 
-    def github.update_issue(_, _, _)
+    def vcs.update_issue(_, _)
       # do nothing
     end
 
-    def github.add_comment(_, _, text)
+    def vcs.add_comment(_, text)
       @comment = text
     end
-    class << github
+    class << vcs
       attr_accessor :comment
     end
     tickets = Object.new
     def tickets.submit(_)
       { number: 123, href: 'http://0pdd.com' }
     end
-    test = MilestoneTickets.new('yegor256/0pdd', sources, github, tickets)
+    test = MilestoneTickets.new(vcs, tickets)
     test.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -168,6 +159,6 @@ tickets:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(github.comment.start_with?('This puzzle inherited milestone'))
+    assert(vcs.comment.start_with?('This puzzle inherited milestone'))
   end
 end

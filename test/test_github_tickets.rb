@@ -22,7 +22,7 @@ require 'test/unit'
 require 'nokogiri'
 require 'yaml'
 require_relative 'test__helper'
-require_relative '../objects/github_tickets'
+require_relative '../objects/tickets/tickets'
 
 # GithubTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -30,9 +30,7 @@ require_relative '../objects/github_tickets'
 # License:: MIT
 class TestGithubTickets < Test::Unit::TestCase
   def test_submits_tickets
-    sources = Object.new
-    def sources.config
-      YAML.safe_load(
+    config = YAML.safe_load(
         "
 alerts:
   github:
@@ -43,18 +41,19 @@ format:
   - title-length=30
         "
       )
-    end
+    repo = object({ 
+      name: 'github', config: config, head_commit_hash: '123', master: 'master'
+    })
     require_relative 'fake_github'
-    github = FakeGithub.new
-    def github.create_issue(_, title, body)
-      @title = title
-      @body = body
-      { 'number' => 555 }
+    vcs = FakeGithub.new(:repo => repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
     end
-    class << github
-      attr_accessor :body, :title
+    class << vcs
+      attr_accessor :data
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new(vcs)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -70,26 +69,25 @@ format:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert_equal('привет дорогой друг, как...', github.title)
-    assert(github.body.start_with?('The puzzle `23-ab536de` from #123 has'))
+    assert_equal('привет дорогой друг, как...', vcs.data[:title])
+    assert(vcs.data[:description].start_with?('The puzzle `23-ab536de` from #123 has'))
   end
 
   def test_submits_tickets_log_title
-    sources = Object.new
-    def sources.config
-      YAML.safe_load("\n\n")
-    end
+    config = YAML.safe_load("\n\n")
+    repo = object({ 
+      name: 'github', config: config, head_commit_hash: '123', master: 'master'
+    })
     require_relative 'fake_github'
-    github = FakeGithub.new
-    def github.create_issue(_, title, body)
-      @title = title
-      @body = body
-      { 'number' => 555 }
+    vcs = FakeGithub.new(:repo => repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
     end
-    class << github
-      attr_accessor :body, :title
+    class << vcs
+      attr_accessor :data
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new(vcs)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -107,27 +105,26 @@ format:
     )
     assert_equal(
       'bz.txt:1-3: как дела? hey, how are you, please see this...',
-      github.title
+      vcs.data[:title]
     )
-    assert(github.body.start_with?('The puzzle `55-ab536de` from #123 has'))
+    assert(vcs.data[:description].start_with?('The puzzle `55-ab536de` from #123 has'))
   end
 
   def test_output_estimates_when_it_is_not_zero
-    sources = Object.new
-    def sources.config
-      YAML.safe_load("\n\n")
-    end
+    config = YAML.safe_load("\n\n")
+    repo = object({ 
+      name: 'github', config: config, head_commit_hash: '123', master: 'master'
+    })
     require_relative 'fake_github'
-    github = FakeGithub.new
-    def github.create_issue(_, title, body)
-      @title = title
-      @body = body
-      { 'number' => 555 }
+    vcs = FakeGithub.new(:repo => repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
     end
-    class << github
-      attr_accessor :body, :title
+    class << vcs
+      attr_accessor :data
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new(vcs)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -143,26 +140,25 @@ format:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(github.body.start_with?('The puzzle `55-ab536de` from #123 has'))
-    assert(github.body.include?('Estimate:'))
+    assert(vcs.data[:description].start_with?('The puzzle `55-ab536de` from #123 has'))
+    assert(vcs.data[:description].include?('Estimate:'))
   end
 
   def test_skips_estimate_if_0
-    sources = Object.new
-    def sources.config
-      YAML.safe_load("\n\n")
-    end
+    config = YAML.safe_load("\n\n")
+    repo = object({ 
+      name: 'github', config: config, head_commit_hash: '123', master: 'master'
+    })
     require_relative 'fake_github'
-    github = FakeGithub.new
-    def github.create_issue(_, title, body)
-      @title = title
-      @body = body
-      { 'number' => 555 }
+    vcs = FakeGithub.new(:repo => repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
     end
-    class << github
-      attr_accessor :body, :title
+    class << vcs
+      attr_accessor :data
     end
-    tickets = GithubTickets.new('yegor256/0pdd', github, sources)
+    tickets = Tickets.new(vcs)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -178,17 +174,17 @@ format:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(github.body.start_with?('The puzzle `55-ab536de` from #123 has'))
-    assert(!github.body.include?('Estimate:'))
+    assert(vcs.data[:description].start_with?('The puzzle `55-ab536de` from #123 has'))
+    assert(!vcs.data[:description].include?('Estimate:'))
   end
 
   def test_closes_tickets
-    sources = Object.new
-    def sources.config
-      YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
-    end
+    config = YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
+    repo = object({ 
+      name: 'github', config: config, head_commit_hash: '123', master: 'master'
+    })
     require_relative 'fake_github'
-    tickets = GithubTickets.new('yegor256/0pdd', FakeGithub.new, sources)
+    tickets = Tickets.new(FakeGithub.new(:repo => repo))
     tickets.close(
       Nokogiri::XML(
         '<puzzle><id>xx</id><issue>1</issue></puzzle>'

@@ -18,20 +18,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'mail'
+require_relative '../diff'
+require_relative '../puzzles'
+
 #
-# Job that stars the repo.
-# API: http://octokit.github.io/octokit.rb/method_list.html
+# One job.
 #
-class JobStarred
-  def initialize(name, github, job)
-    @name = name
-    @github = github
-    @job = job
+class Job
+  def initialize(vcs, storage, tickets)
+    @vcs = vcs
+    @storage = storage
+    @tickets = tickets
+    @initial_puzzles = nil
   end
 
   def proceed
-    output = @job.proceed
-    @github.star(@name)
-    output
+    @vcs.repo.push
+    @initial_puzzles = @storage.load
+    Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
+    return if opts.include?('on-scope')
+    Diff.new(@initial_puzzles, @storage.load).notify(@tickets)
+  rescue Octokit::ClientError => e
+    # TODO: this is a temporary solution, we should use a logger
+    save(@initial_puzzles) if @initial_puzzles
+    throw e
+  end
+
+  private
+
+  def opts
+    array = @vcs.repo.config.dig('alerts', 'suppress')
+    array.nil? || !array.is_a?(Array) ? [] : array
   end
 end

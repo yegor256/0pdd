@@ -33,33 +33,36 @@ require 'tmpdir'
 require 'glogin'
 
 require_relative 'version'
-require_relative 'objects/job'
-require_relative 'objects/job_detached'
-require_relative 'objects/job_emailed'
-require_relative 'objects/job_recorded'
-require_relative 'objects/job_starred'
-require_relative 'objects/job_commiterrors'
 require_relative 'objects/log'
-require_relative 'objects/github'
-require_relative 'objects/user_error'
-require_relative 'objects/git_repo'
-require_relative 'objects/github_invitations'
-require_relative 'objects/github_tickets'
-require_relative 'objects/github_tagged_tickets'
-require_relative 'objects/emailed_tickets'
-require_relative 'objects/logged_tickets'
-require_relative 'objects/commit_tickets'
-require_relative 'objects/sentry_tickets'
-require_relative 'objects/milestone_tickets'
-require_relative 'objects/safe_storage'
-require_relative 'objects/sync_storage'
-require_relative 'objects/logged_storage'
-require_relative 'objects/versioned_storage'
-require_relative 'objects/upgraded_storage'
-require_relative 'objects/cached_storage'
-require_relative 'objects/once_storage'
-require_relative 'objects/s3'
 require_relative 'objects/dynamo'
+require_relative 'objects/git_repo'
+require_relative 'objects/user_error'
+require_relative 'objects/vcs/github'
+require_relative 'objects/clients/github'
+require_relative 'objects/jobs/job'
+require_relative 'objects/jobs/job_detached'
+require_relative 'objects/jobs/job_emailed'
+require_relative 'objects/jobs/job_recorded'
+require_relative 'objects/jobs/job_starred'
+require_relative 'objects/jobs/job_commiterrors'
+require_relative 'objects/tickets/tickets'
+require_relative 'objects/tickets/tagged_tickets'
+require_relative 'objects/tickets/emailed_tickets'
+require_relative 'objects/tickets/logged_tickets'
+require_relative 'objects/tickets/commit_tickets'
+require_relative 'objects/tickets/sentry_tickets'
+require_relative 'objects/tickets/milestone_tickets'
+require_relative 'objects/storage/s3'
+require_relative 'objects/storage/safe_storage'
+require_relative 'objects/storage/sync_storage'
+require_relative 'objects/storage/logged_storage'
+require_relative 'objects/storage/versioned_storage'
+require_relative 'objects/storage/upgraded_storage'
+require_relative 'objects/storage/cached_storage'
+require_relative 'objects/storage/once_storage'
+require_relative 'objects/invitations/github_invitations'
+
+require_relative 'test/fake_storage'
 
 configure do
   Haml::Options.defaults[:format] = :xhtml
@@ -78,10 +81,12 @@ configure do
         'key' => '?',
         'secret' => '?'
       },
-      'id_rsa' => ''
+      'id_rsa' => '',
     }
   else
-    YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+    config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+    raise 'Missing configuration file config.yml' if config.nil?
+    config
   end
   if ENV['RACK_ENV'] != 'test'
     Raven.configure do |c|
@@ -104,7 +109,7 @@ configure do
     end
   end
   set :server_settings, timeout: 25
-  set :github, Github.new(config).client
+  set :github, GithubClient.new(config)
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -181,13 +186,14 @@ get '/invitation' do
 end
 
 get '/p' do
-  name = repo_name(params[:name])
-  xml = storage(name).load
+  repo = repo_name(params[:name])
+  vcs_name = params[:vcs]
+  xml = storage(repo, vcs_name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
     [
       'version', "'#{VERSION}'",
-      'project', "'#{name}'",
+      'project', "'#{repo}'",
       'length', xml.to_s.length.to_s
     ]
   ).to_s
@@ -198,33 +204,49 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  storage(repo_name(params[:name])).load.to_s
+  storage(repo_name(params[:name]), params[:vcs]).load.to_s
 end
 
 get '/log' do
   repo = repo_name(params[:name])
+  vcs_name = params[:vcs]
   haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
-    log: Log.new(settings.dynamo, repo),
+    log: Log.new(settings.dynamo, repo, vcs_name),
     since: params[:since] ? params[:since].to_i : Time.now.to_i + 1
   )
 end
 
 get '/snapshot' do
   content_type 'text/xml'
-  repo = repo(repo_name(params[:name]))
-  repo.push
-  xml = repo.xml
-  xml.xpath('//processing-instruction("xml-stylesheet")').remove
-  xml.to_s
+  name = repo_name(params[:name])
+  vcs_name = params[:vcs]
+  master = params[:branch]
+  uri = "git@github.com:#{name}.git"
+  begin
+    repo = GitRepo.new(
+      uri: uri,
+      name: name,
+      id_rsa: settings.config['id_rsa'],
+      dir: settings.temp_dir,
+      master: master || 'master'
+    )
+    repo.push
+    xml = repo.xml
+    xml.xpath('//processing-instruction("xml-stylesheet")').remove
+    xml.to_s
+  rescue
+    error 400, "Could not get snapshot for #{name}"
+  end
 end
 
 get '/log-item' do
   repo = repo_name(params[:repo])
   tag = params[:tag]
+  vcs_name = params[:vcs]
   error 404 if tag.nil?
-  log = Log.new(settings.dynamo, repo)
+  log = Log.new(settings.dynamo, repo, vcs_name)
   error 404 unless log.exists(tag)
   haml :item, layout: :layout, locals: merged(
     title: tag,
@@ -236,7 +258,8 @@ end
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = repo_name(params[:name])
-  Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
+  vcs_name = params[:vcs]
+  Log.new(settings.dynamo, repo, vcs_name).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
 
@@ -244,8 +267,9 @@ get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
   name = repo_name(params[:name])
+  vcs_name = params[:vcs]
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
-    storage(name).load, ['project', "'#{name}'"]
+    storage(name, vcs_name).load, ['project', "'#{name}'"]
   ).to_s
 end
 
@@ -290,6 +314,12 @@ get '/hook/github' do
 end
 
 post '/hook/github' do
+  is_from_github = request.env['HTTP_USER_AGENT']&.start_with?('GitHub-Hookshot')
+  is_push_event = request.env['HTTP_X_GITHUB_EVENT'] == 'push'
+  return [
+    400,
+    'Please, only register push events from GitHub webhook'
+  ] unless (is_from_github && is_push_event)
   request.body.rewind
   json = JSON.parse(
     case request.content_type
@@ -301,72 +331,13 @@ post '/hook/github' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  unless json['repository'] && json['repository']['full_name'] &&
-    json['ref'] == "refs/heads/#{json['repository']['default_branch'] || 'master'}" &&
-    json['head_commit'] && json['head_commit']['id']
-    return 'Thanks'
-  end
-  name = repo_name(json['repository']['full_name'])
+  github = GithubRepo.new(settings.github, json, settings.config)
+  return 'Thanks' unless github.is_valid
   unless ENV['RACK_ENV'] == 'test'
-    repo = repo(name)
-    JobDetached.new(
-      repo,
-      JobCommitErrors.new(
-        name,
-        settings.github,
-        json['head_commit']['id'],
-        JobEmailed.new(
-          name,
-          settings.github,
-          repo,
-          JobRecorded.new(
-            name,
-            settings.github,
-            JobStarred.new(
-              name,
-              settings.github,
-              Job.new(
-                repo,
-                storage(name),
-                SentryTickets.new(
-                  EmailedTickets.new(
-                    name,
-                    CommitTickets.new(
-                      name,
-                      repo,
-                      settings.github,
-                      json['head_commit']['id'],
-                      GithubTaggedTickets.new(
-                        name,
-                        settings.github,
-                        repo,
-                        LoggedTickets.new(
-                          Log.new(settings.dynamo, name),
-                          name,
-                          MilestoneTickets.new(
-                            name,
-                            repo,
-                            settings.github,
-                            GithubTickets.new(
-                              name,
-                              settings.github,
-                              repo
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    ).proceed
-    puts "GitHub hook from #{name}"
+    process_request(github)
+    puts "GitHub hook from #{github.repo.name}"
   end
-  "Thanks #{name}"
+  "Thanks #{github.repo.name}"
 end
 
 get '/css/*.css' do
@@ -407,7 +378,7 @@ private
 def repo_name(name)
   error 404 if name.nil?
   error 404 unless name =~ %r{^[a-zA-Z0-9\-_]+/[a-zA-Z0-9\-_.]+$}
-  name
+  name.strip
 end
 
 def merged(hash)
@@ -416,23 +387,7 @@ def merged(hash)
   out
 end
 
-def repo(name)
-  begin
-    master = settings.github.repository(name)['default_branch']
-  rescue Octokit::InvalidRepository => e
-    raise "Repository #{name} is not available: #{e.message}"
-  rescue Octokit::NotFound
-    error 400
-  end
-  GitRepo.new(
-    name: name,
-    id_rsa: settings.config['id_rsa'],
-    dir: settings.temp_dir,
-    master: master
-  )
-end
-
-def storage(repo)
+def storage(repo, vcs_name)
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(
@@ -450,7 +405,7 @@ def storage(repo)
                     settings.config['s3']['key'],
                     settings.config['s3']['secret']
                   ),
-                  Log.new(settings.dynamo, repo)
+                  Log.new(settings.dynamo, repo, vcs_name)
                 )
               end,
               VERSION
@@ -462,4 +417,45 @@ def storage(repo)
       VERSION
     )
   )
+end
+
+def process_request(vcs)
+  JobDetached.new(
+    vcs,
+    JobCommitErrors.new(
+      vcs,
+      JobEmailed.new(
+        vcs,
+        JobRecorded.new(
+          vcs,
+          JobStarred.new(
+            vcs,
+            Job.new(
+              vcs,
+              storage(vcs.repo.name, vcs.name),
+              SentryTickets.new(
+                EmailedTickets.new(
+                  vcs,
+                  CommitTickets.new(
+                    vcs,
+                    TaggedTickets.new(
+                      vcs,
+                      LoggedTickets.new(
+                        vcs,
+                        Log.new(settings.dynamo, vcs.repo.name),
+                        MilestoneTickets.new(
+                          vcs,
+                          Tickets.new(vcs)
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  ).proceed
 end

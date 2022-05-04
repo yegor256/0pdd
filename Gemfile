@@ -18,6 +18,7 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
+ruby '~> 2.6.0'
 
 gem 'activesupport', '6.1.5'
 gem 'aws-sdk-dynamodb', '1.59.0'

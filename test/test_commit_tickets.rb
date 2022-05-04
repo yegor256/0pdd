@@ -21,7 +21,7 @@
 require 'test/unit'
 require 'yaml'
 require_relative 'test__helper'
-require_relative '../objects/commit_tickets'
+require_relative '../objects/tickets/commit_tickets'
 
 # CommitTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -29,56 +29,50 @@ require_relative '../objects/commit_tickets'
 # License:: MIT
 class TestCommitTickets < Test::Unit::TestCase
   def test_submits_tickets
-    sources = Object.new
-    def sources.config
-      YAML.safe_load(
+    config = YAML.safe_load(
         "
 alerts:
   suppress:
     - on-found-puzzle"
       )
-    end
+    vcs = object({ repo: { config: config }})
     tickets = Object.new
     def tickets.submit(_)
       {}
     end
-    tickets = CommitTickets.new('yegor256/0pdd', sources, nil, nil, tickets)
+    tickets = CommitTickets.new(vcs, tickets)
     tickets.submit(nil)
   end
 
   def test_closes_tickets
-    sources = Object.new
-    def sources.config
-      YAML.safe_load(
+    config = YAML.safe_load(
         "
 alerts:
   suppress:
     - on-lost-puzzle"
       )
-    end
+    vcs = object({ repo: { config: config }})
     tickets = Object.new
     def tickets.close(_)
       {}
     end
-    tickets = CommitTickets.new('yegor256/0pdd', sources, nil, nil, tickets)
+    tickets = CommitTickets.new(vcs, tickets)
     tickets.close(nil)
   end
 
   def test_scope_supressed_repo_should_be_quiet
-    sources = Object.new
-    def sources.config
-      YAML.safe_load(
+    config = YAML.safe_load(
         "
 alerts:
   suppress:
-    - on-scope"
+    - on-found-puzzle"
       )
-    end
+    vcs = object({ repo: { config: config }})
     tickets = Object.new
     def tickets.submit(_)
       {}
     end
-    tickets = CommitTickets.new('yegor256/0pdd', sources, nil, nil, tickets)
+    tickets = CommitTickets.new(vcs, tickets)
     tickets.submit(nil)
   end
 end

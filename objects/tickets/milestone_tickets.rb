@@ -18,16 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'octokit'
-
 #
 # Tickets that inherit milestones.
 #
 class MilestoneTickets
-  def initialize(repo, sources, github, tickets)
-    @repo = repo
-    @sources = sources
-    @github = github
+  def initialize(vcs, tickets)
+    @vcs = vcs
     @tickets = tickets
   end
 
@@ -37,30 +33,30 @@ class MilestoneTickets
 
   def submit(puzzle)
     submitted = @tickets.submit(puzzle)
-    config = @sources.config
+    config = @vcs.repo.config
     if config['tickets']&.include?('inherit-milestone') &&
        puzzle.xpath('ticket')[0].text =~ /[0-9]+/
       num = puzzle.xpath('ticket')[0].text.to_i
-      parent = @github.issue(@repo, num)
-      unless parent.nil? || parent['milestone'].nil?
+      parent = @vcs.issue(num)
+      unless parent.nil? || parent[:milestone].nil?
         begin
-          @github.update_issue(
-            @repo, num,
-            milestone: parent['milestone']['number']
+          @vcs.update_issue(
+            num,
+            milestone: parent[:milestone][:number]
           )
           unless config.dig('alerts', 'suppress')
             &.include?('on-inherited-milestone')
-            @github.add_comment(
-              @repo, submitted[:number],
+            @vcs.add_comment(
+              submitted[:number],
               "This puzzle inherited milestone \
-`#{parent['milestone']['title']}` from issue ##{num}."
+`#{parent[:milestone][:title]}` from issue ##{num}."
             )
           end
-        rescue Octokit::Error => e
-          @github.add_comment(
-            @repo, submitted[:number],
+        rescue => e
+          @vcs.add_comment(
+            submitted[:number],
             "For some reason I wasn't able to set milestone \
-`#{parent['milestone']['title']}`, inherited from `#{num}`, \
+`#{parent[:milestone][:title]}`, inherited from `#{num}`, \
 to this issue. Please, \
 [submit a ticket](https://github.com/yegor256/0pdd/issues/new) \
 to us with the text you see below:\

@@ -18,25 +18,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'aws-sdk-dynamodb'
+require 'base64'
 require 'nokogiri'
-require_relative '../version'
+require 'aws-sdk-dynamodb'
 require_relative 'dynamo'
+require_relative '../version'
 
 #
 # Log.
 #
 class Log
-  def initialize(aws, repo)
+  def initialize(dynamo, repo, vcs_name = 'github')
+    @dynamo = dynamo
     @repo = repo
-    @aws = aws
+    @vcs_name = (vcs_name || 'github').downcase
+    @id = @vcs_name == 'github' ? @repo : Base64.encode64(@repo + @vcs_name).gsub(/[\s=\/]+/, '')
+
+    raise 'You need to specify your cloud VCS' unless [
+      'github'
+    ].include?(@vcs_name)
   end
 
   def put(tag, text)
-    @aws.put_item(
+    @dynamo.put_item(
       table_name: '0pdd-events',
       item: {
-        'repo' => @repo,
+        'repo' => @id,
+        'vcs' => @vcs_name,
         'time' => Time.now.to_i,
         'tag' => tag,
         'text' => "#{text} /#{VERSION}"
@@ -45,13 +53,13 @@ class Log
   end
 
   def get(tag)
-    @aws.query(
+    @dynamo.query(
       table_name: '0pdd-events',
       index_name: 'tags',
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @repo,
+        ':r' => @id,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -59,13 +67,13 @@ class Log
   end
 
   def exists(tag)
-    !@aws.query(
+    !@dynamo.query(
       table_name: '0pdd-events',
       index_name: 'tags',
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @repo,
+        ':r' => @id,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -73,10 +81,10 @@ class Log
   end
 
   def delete(time, tag)
-    @aws.delete_item(
+    @dynamo.delete_item(
       table_name: '0pdd-events',
       key: {
-        'repo' => @repo,
+        'repo' => @id,
         'time' => time
       },
       expression_attribute_values: {
@@ -87,7 +95,7 @@ class Log
   end
 
   def list(since = Time.now.to_i)
-    @aws.query(
+    @dynamo.query(
       table_name: '0pdd-events',
       select: 'ALL_ATTRIBUTES',
       limit: 25,
@@ -96,7 +104,7 @@ class Log
         '#time' => 'time'
       },
       expression_attribute_values: {
-        ':r' => @repo,
+        ':r' => @id,
         ':t' => since
       },
       key_condition_expression: 'repo=:r and #time<:t'

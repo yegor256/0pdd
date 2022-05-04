@@ -19,11 +19,12 @@
 # SOFTWARE.
 
 #
-# Tickets that email when submitted or closed.
+# Tickets that post into commits.
 #
-class EmailedTickets
-  def initialize(repo, tickets)
-    @repo = repo
+class CommitTickets
+  def initialize(vcs, tickets)
+    @vcs = vcs
+    @commit = vcs.repo.head_commit_hash
     @tickets = tickets
   end
 
@@ -33,50 +34,44 @@ class EmailedTickets
 
   def submit(puzzle)
     done = @tickets.submit(puzzle)
-    r = @repo
-    Mail.new do
-      from '0pdd <no-reply@0pdd.com>'
-      to 'admin@0pdd.com'
-      subject "#{r}##{done[:number]} opened"
-      text_part do
-        content_type 'text/plain; charset=UTF-8'
-        body "Hey,\n\n\
-Issue #{done[:href]} opened.\n\n\
-ID: #{puzzle.xpath('id')[0].text}\n\
-File: #{puzzle.xpath('file')[0].text}\n\
-Lines: #{puzzle.xpath('lines')[0].text}\n\
-Here: https://github.com/#{r}/blob/master/#{puzzle.xpath('file')[0].text}\
-##{puzzle.xpath('lines')[0].text.gsub(/(\d+)/, 'L\1')}\n\
-Author: #{puzzle.xpath('author')[0].text}\n\
-Time: #{puzzle.xpath('time')[0].text}\n\
-Estimate: #{puzzle.xpath('estimate')[0].text} minutes\n\
-Role: #{puzzle.xpath('role')[0].text}\n\n\
-Body: #{puzzle.xpath('body')[0].text}\n\n\
-Thanks,\n\
-0pdd"
-      end
-    end.deliver!
+    return done if suppressed_repo?
+
+    @vcs.create_commit_comment(
+      @commit,
+      "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
+  [`#{puzzle.xpath('file')[0].text}`](#{@vcs.file_link(puzzle.xpath('file')[0].text)}) \
+  and submitted as ##{done[:number]}. Please, remember that the puzzle was not \
+  necessarily added in this particular commit. Maybe it was added earlier, but \
+  we discovered it only now."
+    )
     done
   end
 
   def close(puzzle)
     done = @tickets.close(puzzle)
-    if done
-      r = @repo
-      issue = puzzle.xpath('issue')[0].text
-      Mail.new do
-        from '0pdd <no-reply@0pdd.com>'
-        to 'admin@0pdd.com'
-        subject "#{r}##{issue} closed"
-        text_part do
-          content_type 'text/plain; charset=UTF-8'
-          body "Hey,\n\n\
-Issue https://github.com/#{r}/issues/#{issue} closed.\n\n\
-Thanks,\n\
-0pdd"
-        end
-      end.deliver!
+    if done && !opts.include?('on-lost-puzzle')
+      @vcs.create_commit_comment(
+        @commit,
+        "Puzzle `#{puzzle.xpath('id')[0].text}` disappeared from \
+[`#{puzzle.xpath('file')[0].text}`](#{@vcs.file_link(puzzle.xpath('file')[0].text)}), \
+that's why I closed ##{puzzle.xpath('issue')[0].text}. \
+Please, remember that the puzzle was not necessarily removed in this \
+particular commit. Maybe it happened earlier, but we discovered this fact \
+only now."
+      )
     end
     done
+  end
+
+  private
+
+  def opts
+    array = @vcs.repo.config.dig('alerts', 'suppress')
+    array.nil? || !array.is_a?(Array) ? [] : array
+  end
+
+  def suppressed_repo?
+    suppressed_options = ['on-found-puzzle', 'on-scope']
+    suppressed_options.any? { |item| opts.include?(item) }
   end
 end

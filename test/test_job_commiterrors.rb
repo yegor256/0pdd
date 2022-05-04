@@ -21,7 +21,7 @@
 require 'test/unit'
 require 'mocha/test_unit'
 require_relative 'test__helper'
-require_relative '../objects/job_commiterrors'
+require_relative '../objects/jobs/job_commiterrors'
 
 # JobCommitErrors test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -29,8 +29,13 @@ require_relative '../objects/job_commiterrors'
 # License:: MIT
 class TestJobCommitErrors < Test::Unit::TestCase
   class Stub
-    attr_reader :reported
-    def create_commit_comment(_, _, text)
+    attr_reader :name, :reported, :repo
+    def initialize(repo)
+      @repo = repo
+      @name = 'GITHUB'
+    end
+
+    def create_commit_comment(_, text)
       @reported = text
     end
   end
@@ -40,12 +45,12 @@ class TestJobCommitErrors < Test::Unit::TestCase
     def job.proceed
       raise 'Intended to be here'
     end
-    github = Stub.new
+    vcs = Stub.new(object({ head_commit_hash: '123' }))
     begin
-      JobCommitErrors.new('yegor256/0pdd', github, '12345678', job).proceed
+      JobCommitErrors.new(vcs, job).proceed
     rescue StandardError => e
       assert(!e.nil?)
     end
-    assert(!github.reported.empty?)
+    assert(!vcs.reported.empty?)
   end
 end

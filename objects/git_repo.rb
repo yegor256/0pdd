@@ -18,11 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'fileutils'
 require 'pdd'
+require 'yaml'
+require 'base64'
 require 'tmpdir'
 require 'tempfile'
-require 'yaml'
+require 'fileutils'
 require 'shellwords'
 require_relative 'exec'
 require_relative 'user_error'
@@ -31,21 +32,26 @@ require_relative 'user_error'
 # Repository in Git
 #
 class GitRepo
+  attr_reader :uri, :name, :path, :master, :head_commit_hash
   def initialize(
-    name:, dir: Dir.mktmpdir('0pdd'),
-    uri: "git@github.com:#{name}",
+    uri:,
+    name:,
+    dir: Dir.mktmpdir('0pdd'),
     id_rsa: '',
-    master: 'master'
+    master: 'master',
+    head_commit_hash: ''
   )
+    @id = Base64.encode64(uri).gsub(/[\s=\/]+/, '')
     @name = name
-    @path = "#{dir}/#{@name}"
+    @path = "#{dir}/#{@id}"
     @uri = uri
     @id_rsa = id_rsa
     @master = master
+    @head_commit_hash = head_commit_hash
   end
 
   def lock
-    "/tmp/0pdd-locks/#{@name}.txt"
+    "/tmp/0pdd-locks/#{@id}.txt"
   end
 
   def config
@@ -83,13 +89,7 @@ class GitRepo
   def clone
     prepare_key
     prepare_git
-    Exec.new(
-      'git clone',
-      '--depth=1',
-      @uri,
-      @path,
-      '--quiet'
-    ).run
+    Exec.new('git clone', '--depth=1', '--quiet', @uri, @path).run
   end
 
   def pull
@@ -100,9 +100,9 @@ class GitRepo
         "cd #{@path}",
         "master=#{Shellwords.escape(@master)}",
         'git config --local core.autocrlf false',
-        'git fetch --force --all --quiet',
-        'git reset --hard --quiet origin/${master}',
+        'git reset origin/${master} --hard --quiet',
         'git clean --force -d',
+        'git fetch --quiet',
         'git checkout origin/${master}',
         'git rebase --abort || true',
         'git rebase --autostash --strategy-option=theirs origin/${master}'

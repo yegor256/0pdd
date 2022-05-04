@@ -24,7 +24,7 @@ require 'yaml'
 require_relative 'test__helper'
 require_relative 'fake_log'
 require_relative 'fake_tickets'
-require_relative '../objects/logged_tickets'
+require_relative '../objects/tickets/logged_tickets'
 
 # LoggedTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -33,7 +33,7 @@ require_relative '../objects/logged_tickets'
 class TestLoggedTickets < Test::Unit::TestCase
   def test_submits_tickets
     log = FakeLog.new
-    tickets = LoggedTickets.new(log, 'yegor256/0pdd', FakeTickets.new)
+    tickets = LoggedTickets.new('yegor256/0pdd', log, FakeTickets.new)
     tickets.submit(
       Nokogiri::XML(
         '<puzzle>
@@ -53,7 +53,7 @@ class TestLoggedTickets < Test::Unit::TestCase
 
   def test_closes_tickets
     log = FakeLog.new
-    tickets = LoggedTickets.new(log, 'yegor256/0pdd', FakeTickets.new)
+    tickets = LoggedTickets.new('yegor256/0pdd', log, FakeTickets.new)
     tickets.close(
       Nokogiri::XML(
         '<puzzle>
