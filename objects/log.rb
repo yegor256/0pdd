@@ -34,9 +34,7 @@ class Log
     @vcs_name = (vcs_name || 'github').downcase
     @id = @vcs_name == 'github' ? @repo : Base64.encode64(@repo + @vcs_name).gsub(%r{[\s=\/]+}, '')
 
-    raise 'You need to specify your cloud VCS' unless [
-      'github'
-    ].include?(@vcs_name)
+    raise 'You need to specify your cloud VCS' unless %w[gitlab github].include?(@vcs_name)
   end
 
   def put(tag, text)

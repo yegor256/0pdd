@@ -38,7 +38,9 @@ require_relative 'objects/dynamo'
 require_relative 'objects/git_repo'
 require_relative 'objects/user_error'
 require_relative 'objects/vcs/github'
+require_relative 'objects/vcs/gitlab'
 require_relative 'objects/clients/github'
+require_relative 'objects/clients/gitlab'
 require_relative 'objects/jobs/job'
 require_relative 'objects/jobs/job_detached'
 require_relative 'objects/jobs/job_emailed'
@@ -70,6 +72,11 @@ configure do
     {
       'testing' => true,
       'github' => {
+        'token' => '--the-token--',
+        'client_id' => '?',
+        'client_secret' => '?'
+      },
+      'gitlab' => {
         'token' => '--the-token--',
         'client_id' => '?',
         'client_secret' => '?'
@@ -110,6 +117,7 @@ configure do
   end
   set :server_settings, timeout: 25
   set :github, GithubClient.new(config)
+  set :gitlab, GitlabClient.new(config)
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -221,8 +229,10 @@ end
 get '/snapshot' do
   content_type 'text/xml'
   name = repo_name(params[:name])
+  vcs_name = params[:vcs]
   master = params[:branch]
   uri = "git@github.com:#{name}.git"
+  uri = "git@gitlab.com:#{name}.git" if vcs_name == 'gitlab'
   begin
     repo = GitRepo.new(
       uri: uri,
@@ -339,6 +349,35 @@ post '/hook/github' do
     puts "GitHub hook from #{github.repo.name}"
   end
   "Thanks #{github.repo.name}"
+end
+
+post '/hook/gitlab' do
+  is_from_gitlab = request.env['HTTP_USER_AGENT'].start_with?('GitLab')
+  is_push_event = request.env['HTTP_X_GITLAB_EVENT'] == 'Push Hook'
+  unless is_from_gitlab && is_push_event
+    return [
+      400,
+      'Please, only register push events from Gitlab webhook'
+    ]
+  end
+  request.body.rewind
+  json = JSON.parse(
+    case request.content_type
+    when 'application/x-www-form-urlencoded'
+      params[:payload]
+    when 'application/json'
+      request.body.read
+    else
+      raise "Invalid content-type: \"#{request.content_type}\""
+    end
+  )
+  gitlab = GitlabRepo.new(settings.gitlab, json, settings.config)
+  return 'Thanks' unless gitlab.is_valid
+  unless ENV['RACK_ENV'] == 'test'
+    process_request(gitlab)
+    puts "Gitlab hook from #{gitlab.repo.name}"
+  end
+  "Thanks #{gitlab.repo.name}"
 end
 
 get '/css/*.css' do

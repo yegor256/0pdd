@@ -18,36 +18,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'mail'
-require_relative '../diff'
-require_relative '../puzzles'
+require 'gitlab'
 
 #
-# One job.
+# Gitlab client
+# API: https://github.com/NARKOZ/gitlab
 #
-class Job
-  def initialize(vcs, storage, tickets)
-    @vcs = vcs
-    @storage = storage
-    @tickets = tickets
-    @initial_puzzles = nil
-  end
-
-  def proceed
-    @vcs.repo.push
-    @initial_puzzles = @storage.load
-    Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
-    return if opts.include?('on-scope')
-    Diff.new(@initial_puzzles, @storage.load).notify(@tickets)
-  rescue Octokit::ClientError, Gitlab::Error => e
-    save(@initial_puzzles) if @initial_puzzles
-    throw e
-  end
-
-  private
-
-  def opts
-    array = @vcs.repo.config.dig('alerts', 'suppress')
-    array.nil? || !array.is_a?(Array) ? [] : array
+class GitlabClient
+  def self.new(config = {})
+    client = if config['testing']
+      require_relative '../../test/fake_gitlab'
+      FakeGitlab.new
+    else
+      token = config['gitlab']['token'] if config['gitlab']
+      Gitlab.client(
+        endpoint: 'https://gitlab.com/api/v4',
+        private_token: token,
+        httparty: {
+          headers: { 'Cookie' => 'gitlab_canary=true' }
+        }
+      )
+    end
+    TracePoint.new(:call) do |tp|
+      puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
+    end.enable
+    client
+  rescue Gitlab::Error::MissingCredentials
+    puts 'Issue with credentials'
   end
 end
