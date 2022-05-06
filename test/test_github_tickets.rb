@@ -31,7 +31,7 @@ require_relative '../objects/tickets/tickets'
 class TestGithubTickets < Test::Unit::TestCase
   def test_submits_tickets
     config = YAML.safe_load(
-        "
+      "
 alerts:
   github:
     - yegor256
@@ -40,12 +40,15 @@ format:
   - short-title
   - title-length=30
         "
-      )
-    repo = object({ 
-      name: 'github', config: config, head_commit_hash: '123', master: 'master'
-    })
+    )
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: '123',
+      master: 'master'
+    )
     require_relative 'fake_github'
-    vcs = FakeGithub.new(:repo => repo)
+    vcs = FakeGithub.new(repo: repo)
     def vcs.create_issue(data)
       @data = data
       { number: 1, html_url: 'url' }
@@ -75,11 +78,14 @@ format:
 
   def test_submits_tickets_log_title
     config = YAML.safe_load("\n\n")
-    repo = object({ 
-      name: 'github', config: config, head_commit_hash: '123', master: 'master'
-    })
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: '123',
+      master: 'master'
+    )
     require_relative 'fake_github'
-    vcs = FakeGithub.new(:repo => repo)
+    vcs = FakeGithub.new(repo: repo)
     def vcs.create_issue(data)
       @data = data
       { number: 1, html_url: 'url' }
@@ -112,11 +118,14 @@ format:
 
   def test_output_estimates_when_it_is_not_zero
     config = YAML.safe_load("\n\n")
-    repo = object({ 
-      name: 'github', config: config, head_commit_hash: '123', master: 'master'
-    })
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: '123',
+      master: 'master'
+    )
     require_relative 'fake_github'
-    vcs = FakeGithub.new(:repo => repo)
+    vcs = FakeGithub.new(repo: repo)
     def vcs.create_issue(data)
       @data = data
       { number: 1, html_url: 'url' }
@@ -146,11 +155,14 @@ format:
 
   def test_skips_estimate_if_0
     config = YAML.safe_load("\n\n")
-    repo = object({ 
-      name: 'github', config: config, head_commit_hash: '123', master: 'master'
-    })
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: '123',
+      master: 'master'
+    )
     require_relative 'fake_github'
-    vcs = FakeGithub.new(:repo => repo)
+    vcs = FakeGithub.new(repo: repo)
     def vcs.create_issue(data)
       @data = data
       { number: 1, html_url: 'url' }
@@ -180,11 +192,14 @@ format:
 
   def test_closes_tickets
     config = YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
-    repo = object({ 
-      name: 'github', config: config, head_commit_hash: '123', master: 'master'
-    })
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: '123',
+      master: 'master'
+    )
     require_relative 'fake_github'
-    tickets = Tickets.new(FakeGithub.new(:repo => repo))
+    tickets = Tickets.new(FakeGithub.new(repo: repo))
     tickets.close(
       Nokogiri::XML(
         '<puzzle><id>xx</id><issue>1</issue></puzzle>'

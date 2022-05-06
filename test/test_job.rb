@@ -37,7 +37,7 @@ class TestJob < Test::Unit::TestCase
   def test_simple_scenario
     Dir.mktmpdir 'test' do |d|
       repo = FakeRepo.new
-      vcs = FakeGithub.new(:repo => repo)
+      vcs = FakeGithub.new(repo: repo)
       Job.new(
         vcs,
         SafeStorage.new(FakeStorage.new(d)),

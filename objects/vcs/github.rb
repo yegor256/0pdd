@@ -37,19 +37,20 @@ class GithubRepo < AbstractVCS
     json['ref'] == "refs/heads/#{json['repository']['master_branch']}" &&
     json['head_commit'] && json['head_commit']['id']
 
-    @repo = git_repo() if @is_valid
+    @repo = git_repo if @is_valid
   end
 
   def issue(issue_id)
     hash = @client.issue(@repo.name, issue_id)
-    id, username = [hash[:user][:id], hash[:user][:login]] if hash[:user]
-    { 
+    id = hash[:user][:id] if hash[:user]
+    username = hash[:user][:login] if hash[:user]
+    {
       state: hash[:state],
       author: {
         id: id,
-        username: username,
+        username: username
       },
-      milestone: hash[:milestone],
+      milestone: hash[:milestone]
     }
   end
 
@@ -60,7 +61,7 @@ class GithubRepo < AbstractVCS
   end
 
   def create_issue(data)
-    options = data.reject {|k,v| k == :title || k == :description}
+    options = data.reject { |k| %i[title description].include? k }
     @client.create_issue(
       @repo.name,
       data[:title],

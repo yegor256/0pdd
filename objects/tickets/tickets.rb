@@ -22,6 +22,9 @@ require 'haml'
 require_relative '../truncated'
 require_relative '../maybe_text'
 
+#
+# One ticket.
+#
 class Tickets
   def initialize(vcs)
     @vcs = vcs

@@ -26,28 +26,26 @@ require 'octokit'
 #
 class GithubClient
   def self.new(config = {})
-    begin
-      client = if config['testing']
-        require_relative '../../test/fake_github'
-        FakeGithub.new
-      else
-        args = {}
-        args[:access_token] = config['github']['token'] if config['github']
-        Octokit.connection_options = {
-          request: {
-            timeout: 20,
-            open_timeout: 20
-          }
+    client = if config['testing']
+      require_relative '../../test/fake_github'
+      FakeGithub.new
+    else
+      args = {}
+      args[:access_token] = config['github']['token'] if config['github']
+      Octokit.connection_options = {
+        request: {
+          timeout: 20,
+          open_timeout: 20
         }
-        Octokit.auto_paginate = true
-        Octokit::Client.new(args)
-      end
-      TracePoint.new(:call) do |tp|
-        puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
-      end.enable
-      client
-    rescue Octokit::NotFound
-      puts 'Issue with account not found'
+      }
+      Octokit.auto_paginate = true
+      Octokit::Client.new(args)
     end
+    TracePoint.new(:call) do |tp|
+      puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
+    end.enable
+    client
+  rescue Octokit::NotFound
+    puts 'Issue with account not found'
   end
 end

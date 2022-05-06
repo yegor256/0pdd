@@ -97,50 +97,45 @@ class FakeGithub
       state: 'open',
       author: {
         id: '1',
-        username: 'yegor256',
+        username: 'yegor256'
       },
       milestone: {
         number: 1,
-        title: 'v0.1',
+        title: 'v0.1'
       }
     }
   end
 
-  def close_issue(_)
-  end
+  def close_issue(_); end
 
   def create_issue(_)
-    { 
+    {
       number: 1,
       html_url: 'url'
     }
   end
 
-  def update_issue(_, _)
-  end
+  def update_issue(_, _); end
 
   def labels
     [
       {
         id: ``,
         name: 'Dev',
-        color: '#ff00ff',
+        color: '#ff00ff'
       }
     ]
   end
 
-  def add_label(_, _)
-  end
+  def add_label(_, _); end
 
-  def add_labels_to_an_issue(_, _)
-  end
+  def add_labels_to_an_issue(_, _); end
 
-  def add_comment(_, _)
-  end
+  def add_comment(_, _); end
 
   def create_commit_comment(_, _)
     {
-      html_url: 'url',
+      html_url: 'url'
     }
   end
 
@@ -148,24 +143,23 @@ class FakeGithub
     [
       {
         sha: '123456',
-        html_url: 'url',
+        html_url: 'url'
       }
     ]
   end
 
   def user(_)
-    { 
+    {
       name: 'foobar',
-      email: 'foobar@example.com',
+      email: 'foobar@example.com'
     }
   end
 
-  def star
-  end
+  def star; end
 
   def repository(_ = nil)
     {
-      private: false,
+      private: false
     }
   rescue Octokit::NotFound => e
     raise "Repository #{name} is not available: #{e.message}"
@@ -193,10 +187,9 @@ class FakeGithub
 
   private
 
-  # TODO::
   def git_repo
     # Output:
     # repo -> GitRepo
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 end

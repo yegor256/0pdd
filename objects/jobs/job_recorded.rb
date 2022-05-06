@@ -29,7 +29,7 @@ class JobRecorded
 
   def proceed
     @job.proceed
-    return if @vcs.repository()[:private]
+    return if @vcs.repository[:private]
     open('/tmp/0pdd-done.txt', 'a+') do |f|
       f.puts(@vcs.repo.name)
     end

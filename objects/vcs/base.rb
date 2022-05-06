@@ -33,7 +33,7 @@ class AbstractVCS
     @repo = nil
   end
 
-  def issue(issue_id)
+  def issue(_issue_id)
     # Input:
     # issue_id -> Number | String
     #
@@ -49,19 +49,19 @@ class AbstractVCS
     #     title: String,
     #   },
     # }
-    fail NotImplementedError, "Should accept issue_id and return issue data" 
+    raise NotImplementedError, 'Should accept issue_id and return issue data'
   end
 
-  def close_issue(issue_id)
+  def close_issue(_issue_id)
     # Input:
     # issue_id -> Number | String
     #
     # Output:
     # nil
-    fail NotImplementedError, "Should accept issue_id and return void" 
+    raise NotImplementedError, 'Should accept issue_id and return void'
   end
 
-  def create_issue(data)
+  def create_issue(_data)
     # Input:
     # {
     #   title: String,
@@ -76,10 +76,10 @@ class AbstractVCS
     #   number: String,
     #   html_url: String,
     # }
-    fail NotImplementedError, "Should accept data and return created issue"
+    raise NotImplementedError, 'Should accept data and return created issue'
   end
 
-  def update_issue(issue_id, data)
+  def update_issue(_issue_id, _data)
     # Input:
     # issue_id -> Number | String
     # data -> {
@@ -93,7 +93,7 @@ class AbstractVCS
     #
     # Output:
     # nil
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
   def labels
@@ -103,40 +103,40 @@ class AbstractVCS
     #   name: String,
     #   color: String,
     # }[]
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def add_label(label, color)
+  def add_label(_label, _color)
     # Input:
     # label -> String
     # color -> String
     #
     # Output:
     # nil
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def add_labels_to_an_issue(issue_id, labels)
+  def add_labels_to_an_issue(_issue_id, _labels)
     # Input:
     # issue_id -> Number | String
     # labels -> String[]
     #
     # Output:
     # nil
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def add_comment(issue_id, comment)
+  def add_comment(_issue_id, _comment)
     # Input:
     # issue_id -> Number | String
     # comment -> String
     #
     # Output:
     # nil
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def create_commit_comment(sha, comment)
+  def create_commit_comment(_sha, _comment)
     # Input:
     # sha -> String
     # comment -> String
@@ -145,7 +145,7 @@ class AbstractVCS
     # {
     #   html_url: String,
     # }
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
   def list_commits
@@ -154,28 +154,28 @@ class AbstractVCS
     #   sha: String,
     #   html_url: String,
     # }[]
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def user(username)
+  def user(_username)
     # Input:
     # username -> String
     #
     # Output:
-    # { 
+    # {
     #   name: String,
     #   email: String,
     # }
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
   def star
     # Output:
     # nil
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def repository(name = nil)
+  def repository(_name = nil)
     # Input:
     # name -> String = nil
     #
@@ -183,31 +183,31 @@ class AbstractVCS
     # {
     #   private: Boolean,
     # }
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
   def repository_link
     # Output:
     # link -> String
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
   def collaborators_link
     # Output:
     # link -> String
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def file_link(file)
+  def file_link(_file)
     # Input:
     # file -> String
     #
     # Output:
     # link -> String
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def puzzle_link_for_commit(sha, file, start, stop)
+  def puzzle_link_for_commit(_sha, _file, _start, _stop)
     # Input:
     # sha -> String
     # file -> String
@@ -216,24 +216,23 @@ class AbstractVCS
     #
     # Output:
     # link -> String
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
-  def issue_link(issue_id)
+  def issue_link(_issue_id)
     # Input:
     # issue_id -> String
     #
     # Output:
     # link -> String
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 
   private
 
-  # TODO::
   def git_repo
     # Output:
     # repo -> GitRepo
-    fail NotImplementedError, "A canine class must be able to #bark!" 
+    raise NotImplementedError, 'You must implement this method'
   end
 end

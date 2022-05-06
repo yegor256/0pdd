@@ -30,12 +30,12 @@ require_relative '../objects/tickets/commit_tickets'
 class TestCommitTickets < Test::Unit::TestCase
   def test_submits_tickets
     config = YAML.safe_load(
-        "
+      "
 alerts:
   suppress:
     - on-found-puzzle"
-      )
-    vcs = object({ repo: { config: config }})
+    )
+    vcs = object(repo: { config: config })
     tickets = Object.new
     def tickets.submit(_)
       {}
@@ -46,12 +46,12 @@ alerts:
 
   def test_closes_tickets
     config = YAML.safe_load(
-        "
+      "
 alerts:
   suppress:
     - on-lost-puzzle"
-      )
-    vcs = object({ repo: { config: config }})
+    )
+    vcs = object(repo: { config: config })
     tickets = Object.new
     def tickets.close(_)
       {}
@@ -62,12 +62,12 @@ alerts:
 
   def test_scope_supressed_repo_should_be_quiet
     config = YAML.safe_load(
-        "
+      "
 alerts:
   suppress:
     - on-found-puzzle"
-      )
-    vcs = object({ repo: { config: config }})
+    )
+    vcs = object(repo: { config: config })
     tickets = Object.new
     def tickets.submit(_)
       {}

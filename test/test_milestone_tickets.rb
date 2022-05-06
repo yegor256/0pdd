@@ -33,15 +33,15 @@ class TestGithubTickets < Test::Unit::TestCase
   def test_sets_milestone
     milestone = 123
     config = YAML.safe_load(
-        "
+      "
 tickets:
   - inherit-milestone
 alerts:
   suppress:
     - on-inherited-milestone
     "
-      )
-    vcs = FakeGithub.new(:repo => object({ config: config }))
+    )
+    vcs = FakeGithub.new(repo: object(config: config))
     def vcs.issue(_)
       { milestone: { number: 123, title: 'v1.0' } }
     end
@@ -77,13 +77,13 @@ alerts:
 
   def test_does_not_set_milestone
     config = YAML.safe_load(
-        '
+      '
 alerts:
   suppress:
     - on-inherited-milestone
     '
-      )
-    vcs = FakeGithub.new(:repo => object({ config: config }))
+    )
+    vcs = FakeGithub.new(repo: object(config: config))
     def vcs.issue(_)
       { 'milestone' => { 'number' => 123, 'title' => 'v1.0' } }
     end
@@ -119,12 +119,12 @@ alerts:
 
   def test_adds_comment
     config = YAML.safe_load(
-        '
+      '
 tickets:
   - inherit-milestone
 '
-      )
-    vcs = FakeGithub.new(:repo => object({ config: config }))
+    )
+    vcs = FakeGithub.new(repo: object(config: config))
     def vcs.issue(_)
       { milestone: { number: 123, title: 'v1.0' } }
     end

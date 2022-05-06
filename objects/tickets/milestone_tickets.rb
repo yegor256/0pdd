@@ -52,7 +52,7 @@ class MilestoneTickets
 `#{parent[:milestone][:title]}` from issue ##{num}."
             )
           end
-        rescue => e
+        rescue StandardError => e
           @vcs.add_comment(
             submitted[:number],
             "For some reason I wasn't able to set milestone \

@@ -37,7 +37,7 @@ class JobEmailed
     emails << 'admin@0pdd.com'
     trace = e.message + "\n\n" + e.backtrace.join("\n")
     name = @vcs.repo.name
-    repo_owner_login = repo_user_login()
+    repo_owner_login = repo_user_login
     repo_owner_email = user_email(repo_owner_login)
     repository_link = @vcs.repository_link
     emails.each do |email|
@@ -76,7 +76,7 @@ Sorry,\n\
 
   private
 
-  def repo_user_login()
+  def repo_user_login
     @vcs.repo.name.split('/').first
   end
 

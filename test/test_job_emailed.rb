@@ -38,7 +38,7 @@ class TestJobEmailed < Test::Unit::TestCase
 
   def test_simple_scenario
     repo = FakeRepo.new
-    vcs = FakeGithub.new(:repo => repo)
+    vcs = FakeGithub.new(repo: repo)
     job = fake_job
     JobEmailed.new(vcs, job).proceed
   end
@@ -46,7 +46,7 @@ class TestJobEmailed < Test::Unit::TestCase
   def test_exception_mail_to_repo_owner_as_cc
     exception_class = Exception
     repo = FakeRepo.new
-    vcs = FakeGithub.new(:repo => repo)
+    vcs = FakeGithub.new(repo: repo)
     job = fake_job
     job.expects(:proceed).raises(exception_class)
     Mail::Message.any_instance.stubs(:deliver!)

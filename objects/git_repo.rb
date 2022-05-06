@@ -36,16 +36,16 @@ class GitRepo
   def initialize(
     uri:,
     name:,
-    dir: Dir.mktmpdir('0pdd'),
-    id_rsa: '',
     master: 'master',
-    head_commit_hash: ''
+    head_commit_hash: '',
+    **options
   )
-    @id = Base64.encode64(uri).gsub(/[\s=\/]+/, '')
+    @id = Base64.encode64(uri).gsub(%r{[\s=\/]+}, '')
     @name = name
-    @path = "#{dir}/#{@id}"
+    @dir = options[:dir] || Dir.mktmpdir('0pdd')
+    @path = "#{@dir}/#{@id}"
     @uri = uri
-    @id_rsa = id_rsa
+    @id_rsa = options[:id_rsa] || ''
     @master = master
     @head_commit_hash = head_commit_hash
   end

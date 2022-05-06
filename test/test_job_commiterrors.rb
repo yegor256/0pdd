@@ -45,7 +45,7 @@ class TestJobCommitErrors < Test::Unit::TestCase
     def job.proceed
       raise 'Intended to be here'
     end
-    vcs = Stub.new(object({ head_commit_hash: '123' }))
+    vcs = Stub.new(object(head_commit_hash: '123'))
     begin
       JobCommitErrors.new(vcs, job).proceed
     rescue StandardError => e

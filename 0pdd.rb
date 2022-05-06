@@ -81,7 +81,7 @@ configure do
         'key' => '?',
         'secret' => '?'
       },
-      'id_rsa' => '',
+      'id_rsa' => ''
     }
   else
     config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
@@ -221,7 +221,6 @@ end
 get '/snapshot' do
   content_type 'text/xml'
   name = repo_name(params[:name])
-  vcs_name = params[:vcs]
   master = params[:branch]
   uri = "git@github.com:#{name}.git"
   begin
@@ -236,7 +235,7 @@ get '/snapshot' do
     xml = repo.xml
     xml.xpath('//processing-instruction("xml-stylesheet")').remove
     xml.to_s
-  rescue
+  rescue StandardError
     error 400, "Could not get snapshot for #{name}"
   end
 end
@@ -316,10 +315,12 @@ end
 post '/hook/github' do
   is_from_github = request.env['HTTP_USER_AGENT']&.start_with?('GitHub-Hookshot')
   is_push_event = request.env['HTTP_X_GITHUB_EVENT'] == 'push'
-  return [
-    400,
-    'Please, only register push events from GitHub webhook'
-  ] unless (is_from_github && is_push_event)
+  unless is_from_github && is_push_event
+    return [
+      400,
+      'Please, only register push events from GitHub webhook'
+    ]
+  end
   request.body.rewind
   json = JSON.parse(
     case request.content_type
