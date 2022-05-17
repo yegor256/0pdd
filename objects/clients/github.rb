@@ -31,7 +31,7 @@ class Github
 
   def client
     client = if @config['testing']
-      require_relative '../test/fake_github'
+      require_relative '../../test/fake_github'
       FakeGithub.new
     else
       args = {}

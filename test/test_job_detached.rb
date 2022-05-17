@@ -20,7 +20,7 @@
 
 require 'test/unit'
 require_relative 'test__helper'
-require_relative '../objects/job_detached'
+require_relative '../objects/jobs/job_detached'
 
 # JobDetached test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

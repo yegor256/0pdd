@@ -21,7 +21,7 @@
 require 'test/unit'
 require 'yaml'
 require_relative 'test__helper'
-require_relative '../objects/commit_tickets'
+require_relative '../objects/tickets/commit_tickets'
 
 # CommitTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

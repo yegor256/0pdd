@@ -20,7 +20,7 @@
 
 require 'test/unit'
 require_relative 'test__helper'
-require_relative '../objects/github'
+require_relative '../objects/clients/github'
 
 # Github test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

@@ -21,7 +21,7 @@
 require 'test/unit'
 require_relative 'test__helper'
 require_relative 'fake_storage'
-require_relative '../objects/cached_storage'
+require_relative '../objects/storage/cached_storage'
 
 # CachedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

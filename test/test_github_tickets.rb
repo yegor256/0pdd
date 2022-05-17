@@ -22,7 +22,7 @@ require 'test/unit'
 require 'nokogiri'
 require 'yaml'
 require_relative 'test__helper'
-require_relative '../objects/github_tickets'
+require_relative '../objects/tickets/github_tickets'
 
 # GithubTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

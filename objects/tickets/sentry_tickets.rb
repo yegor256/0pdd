@@ -21,8 +21,8 @@
 require 'octokit'
 require 'mail'
 require 'raven'
-require_relative 'user_error'
-require_relative 'truncated'
+require_relative '../user_error'
+require_relative '../truncated'
 
 #
 # Tickets that report to Sentry.

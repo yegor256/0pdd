@@ -23,7 +23,7 @@ require 'nokogiri'
 require 'yaml'
 require 'fake_github'
 require_relative 'test__helper'
-require_relative '../objects/milestone_tickets'
+require_relative '../objects/tickets/milestone_tickets'
 
 # MilestoneTickets test.
 # Author:: George Aristy (george.aristy@gmail.com)

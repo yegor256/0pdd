@@ -19,8 +19,8 @@
 # SOFTWARE.
 
 require 'mail'
-require_relative 'puzzles'
-require_relative 'diff'
+require_relative '../puzzles'
+require_relative '../diff'
 
 #
 # One job.

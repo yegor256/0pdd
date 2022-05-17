@@ -21,7 +21,7 @@
 require 'test/unit'
 require 'mocha/test_unit'
 require_relative 'test__helper'
-require_relative '../objects/job_commiterrors'
+require_relative '../objects/jobs/job_commiterrors'
 
 # JobCommitErrors test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

@@ -23,7 +23,7 @@ require 'mocha/test_unit'
 require_relative 'test__helper'
 require_relative 'fake_repo'
 require_relative 'fake_github'
-require_relative '../objects/job_emailed'
+require_relative '../objects/jobs/job_emailed'
 
 # JobEmailed test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

@@ -23,7 +23,7 @@ require 'nokogiri'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
-require_relative '../objects/versioned_storage'
+require_relative '../objects/storage/versioned_storage'
 
 # VersionedStorage test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

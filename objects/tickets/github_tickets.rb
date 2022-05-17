@@ -20,8 +20,8 @@
 
 require 'haml'
 require 'octokit'
-require_relative 'truncated'
-require_relative 'maybe_text'
+require_relative '../truncated'
+require_relative '../maybe_text'
 
 #
 # Tickets in Github.
@@ -118,7 +118,7 @@ source code, that's why I closed this issue." +
     sha = @github.list_commits(@repo)[0]['sha']
     url = "https://github.com/#{@repo}/blob/#{sha}/#{file}#L#{start}-L#{stop}"
     template = File.read(
-      File.join(File.dirname(__FILE__), 'templates/github_tickets_body.haml')
+      File.join(File.dirname(__FILE__), '../templates/github_tickets_body.haml')
     )
     Haml::Engine.new(template).render(
       Object.new, url: url, puzzle: puzzle
