@@ -321,62 +321,7 @@ post '/hook/github' do
   end
   name = repo_name(json['repository']['full_name'])
   unless ENV['RACK_ENV'] == 'test'
-    repo = repo(json)
-    JobDetached.new(
-      repo,
-      JobCommitErrors.new(
-        name,
-        settings.github,
-        json['head_commit']['id'],
-        JobEmailed.new(
-          name,
-          settings.github,
-          repo,
-          JobRecorded.new(
-            name,
-            settings.github,
-            JobStarred.new(
-              name,
-              settings.github,
-              Job.new(
-                repo,
-                storage(name),
-                SentryTickets.new(
-                  EmailedTickets.new(
-                    name,
-                    CommitTickets.new(
-                      name,
-                      repo,
-                      settings.github,
-                      json['head_commit']['id'],
-                      GithubTaggedTickets.new(
-                        name,
-                        settings.github,
-                        repo,
-                        LoggedTickets.new(
-                          Log.new(settings.dynamo, name),
-                          name,
-                          MilestoneTickets.new(
-                            name,
-                            repo,
-                            settings.github,
-                            GithubTickets.new(
-                              name,
-                              settings.github,
-                              repo
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    ).proceed
+    process_request(json)
     puts "GitHub hook from #{name}"
   end
   "Thanks #{name}"
@@ -481,4 +426,63 @@ def storage(repo)
       VERSION
     )
   )
+end
+
+def process_request(json)
+  repo = repo(json)
+  JobDetached.new(
+    repo,
+    JobCommitErrors.new(
+      name,
+      settings.github,
+      json['head_commit']['id'],
+      JobEmailed.new(
+        name,
+        settings.github,
+        repo,
+        JobRecorded.new(
+          name,
+          settings.github,
+          JobStarred.new(
+            name,
+            settings.github,
+            Job.new(
+              repo,
+              storage(name),
+              SentryTickets.new(
+                EmailedTickets.new(
+                  name,
+                  CommitTickets.new(
+                    name,
+                    repo,
+                    settings.github,
+                    json['head_commit']['id'],
+                    GithubTaggedTickets.new(
+                      name,
+                      settings.github,
+                      repo,
+                      LoggedTickets.new(
+                        Log.new(settings.dynamo, name),
+                        name,
+                        MilestoneTickets.new(
+                          name,
+                          repo,
+                          settings.github,
+                          GithubTickets.new(
+                            name,
+                            settings.github,
+                            repo
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  ).proceed
 end
