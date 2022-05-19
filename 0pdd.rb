@@ -40,12 +40,13 @@ require_relative 'objects/jobs/job_recorded'
 require_relative 'objects/jobs/job_starred'
 require_relative 'objects/jobs/job_commiterrors'
 require_relative 'objects/log'
+require_relative 'objects/vcs/github'
 require_relative 'objects/clients/github'
 require_relative 'objects/user_error'
 require_relative 'objects/git_repo'
 require_relative 'objects/invitations/github_invitations'
-require_relative 'objects/tickets/github_tickets'
-require_relative 'objects/tickets/github_tagged_tickets'
+require_relative 'objects/tickets/tickets'
+require_relative 'objects/tickets/tagged_tickets'
 require_relative 'objects/tickets/emailed_tickets'
 require_relative 'objects/tickets/logged_tickets'
 require_relative 'objects/tickets/commit_tickets'
@@ -303,6 +304,14 @@ get '/hook/github' do
 end
 
 post '/hook/github' do
+  is_from_github = request.env['HTTP_USER_AGENT']&.start_with?('GitHub-Hookshot')
+  is_push_event = request.env['HTTP_X_GITHUB_EVENT'] == 'push'
+  unless is_from_github && is_push_event
+    return [
+      400,
+      'Please, only register push events from GitHub webhook'
+    ]
+  end
   request.body.rewind
   json = JSON.parse(
     case request.content_type
@@ -314,17 +323,13 @@ post '/hook/github' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  unless json['repository'] && json['repository']['full_name'] &&
-    json['ref'] == "refs/heads/#{json['repository']['default_branch'] || 'master'}" &&
-    json['head_commit'] && json['head_commit']['id']
-    return 'Thanks'
-  end
-  name = repo_name(json['repository']['full_name'])
+  github = GithubRepo.new(settings.github, json, settings.config)
+  return 'Thanks' unless github.is_valid
   unless ENV['RACK_ENV'] == 'test'
-    process_request(json)
-    puts "GitHub hook from #{name}"
+    process_request(json, github)
+    puts "GitHub hook from #{github.repo.name}"
   end
-  "Thanks #{name}"
+  "Thanks #{github.repo.name}"
 end
 
 get '/css/*.css' do
@@ -428,7 +433,7 @@ def storage(repo)
   )
 end
 
-def process_request(json)
+def process_request(json, vcs)
   repo = repo(json)
   JobDetached.new(
     repo,
@@ -451,28 +456,17 @@ def process_request(json)
               storage(name),
               SentryTickets.new(
                 EmailedTickets.new(
-                  name,
+                  vcs,
                   CommitTickets.new(
-                    name,
-                    repo,
-                    settings.github,
-                    json['head_commit']['id'],
-                    GithubTaggedTickets.new(
-                      name,
-                      settings.github,
-                      repo,
+                    vcs,
+                    TaggedTickets.new(
+                      vcs,
                       LoggedTickets.new(
-                        Log.new(settings.dynamo, name),
-                        name,
+                        vcs,
+                        Log.new(settings.dynamo, vcs.repo.name),
                         MilestoneTickets.new(
-                          name,
-                          repo,
-                          settings.github,
-                          GithubTickets.new(
-                            name,
-                            settings.github,
-                            repo
-                          )
+                          vcs,
+                          Tickets.new(vcs)
                         )
                       )
                     )

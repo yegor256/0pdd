@@ -80,10 +80,15 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_it_understands_push_from_github
+    headers = {
+      'CONTENT_TYPE' => 'application/json',
+      'HTTP_USER_AGENT' => 'GitHub-Hookshot',
+      'HTTP_X_GITHUB_EVENT' => 'push'
+    }
     post(
       '/hook/github',
       '{"repository":{"full_name":"yegor256-one/com.github.0pdd-test"}, "ref":"refs/heads/master"}',
-      'CONTENT_TYPE' => 'application/json'
+      headers
     )
     assert(last_response.ok?)
     assert(last_response.body.include?('Thanks'))

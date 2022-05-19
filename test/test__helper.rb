@@ -26,3 +26,8 @@ if ENV['CI'] == 'true'
   require 'codecov'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
+
+def object(hash)
+  json = hash.to_json
+  JSON.parse(json, object_class: OpenStruct)
+end

@@ -19,14 +19,12 @@
 # SOFTWARE.
 
 #
-# Tickets that post into GitHub commits.
+# Tickets that post into commits.
 #
 class CommitTickets
-  def initialize(repo, sources, github, commit, tickets)
-    @repo = repo
-    @sources = sources
-    @github = github
-    @commit = commit
+  def initialize(vcs, tickets)
+    @vcs = vcs
+    @commit = vcs.repo.head_commit_hash
     @tickets = tickets
   end
 
@@ -38,11 +36,10 @@ class CommitTickets
     done = @tickets.submit(puzzle)
     return done if suppressed_repo?
 
-    @github.create_commit_comment(
-      @repo, @commit,
+    @vcs.create_commit_comment(
+      @commit,
       "Puzzle `#{puzzle.xpath('id')[0].text}` discovered in \
-  [`#{puzzle.xpath('file')[0].text}`](\
-  https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}) \
+  [`#{puzzle.xpath('file')[0].text}`](#{@vcs.file_link(puzzle.xpath('file')[0].text)}) \
   and submitted as ##{done[:number]}. Please, remember that the puzzle was not \
   necessarily added in this particular commit. Maybe it was added earlier, but \
   we discovered it only now."
@@ -53,11 +50,10 @@ class CommitTickets
   def close(puzzle)
     done = @tickets.close(puzzle)
     if done && !opts.include?('on-lost-puzzle')
-      @github.create_commit_comment(
-        @repo, @commit,
+      @vcs.create_commit_comment(
+        @commit,
         "Puzzle `#{puzzle.xpath('id')[0].text}` disappeared from \
-[`#{puzzle.xpath('file')[0].text}`](\
-https://github.com/#{@repo}/blob/master/#{puzzle.xpath('file')[0].text}), \
+[`#{puzzle.xpath('file')[0].text}`](#{@vcs.file_link(puzzle.xpath('file')[0].text)}), \
 that's why I closed ##{puzzle.xpath('issue')[0].text}. \
 Please, remember that the puzzle was not necessarily removed in this \
 particular commit. Maybe it happened earlier, but we discovered this fact \
@@ -70,7 +66,7 @@ only now."
   private
 
   def opts
-    array = @sources.config.dig('alerts', 'suppress')
+    array = @vcs.repo.config.dig('alerts', 'suppress')
     array.nil? || !array.is_a?(Array) ? [] : array
   end
 
