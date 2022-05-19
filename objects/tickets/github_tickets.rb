@@ -40,7 +40,7 @@ class GithubTickets
       "@#{@github.issue(@repo, issue)['user']['login']} #{message}"
     )
   rescue Octokit::NotFound => e
-    puts "The issue most probably is not found, can't coment: #{e.message}"
+    puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 
   def submit(puzzle)

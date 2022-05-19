@@ -45,7 +45,5 @@ class GithubClient
       puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
     end.enable
     client
-  rescue Octokit::NotFound
-    puts 'Issue with account not found'
   end
 end
