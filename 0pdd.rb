@@ -104,7 +104,7 @@ configure do
     end
   end
   set :server_settings, timeout: 25
-  set :github, Github.new(config).client
+  set :github, GithubClient.new(config)
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
