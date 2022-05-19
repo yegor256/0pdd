@@ -213,11 +213,24 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  repo = repo(repo_name(params[:name]))
-  repo.push
-  xml = repo.xml
-  xml.xpath('//processing-instruction("xml-stylesheet")').remove
-  xml.to_s
+  name = repo_name(params[:name])
+  master = params[:branch]
+  uri = "git@github.com:#{name}.git"
+  begin
+    repo = GitRepo.new(
+      uri: uri,
+      name: name,
+      id_rsa: settings.config['id_rsa'],
+      dir: settings.temp_dir,
+      master: master || 'master'
+    )
+    repo.push
+    xml = repo.xml
+    xml.xpath('//processing-instruction("xml-stylesheet")').remove
+    xml.to_s
+  rescue StandardError
+    error 400, "Could not get snapshot for #{name}"
+  end
 end
 
 get '/log-item' do
@@ -308,7 +321,7 @@ post '/hook/github' do
   end
   name = repo_name(json['repository']['full_name'])
   unless ENV['RACK_ENV'] == 'test'
-    repo = repo(name)
+    repo = repo(json)
     JobDetached.new(
       repo,
       JobCommitErrors.new(
@@ -407,7 +420,7 @@ private
 def repo_name(name)
   error 404 if name.nil?
   error 404 unless name =~ %r{^[a-zA-Z0-9\-_]+/[a-zA-Z0-9\-_.]+$}
-  name
+  name.strip
 end
 
 def merged(hash)
@@ -416,19 +429,25 @@ def merged(hash)
   out
 end
 
-def repo(name)
+# @todo #41:30min Make this vcs independent. Move to github vsc object.
+def repo(json)
+  uri = json['repository']['ssh_url'] || json['repository']['url']
+  name = json['repository']['full_name']
+  default_branch = json['repository']['master_branch']
+  head_commit_hash = json['head_commit']['id']
   begin
-    master = settings.github.repository(name)['default_branch']
+    settings.github.repository(name)['default_branch']
   rescue Octokit::InvalidRepository => e
     raise "Repository #{name} is not available: #{e.message}"
   rescue Octokit::NotFound
     error 400
   end
   GitRepo.new(
+    uri: uri,
     name: name,
-    id_rsa: settings.config['id_rsa'],
-    dir: settings.temp_dir,
-    master: master
+    id_rsa: @config['id_rsa'],
+    master: default_branch,
+    head_commit_hash: head_commit_hash
   )
 end
 

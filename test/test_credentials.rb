@@ -34,6 +34,7 @@ class CredentialsTest < Test::Unit::TestCase
     cfg = config
     Dir.mktmpdir 'test' do |d|
       repo = GitRepo.new(
+        uri: 'git@github.com:yegor256/0pdd',
         name: 'yegor256/0pdd',
         id_rsa: cfg['id_rsa'],
         dir: d
