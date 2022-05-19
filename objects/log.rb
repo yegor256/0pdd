@@ -28,10 +28,15 @@ require_relative '../version'
 # Log.
 #
 class Log
-  def initialize(dynamo, repo)
+  def initialize(dynamo, repo, vcs_name = 'github')
     @dynamo = dynamo
     @repo = repo
-    @id = Base64.encode64(@repo).gsub(%r{[\s=\/]+}, '')
+    @vcs_name = (vcs_name || 'github').downcase
+    @id = @vcs_name == 'github' ? @repo : Base64.encode64(@repo + @vcs_name).gsub(%r{[\s=\/]+}, '')
+
+    raise 'You need to specify your cloud VCS' unless [
+      'github'
+    ].include?(@vcs_name)
   end
 
   def put(tag, text)
@@ -39,6 +44,7 @@ class Log
       table_name: '0pdd-events',
       item: {
         'repo' => @id,
+        'vcs' => @vcs_name,
         'time' => Time.now.to_i,
         'tag' => tag,
         'text' => "#{text} /#{VERSION}"

@@ -33,18 +33,18 @@ require 'tmpdir'
 require 'glogin'
 
 require_relative 'version'
+require_relative 'objects/log'
+require_relative 'objects/dynamo'
+require_relative 'objects/git_repo'
+require_relative 'objects/user_error'
+require_relative 'objects/vcs/github'
+require_relative 'objects/clients/github'
 require_relative 'objects/jobs/job'
 require_relative 'objects/jobs/job_detached'
 require_relative 'objects/jobs/job_emailed'
 require_relative 'objects/jobs/job_recorded'
 require_relative 'objects/jobs/job_starred'
 require_relative 'objects/jobs/job_commiterrors'
-require_relative 'objects/log'
-require_relative 'objects/vcs/github'
-require_relative 'objects/clients/github'
-require_relative 'objects/user_error'
-require_relative 'objects/git_repo'
-require_relative 'objects/invitations/github_invitations'
 require_relative 'objects/tickets/tickets'
 require_relative 'objects/tickets/tagged_tickets'
 require_relative 'objects/tickets/emailed_tickets'
@@ -52,6 +52,7 @@ require_relative 'objects/tickets/logged_tickets'
 require_relative 'objects/tickets/commit_tickets'
 require_relative 'objects/tickets/sentry_tickets'
 require_relative 'objects/tickets/milestone_tickets'
+require_relative 'objects/storage/s3'
 require_relative 'objects/storage/safe_storage'
 require_relative 'objects/storage/sync_storage'
 require_relative 'objects/storage/logged_storage'
@@ -59,8 +60,9 @@ require_relative 'objects/storage/versioned_storage'
 require_relative 'objects/storage/upgraded_storage'
 require_relative 'objects/storage/cached_storage'
 require_relative 'objects/storage/once_storage'
-require_relative 'objects/storage/s3'
-require_relative 'objects/dynamo'
+require_relative 'objects/invitations/github_invitations'
+
+require_relative 'test/fake_storage'
 
 configure do
   Haml::Options.defaults[:format] = :xhtml
@@ -82,7 +84,9 @@ configure do
       'id_rsa' => ''
     }
   else
-    YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+    config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml')))
+    raise 'Missing configuration file config.yml' if config.nil?
+    config
   end
   if ENV['RACK_ENV'] != 'test'
     Raven.configure do |c|
@@ -182,13 +186,14 @@ get '/invitation' do
 end
 
 get '/p' do
-  name = repo_name(params[:name])
-  xml = storage(name).load
+  repo = repo_name(params[:name])
+  vcs_name = params[:vcs]
+  xml = storage(repo, vcs_name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
     [
       'version', "'#{VERSION}'",
-      'project', "'#{name}'",
+      'project', "'#{repo}'",
       'length', xml.to_s.length.to_s
     ]
   ).to_s
@@ -199,15 +204,16 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  storage(repo_name(params[:name])).load.to_s
+  storage(repo_name(params[:name]), params[:vcs]).load.to_s
 end
 
 get '/log' do
   repo = repo_name(params[:name])
+  vcs_name = params[:vcs]
   haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
-    log: Log.new(settings.dynamo, repo),
+    log: Log.new(settings.dynamo, repo, vcs_name),
     since: params[:since] ? params[:since].to_i : Time.now.to_i + 1
   )
 end
@@ -237,8 +243,9 @@ end
 get '/log-item' do
   repo = repo_name(params[:repo])
   tag = params[:tag]
+  vcs_name = params[:vcs]
   error 404 if tag.nil?
-  log = Log.new(settings.dynamo, repo)
+  log = Log.new(settings.dynamo, repo, vcs_name)
   error 404 unless log.exists(tag)
   haml :item, layout: :layout, locals: merged(
     title: tag,
@@ -250,7 +257,8 @@ end
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = repo_name(params[:name])
-  Log.new(settings.dynamo, repo).delete(params[:time].to_i, params[:tag])
+  vcs_name = params[:vcs]
+  Log.new(settings.dynamo, repo, vcs_name).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
 
@@ -258,8 +266,9 @@ get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
   name = repo_name(params[:name])
+  vcs_name = params[:vcs]
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
-    storage(name).load, ['project', "'#{name}'"]
+    storage(name, vcs_name).load, ['project', "'#{name}'"]
   ).to_s
 end
 
@@ -379,7 +388,7 @@ def merged(hash)
   out
 end
 
-def storage(repo)
+def storage(repo, vcs_name)
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(
@@ -397,7 +406,7 @@ def storage(repo)
                     settings.config['s3']['key'],
                     settings.config['s3']['secret']
                   ),
-                  Log.new(settings.dynamo, repo)
+                  Log.new(settings.dynamo, repo, vcs_name)
                 )
               end,
               VERSION

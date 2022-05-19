@@ -59,7 +59,7 @@ class CredentialsTest < Test::Unit::TestCase
     github = Octokit::Client.new(
       access_token: cfg['github']['token']
     )
-    tickets = GithubTickets.new(
+    tickets = Tickets.new(
       'yegor256/0pdd', github, nil
     )
     tickets.close(
