@@ -22,12 +22,15 @@ require 'nokogiri'
 require 'tempfile'
 
 class FakeRepo
-  def lock
-    Tempfile.new('0pdd-lock')
+  attr_reader :name, :config
+
+  def initialize(options = {})
+    @name = options[:name] || 'GITHUB'
+    @config = options[:config] || {}
   end
 
-  def config
-    {}
+  def lock
+    Tempfile.new('0pdd-lock')
   end
 
   def xml

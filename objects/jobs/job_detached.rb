@@ -24,8 +24,8 @@ require 'fileutils'
 # One job.
 #
 class JobDetached
-  def initialize(repo, job)
-    @repo = repo
+  def initialize(vcs, job)
+    @vcs = vcs
     @job = job
   end
 
@@ -40,7 +40,7 @@ class JobDetached
   private
 
   def exclusive
-    lock = @repo.lock
+    lock = @vcs.repo.lock
     FileUtils.mkdir_p(File.dirname(lock))
     f = File.open(lock, File::RDWR | File::CREAT, 0o644)
     f.flock(File::LOCK_EX)

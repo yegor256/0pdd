@@ -19,31 +19,36 @@
 # SOFTWARE.
 
 require 'mail'
-require_relative '../puzzles'
 require_relative '../diff'
+require_relative '../puzzles'
 
 #
 # One job.
 #
 class Job
-  def initialize(repo, storage, tickets)
-    @repo = repo
+  def initialize(vcs, storage, tickets)
+    @vcs = vcs
     @storage = storage
     @tickets = tickets
+    @initial_puzzles = nil
   end
 
   def proceed
-    @repo.push
-    before = @storage.load
-    Puzzles.new(@repo, @storage).deploy(@tickets)
+    @vcs.repo.push
+    @initial_puzzles = @storage.load
+    Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
     return if opts.include?('on-scope')
-    Diff.new(before, @storage.load).notify(@tickets)
+    Diff.new(@initial_puzzles, @storage.load).notify(@tickets)
+  rescue Octokit::ClientError => e
+    # TODO: this is a temporary solution, we should use a logger
+    save(@initial_puzzles) if @initial_puzzles
+    throw e
   end
 
   private
 
   def opts
-    array = @repo.config.dig('alerts', 'suppress')
+    array = @vcs.repo.config.dig('alerts', 'suppress')
     array.nil? || !array.is_a?(Array) ? [] : array
   end
 end

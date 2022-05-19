@@ -32,8 +32,9 @@ class TestJobDetached < Test::Unit::TestCase
     def job.proceed
       # nothing
     end
-    JobDetached.new(
-      FakeRepo.new, job
-    ).proceed
+    require_relative 'fake_repo'
+    vcs = object(repo: nil)
+    vcs.repo = FakeRepo.new
+    JobDetached.new(vcs, job).proceed
   end
 end

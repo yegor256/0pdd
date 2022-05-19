@@ -23,6 +23,7 @@ require 'test/unit'
 require 'tmpdir'
 require_relative 'test__helper'
 require_relative 'fake_repo'
+require_relative 'fake_github'
 require_relative 'fake_tickets'
 require_relative 'fake_storage'
 require_relative '../objects/jobs/job'
@@ -35,8 +36,10 @@ require_relative '../objects/storage/safe_storage'
 class TestJob < Test::Unit::TestCase
   def test_simple_scenario
     Dir.mktmpdir 'test' do |d|
+      repo = FakeRepo.new
+      vcs = FakeGithub.new(repo: repo)
       Job.new(
-        FakeRepo.new,
+        vcs,
         SafeStorage.new(FakeStorage.new(d)),
         FakeTickets.new
       ).proceed

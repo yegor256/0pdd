@@ -326,7 +326,7 @@ post '/hook/github' do
   github = GithubRepo.new(settings.github, json, settings.config)
   return 'Thanks' unless github.is_valid
   unless ENV['RACK_ENV'] == 'test'
-    process_request(json, github)
+    process_request(github)
     puts "GitHub hook from #{github.repo.name}"
   end
   "Thanks #{github.repo.name}"
@@ -379,28 +379,6 @@ def merged(hash)
   out
 end
 
-# @todo #41:30min Make this vcs independent. Move to github vsc object.
-def repo(json)
-  uri = json['repository']['ssh_url'] || json['repository']['url']
-  name = json['repository']['full_name']
-  default_branch = json['repository']['master_branch']
-  head_commit_hash = json['head_commit']['id']
-  begin
-    settings.github.repository(name)['default_branch']
-  rescue Octokit::InvalidRepository => e
-    raise "Repository #{name} is not available: #{e.message}"
-  rescue Octokit::NotFound
-    error 400
-  end
-  GitRepo.new(
-    uri: uri,
-    name: name,
-    id_rsa: @config['id_rsa'],
-    master: default_branch,
-    head_commit_hash: head_commit_hash
-  )
-end
-
 def storage(repo)
   SyncStorage.new(
     UpgradedStorage.new(
@@ -433,27 +411,20 @@ def storage(repo)
   )
 end
 
-def process_request(json, vcs)
-  repo = repo(json)
+def process_request(vcs)
   JobDetached.new(
-    repo,
+    vcs,
     JobCommitErrors.new(
-      name,
-      settings.github,
-      json['head_commit']['id'],
+      vcs,
       JobEmailed.new(
-        name,
-        settings.github,
-        repo,
+        vcs,
         JobRecorded.new(
-          name,
-          settings.github,
+          vcs,
           JobStarred.new(
-            name,
-            settings.github,
+            vcs,
             Job.new(
-              repo,
-              storage(name),
+              vcs,
+              storage(vcs.repo.name, vcs.name),
               SentryTickets.new(
                 EmailedTickets.new(
                   vcs,
