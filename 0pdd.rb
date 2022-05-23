@@ -228,8 +228,8 @@ get '/snapshot' do
     xml = repo.xml
     xml.xpath('//processing-instruction("xml-stylesheet")').remove
     xml.to_s
-  rescue StandardError
-    error 400, "Could not get snapshot for #{name}"
+  rescue Exec::Error => e
+    error 400, "Could not get snapshot for #{name}: #{e.message}"
   end
 end
 
