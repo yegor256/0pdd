@@ -429,7 +429,7 @@ def merged(hash)
   out
 end
 
-# @todo #41:30min Make this vcs independent. Move to github vsc object.
+# @todo #41:30min Make this vcs independent. Move this logic to github vsc object.
 def repo(json)
   uri = json['repository']['ssh_url'] || json['repository']['url']
   name = json['repository']['full_name']
