@@ -228,8 +228,8 @@ get '/snapshot' do
     xml = repo.xml
     xml.xpath('//processing-instruction("xml-stylesheet")').remove
     xml.to_s
-  rescue Exec::Error
-    error 400, "Could not get snapshot for #{name}"
+  rescue Exec::Error => e
+    error 400, "Could not get snapshot for #{name}: #{e.message}"
   end
 end
 
@@ -429,7 +429,7 @@ def merged(hash)
   out
 end
 
-# @todo #41:30min Make this vcs independent. Move to github vsc object.
+# @todo #41:30min Make this vcs independent. Move this logic to github vsc object.
 def repo(json)
   uri = json['repository']['ssh_url'] || json['repository']['url']
   name = json['repository']['full_name']
