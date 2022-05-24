@@ -31,14 +31,13 @@ class Log
   def initialize(dynamo, repo)
     @dynamo = dynamo
     @repo = repo
-    @id = Base64.encode64(@repo).gsub(%r{[\s=\/]+}, '')
   end
 
   def put(tag, text)
     @dynamo.put_item(
       table_name: '0pdd-events',
       item: {
-        'repo' => @id,
+        'repo' => @repo,
         'time' => Time.now.to_i,
         'tag' => tag,
         'text' => "#{text} /#{VERSION}"
@@ -53,7 +52,7 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @id,
+        ':r' => @repo,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -67,7 +66,7 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @id,
+        ':r' => @repo,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -78,7 +77,7 @@ class Log
     @dynamo.delete_item(
       table_name: '0pdd-events',
       key: {
-        'repo' => @id,
+        'repo' => @repo,
         'time' => time
       },
       expression_attribute_values: {
@@ -98,7 +97,7 @@ class Log
         '#time' => 'time'
       },
       expression_attribute_values: {
-        ':r' => @id,
+        ':r' => @repo,
         ':t' => since
       },
       key_condition_expression: 'repo=:r and #time<:t'
