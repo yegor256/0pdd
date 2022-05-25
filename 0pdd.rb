@@ -430,22 +430,23 @@ end
 
 def process_request(json)
   repo = repo(json)
+  github = settings.github
   JobDetached.new(
     repo,
     JobCommitErrors.new(
       name,
-      settings.github,
+      github,
       json['head_commit']['id'],
       JobEmailed.new(
         name,
-        settings.github,
+        github,
         repo,
         JobRecorded.new(
           name,
-          settings.github,
+          github,
           JobStarred.new(
             name,
-            settings.github,
+            github,
             Job.new(
               repo,
               storage(name),
@@ -455,25 +456,16 @@ def process_request(json)
                   CommitTickets.new(
                     name,
                     repo,
-                    settings.github,
+                    github,
                     json['head_commit']['id'],
                     GithubTaggedTickets.new(
                       name,
-                      settings.github,
+                      github,
                       repo,
                       LoggedTickets.new(
                         Log.new(settings.dynamo, name),
                         name,
-                        MilestoneTickets.new(
-                          name,
-                          repo,
-                          settings.github,
-                          GithubTickets.new(
-                            name,
-                            settings.github,
-                            repo
-                          )
-                        )
+                        MilestoneTickets.new(name, repo, github, GithubTickets.new(name, github, repo))
                       )
                     )
                   )

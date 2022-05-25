@@ -19,13 +19,12 @@
 # SOFTWARE.
 
 require 'octokit'
-require_relative 'base'
 require_relative '../git_repo'
 
 #
 # Github VCS
 #
-class GithubRepo < AbstractVCS
+class GithubRepo
   attr_reader :is_valid, :repo, :name
 
   def initialize(client, json, config = {})
