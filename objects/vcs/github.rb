@@ -53,10 +53,11 @@ class GithubRepo
     }
   end
 
+  # @todo #312:30min Currently, if 0pdd fails to close an issue it causes all other downstream execution to be skipped
+  # therefore leaving the job in a non deterministic state. Catch and track the error here to
+  # prevent this from happening. Also applies to `add_comment(...)`
   def close_issue(issue_id)
     @client.close_issue(@repo.name, issue_id)
-  rescue Octokit::NotFound => e
-    puts "The issue most probably is not found, can't close: #{e.message}"
   end
 
   def create_issue(data)
@@ -87,8 +88,6 @@ class GithubRepo
 
   def add_comment(issue_id, comment)
     @client.add_comment(@repo.name, issue_id, comment)
-  rescue Octokit::NotFound => e
-    puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 
   def create_commit_comment(sha, comment)
