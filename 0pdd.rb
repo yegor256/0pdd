@@ -105,7 +105,7 @@ configure do
     end
   end
   set :server_settings, timeout: 25
-  set :github, GithubClient.new(config)
+  set :github, Github.new(config).client
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -229,8 +229,8 @@ get '/snapshot' do
     xml = repo.xml
     xml.xpath('//processing-instruction("xml-stylesheet")').remove
     xml.to_s
-  rescue StandardError
-    error 400, "Could not get snapshot for #{name}"
+  rescue Exec::Error => e
+    error 400, "Could not get snapshot for #{name}: #{e.message}"
   end
 end
 
@@ -379,7 +379,7 @@ def merged(hash)
   out
 end
 
-# @todo #41:30min Make this vcs independent. Move to github vsc object.
+# @todo #41:30min Make this vcs independent. Move this logic to github vsc object.
 def repo(json)
   uri = json['repository']['ssh_url'] || json['repository']['url']
   name = json['repository']['full_name']
@@ -435,22 +435,23 @@ end
 
 def process_request(json, vcs)
   repo = repo(json)
+  github = settings.github
   JobDetached.new(
     repo,
     JobCommitErrors.new(
       name,
-      settings.github,
+      github,
       json['head_commit']['id'],
       JobEmailed.new(
         name,
-        settings.github,
+        github,
         repo,
         JobRecorded.new(
           name,
-          settings.github,
+          github,
           JobStarred.new(
             name,
-            settings.github,
+            github,
             Job.new(
               repo,
               storage(name),
