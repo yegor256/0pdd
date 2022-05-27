@@ -106,7 +106,9 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_snapshots_unavailable_repo
-    get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
+    assert_nothing_raised(Exec::Error) do
+      get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
+    end
     assert(last_response.status == 400)
   end
 

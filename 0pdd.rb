@@ -105,7 +105,7 @@ configure do
     end
   end
   set :server_settings, timeout: 25
-  set :github, GithubClient.new(config)
+  set :github, Github.new(config).client
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -229,8 +229,8 @@ get '/snapshot' do
     xml = repo.xml
     xml.xpath('//processing-instruction("xml-stylesheet")').remove
     xml.to_s
-  rescue StandardError
-    error 400, "Could not get snapshot for #{name}"
+  rescue Exec::Error => e
+    error 400, "Could not get snapshot for #{name}: #{e.message}"
   end
 end
 

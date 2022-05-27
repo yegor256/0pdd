@@ -52,7 +52,7 @@ class MilestoneTickets
 `#{parent[:milestone][:title]}` from issue ##{num}."
             )
           end
-        rescue StandardError => e
+        rescue Octokit::Error => e
           @vcs.add_comment(
             submitted[:number],
             "For some reason I wasn't able to set milestone \

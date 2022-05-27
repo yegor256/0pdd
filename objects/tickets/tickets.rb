@@ -35,6 +35,8 @@ class Tickets
       issue,
       "@#{@vcs.issue(issue)[:author][:username]} #{message}"
     )
+  rescue Octokit::NotFound => e
+    puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 
   def submit(puzzle)
