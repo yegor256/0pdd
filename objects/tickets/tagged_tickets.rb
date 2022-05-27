@@ -44,7 +44,7 @@ class TaggedTickets
       begin
         needed.each { |t| @vcs.add_label(t, 'F74219') }
         @vcs.add_labels_to_an_issue(issue_id, tags)
-      rescue Octokit::NotFound => e
+      rescue Octokit::Error => e
         @vcs.add_comment(
           issue_id,
           "I can't create #{@vcs.name} labels `#{needed.join('`, `')}`. \
