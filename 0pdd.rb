@@ -109,7 +109,7 @@ configure do
     end
   end
   set :server_settings, timeout: 25
-  set :github, GithubClient.new(config)
+  set :github, Github.new(config).client
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -220,8 +220,9 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  name = repo_name(params[:name])
+  vcs = params[:vcs]
   master = params[:branch]
+  name = repo_name(params[:name])
   uri = "git@github.com:#{name}.git"
   begin
     repo = GitRepo.new(
@@ -235,8 +236,8 @@ get '/snapshot' do
     xml = repo.xml
     xml.xpath('//processing-instruction("xml-stylesheet")').remove
     xml.to_s
-  rescue StandardError
-    error 400, "Could not get snapshot for #{name}"
+  rescue Exec::Error => e
+    error 400, "Could not get snapshot for #{name}: #{e.message}"
   end
 end
 
@@ -389,6 +390,7 @@ def merged(hash)
 end
 
 def storage(repo, vcs_name)
+  file_name = "#{vcs_name}-#{repo}"
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(
@@ -400,7 +402,7 @@ def storage(repo, vcs_name)
               else
                 LoggedStorage.new(
                   S3.new(
-                    "#{repo}.xml",
+                    "#{file_name}.xml",
                     settings.config['s3']['bucket'],
                     settings.config['s3']['region'],
                     settings.config['s3']['key'],
@@ -411,7 +413,7 @@ def storage(repo, vcs_name)
               end,
               VERSION
             ),
-            File.join('/tmp/0pdd-xml-cache', repo)
+            File.join('/tmp/0pdd-xml-cache', file_name)
           )
         )
       ),
@@ -443,7 +445,7 @@ def process_request(vcs)
                       vcs,
                       LoggedTickets.new(
                         vcs,
-                        Log.new(settings.dynamo, vcs.repo.name),
+                        Log.new(settings.dynamo, vcs.repo.name, vcs.name),
                         MilestoneTickets.new(
                           vcs,
                           Tickets.new(vcs)

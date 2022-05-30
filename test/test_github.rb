@@ -28,7 +28,7 @@ require_relative '../objects/clients/github'
 # License:: MIT
 class TestGithub < Test::Unit::TestCase
   def test_configures_everything_right
-    github = GithubClient.new
+    github = Github.new.client
     assert_equal('0pdd', github.user('0pdd')[:login])
   end
 end

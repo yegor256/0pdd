@@ -28,22 +28,21 @@ require_relative '../version'
 # Log.
 #
 class Log
-  def initialize(dynamo, repo, vcs_name = 'github')
+  def initialize(dynamo, repo_name, vcs_name = 'github')
     @dynamo = dynamo
-    @repo = repo
+    # @todo #312:30min Be sure to handle the use case where projects from
+    #  different vcs have the same <user/repo_name>. This will cause a conflict.
     @vcs_name = (vcs_name || 'github').downcase
-    @id = @vcs_name == 'github' ? @repo : Base64.encode64(@repo + @vcs_name).gsub(%r{[\s=\/]+}, '')
+    @repo_name = @vcs_name == 'github' ? repo_name : Base64.encode64(repo_name + @vcs_name).gsub(%r{[\s=\/]+}, '')
 
-    raise 'You need to specify your cloud VCS' unless [
-      'github'
-    ].include?(@vcs_name)
+    raise 'You need to specify your cloud VCS' unless ['github'].include?(@vcs_name)
   end
 
   def put(tag, text)
     @dynamo.put_item(
       table_name: '0pdd-events',
       item: {
-        'repo' => @id,
+        'repo' => @repo_name,
         'vcs' => @vcs_name,
         'time' => Time.now.to_i,
         'tag' => tag,
@@ -59,7 +58,7 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @id,
+        ':r' => @repo_name,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -73,7 +72,7 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @id,
+        ':r' => @repo_name,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -84,7 +83,7 @@ class Log
     @dynamo.delete_item(
       table_name: '0pdd-events',
       key: {
-        'repo' => @id,
+        'repo' => @repo_name,
         'time' => time
       },
       expression_attribute_values: {
@@ -104,7 +103,7 @@ class Log
         '#time' => 'time'
       },
       expression_attribute_values: {
-        ':r' => @id,
+        ':r' => @repo_name,
         ':t' => since
       },
       key_condition_expression: 'repo=:r and #time<:t'
