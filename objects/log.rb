@@ -30,6 +30,8 @@ require_relative '../version'
 class Log
   def initialize(dynamo, repo)
     @dynamo = dynamo
+    # @todo #312:30min Be sure to handle the use case where projects from
+    #  different vcs have the same <user/repo_name>. This will cause a conflict.
     @repo = repo
   end
 

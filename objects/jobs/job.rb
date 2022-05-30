@@ -30,19 +30,14 @@ class Job
     @vcs = vcs
     @storage = storage
     @tickets = tickets
-    @initial_puzzles = nil
   end
 
   def proceed
     @vcs.repo.push
-    @initial_puzzles = @storage.load
+    before = @storage.load
     Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
     return if opts.include?('on-scope')
-    Diff.new(@initial_puzzles, @storage.load).notify(@tickets)
-  rescue Octokit::ClientError => e
-    # TODO: this is a temporary solution, we should use a logger
-    save(@initial_puzzles) if @initial_puzzles
-    throw e
+    Diff.new(before, @storage.load).notify(@tickets)
   end
 
   private

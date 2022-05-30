@@ -380,6 +380,8 @@ def merged(hash)
 end
 
 def storage(repo)
+  # @todo #312:30min Handle the use case where projects from different vcs have
+  #  the same <user/repo_name>. This will cause a conflict.
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(
@@ -424,7 +426,7 @@ def process_request(vcs)
             vcs,
             Job.new(
               vcs,
-              storage(vcs.repo.name, vcs.name),
+              storage(vcs.repo.name),
               SentryTickets.new(
                 EmailedTickets.new(
                   vcs,
