@@ -186,14 +186,14 @@ get '/invitation' do
 end
 
 get '/p' do
-  repo = repo_name(params[:name])
-  vcs_name = params[:vcs]
-  xml = storage(repo, vcs_name).load
+  vcs_name = params.fetch :vcs, 'github'
+  name = repo_name(params[:name])
+  xml = storage(name, vcs_name).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
     [
       'version', "'#{VERSION}'",
-      'project', "'#{repo}'",
+      'project', "'#{name}'",
       'length', xml.to_s.length.to_s
     ]
   ).to_s
@@ -204,12 +204,13 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  storage(repo_name(params[:name]), params[:vcs]).load.to_s
+  vcs_name = params.fetch :vcs, 'github'
+  storage(repo_name(params[:name]), vcs_name).load.to_s
 end
 
 get '/log' do
   repo = repo_name(params[:name])
-  vcs_name = params[:vcs]
+  vcs_name = params.fetch :vcs, 'github'
   haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
@@ -220,7 +221,6 @@ end
 
 get '/snapshot' do
   content_type 'text/xml'
-  vcs = params[:vcs]
   master = params[:branch]
   name = repo_name(params[:name])
   uri = "git@github.com:#{name}.git"
@@ -244,7 +244,7 @@ end
 get '/log-item' do
   repo = repo_name(params[:repo])
   tag = params[:tag]
-  vcs_name = params[:vcs]
+  vcs_name = params.fetch :vcs, 'github'
   error 404 if tag.nil?
   log = Log.new(settings.dynamo, repo, vcs_name)
   error 404 unless log.exists(tag)
@@ -258,7 +258,7 @@ end
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = repo_name(params[:name])
-  vcs_name = params[:vcs]
+  vcs_name = params.fetch :vcs, 'github'
   Log.new(settings.dynamo, repo, vcs_name).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
@@ -267,7 +267,7 @@ get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
   name = repo_name(params[:name])
-  vcs_name = params[:vcs]
+  vcs_name = params.fetch :vcs, 'github'
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
     storage(name, vcs_name).load, ['project', "'#{name}'"]
   ).to_s

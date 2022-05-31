@@ -28,22 +28,22 @@ require_relative '../version'
 # Log.
 #
 class Log
-  def initialize(dynamo, repo_name, vcs_name = 'github')
+  def initialize(dynamo, repo, vcs = 'github')
     @dynamo = dynamo
     # @todo #312:30min Be sure to handle the use case where projects from
     #  different vcs have the same <user/repo_name>. This will cause a conflict.
-    @vcs_name = (vcs_name || 'github').downcase
-    @repo_name = @vcs_name == 'github' ? repo_name : Base64.encode64(repo_name + @vcs_name).gsub(%r{[\s=\/]+}, '')
+    @vcs = (vcs || 'github').downcase
+    @repo = @vcs == 'github' ? repo : Base64.encode64(repo + @vcs).gsub(%r{[\s=\/]+}, '')
 
-    raise 'You need to specify your cloud VCS' unless ['github'].include?(@vcs_name)
+    raise 'You need to specify your cloud VCS' unless ['github'].include?(@vcs)
   end
 
   def put(tag, text)
     @dynamo.put_item(
       table_name: '0pdd-events',
       item: {
-        'repo' => @repo_name,
-        'vcs' => @vcs_name,
+        'repo' => @repo,
+        'vcs' => @vcs,
         'time' => Time.now.to_i,
         'tag' => tag,
         'text' => "#{text} /#{VERSION}"
@@ -58,7 +58,7 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @repo_name,
+        ':r' => @repo,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -72,7 +72,7 @@ class Log
       select: 'ALL_ATTRIBUTES',
       limit: 1,
       expression_attribute_values: {
-        ':r' => @repo_name,
+        ':r' => @repo,
         ':t' => tag
       },
       key_condition_expression: 'repo=:r and tag=:t'
@@ -83,7 +83,7 @@ class Log
     @dynamo.delete_item(
       table_name: '0pdd-events',
       key: {
-        'repo' => @repo_name,
+        'repo' => @repo,
         'time' => time
       },
       expression_attribute_values: {
@@ -103,7 +103,7 @@ class Log
         '#time' => 'time'
       },
       expression_attribute_values: {
-        ':r' => @repo_name,
+        ':r' => @repo,
         ':t' => since
       },
       key_condition_expression: 'repo=:r and #time<:t'
