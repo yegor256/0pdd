@@ -35,7 +35,7 @@ class Tickets
       issue,
       "@#{@vcs.issue(issue)[:author][:username]} #{message}"
     )
-  rescue Octokit::NotFound => e
+  rescue Octokit::NotFound, Gitlab::NotFound => e
     puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 
@@ -106,7 +106,7 @@ source code, that's why I closed this issue." +
     sha = @vcs.repo.head_commit_hash || vcs.repo.master
     url = @vcs.puzzle_link_for_commit(sha, file, start, stop)
     template = File.read(
-      File.join(File.dirname(__FILE__), '../templates/github_tickets_body.haml')
+      File.join(File.dirname(__FILE__), "../templates/#{@vcs.name.downcase}_tickets_body.haml")
     )
     Haml::Engine.new(template).render(
       Object.new, url: url, puzzle: puzzle

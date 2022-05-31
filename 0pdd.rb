@@ -38,7 +38,9 @@ require_relative 'objects/dynamo'
 require_relative 'objects/git_repo'
 require_relative 'objects/user_error'
 require_relative 'objects/vcs/github'
+require_relative 'objects/vcs/gitlab'
 require_relative 'objects/clients/github'
+require_relative 'objects/clients/gitlab'
 require_relative 'objects/jobs/job'
 require_relative 'objects/jobs/job_detached'
 require_relative 'objects/jobs/job_emailed'
@@ -70,6 +72,11 @@ configure do
     {
       'testing' => true,
       'github' => {
+        'token' => '--the-token--',
+        'client_id' => '?',
+        'client_secret' => '?'
+      },
+      'gitlab' => {
         'token' => '--the-token--',
         'client_id' => '?',
         'client_secret' => '?'
@@ -110,6 +117,7 @@ configure do
   end
   set :server_settings, timeout: 25
   set :github, Github.new(config).client
+  set :gitlab, GitlabClient.new(config).client
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
@@ -186,9 +194,9 @@ get '/invitation' do
 end
 
 get '/p' do
-  vcs_name = params.fetch :vcs, 'github'
+  vcs = vcs_name(params[:vcs])
   name = repo_name(params[:name])
-  xml = storage(name, vcs_name).load
+  xml = storage(name, vcs).load
   Nokogiri::XSLT(File.read('assets/xsl/puzzles.xsl')).transform(
     xml,
     [
@@ -204,17 +212,17 @@ end
 #  them compressed in the browser.
 get '/xml' do
   content_type 'text/xml'
-  vcs_name = params.fetch :vcs, 'github'
-  storage(repo_name(params[:name]), vcs_name).load.to_s
+  vcs = vcs_name(params[:vcs])
+  storage(repo_name(params[:name]), vcs).load.to_s
 end
 
 get '/log' do
+  vcs = vcs_name(params[:vcs])
   repo = repo_name(params[:name])
-  vcs_name = params.fetch :vcs, 'github'
   haml :log, layout: :layout, locals: merged(
     title: repo,
     repo: repo,
-    log: Log.new(settings.dynamo, repo, vcs_name),
+    log: Log.new(settings.dynamo, repo, vcs),
     since: params[:since] ? params[:since].to_i : Time.now.to_i + 1
   )
 end
@@ -222,8 +230,10 @@ end
 get '/snapshot' do
   content_type 'text/xml'
   master = params[:branch]
+  vcs = vcs_name(params[:vcs])
   name = repo_name(params[:name])
   uri = "git@github.com:#{name}.git"
+  uri = "git@gitlab.com:#{name}.git" if vcs == 'gitlab'
   begin
     repo = GitRepo.new(
       uri: uri,
@@ -242,11 +252,11 @@ get '/snapshot' do
 end
 
 get '/log-item' do
+  vcs = vcs_name(params[:vcs])
   repo = repo_name(params[:repo])
   tag = params[:tag]
-  vcs_name = params.fetch :vcs, 'github'
   error 404 if tag.nil?
-  log = Log.new(settings.dynamo, repo, vcs_name)
+  log = Log.new(settings.dynamo, repo, vcs)
   error 404 unless log.exists(tag)
   haml :item, layout: :layout, locals: merged(
     title: tag,
@@ -258,8 +268,8 @@ end
 get '/log-delete' do
   redirect '/' if @locals[:user].nil? || @locals[:user][:login] != 'yegor256'
   repo = repo_name(params[:name])
-  vcs_name = params.fetch :vcs, 'github'
-  Log.new(settings.dynamo, repo, vcs_name).delete(params[:time].to_i, params[:tag])
+  vcs = vcs_name(params[:vcs])
+  Log.new(settings.dynamo, repo, vcs).delete(params[:time].to_i, params[:tag])
   redirect "/log?name=#{repo}"
 end
 
@@ -267,9 +277,9 @@ get '/svg' do
   response.headers['Cache-Control'] = 'no-cache, private'
   content_type 'image/svg+xml'
   name = repo_name(params[:name])
-  vcs_name = params.fetch :vcs, 'github'
+  vcs = vcs_name(params[:vcs])
   Nokogiri::XSLT(File.read('assets/xsl/svg.xsl')).transform(
-    storage(name, vcs_name).load, ['project', "'#{name}'"]
+    storage(name, vcs).load, ['project', "'#{name}'"]
   ).to_s
 end
 
@@ -342,6 +352,40 @@ post '/hook/github' do
   "Thanks #{github.repo.name}"
 end
 
+get '/hook/gitlab' do
+  'This URL expects POST requests from Gitlab
+  WebHook: https://docs.gitlab.com/ee/user/project/integrations/webhooks.html'
+end
+
+post '/hook/gitlab' do
+  is_from_gitlab = request.env['HTTP_USER_AGENT'].start_with?('GitLab')
+  is_push_event = request.env['HTTP_X_GITLAB_EVENT'] == 'Push Hook'
+  unless is_from_gitlab && is_push_event
+    return [
+      400,
+      'Please, only register push events from Gitlab webhook'
+    ]
+  end
+  request.body.rewind
+  json = JSON.parse(
+    case request.content_type
+    when 'application/x-www-form-urlencoded'
+      params[:payload]
+    when 'application/json'
+      request.body.read
+    else
+      raise "Invalid content-type: \"#{request.content_type}\""
+    end
+  )
+  gitlab = GitlabRepo.new(settings.gitlab, json, settings.config)
+  return 'Thanks' unless gitlab.is_valid
+  unless ENV['RACK_ENV'] == 'test'
+    process_request(gitlab)
+    puts "Gitlab hook from #{gitlab.repo.name}"
+  end
+  "Thanks #{gitlab.repo.name}"
+end
+
 get '/css/*.css' do
   content_type 'text/css', charset: 'utf-8'
   file = params[:splat].first
@@ -383,14 +427,19 @@ def repo_name(name)
   name.strip
 end
 
+def vcs_name(name)
+  return 'github' if name.nil?
+  name.strip.downcase
+end
+
 def merged(hash)
   out = @locals.merge(hash)
   out[:local_assigns] = out
   out
 end
 
-def storage(repo, vcs_name)
-  file_name = "#{vcs_name}-#{repo}"
+def storage(repo, vcs)
+  file_name = "#{vcs}-#{repo}"
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(
@@ -408,7 +457,7 @@ def storage(repo, vcs_name)
                     settings.config['s3']['key'],
                     settings.config['s3']['secret']
                   ),
-                  Log.new(settings.dynamo, repo, vcs_name)
+                  Log.new(settings.dynamo, repo, vcs)
                 )
               end,
               VERSION
