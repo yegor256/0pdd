@@ -31,7 +31,7 @@ gem 'mocha', '1.11.2', require: false
 gem 'nokogiri', '1.13.6'
 gem 'octokit', '4.20.0'
 gem 'pdd', '0.20.6'
-gem 'rack', '2.2.3'
+gem 'rack', '2.2.3.1'
 gem 'rack-test', '1.1.0'
 gem 'rake', '13.0.3', require: false
 gem 'rubocop', '0.69.0', require: false
