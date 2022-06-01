@@ -39,8 +39,8 @@ gem 'rubocop-rspec', '1.33.0', require: false
 gem 'ruby-fann'
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.1'
-gem 'sinatra', '2.1.0'
-gem 'sinatra-contrib', '2.1.0'
+gem 'sinatra', '2.2.0'
+gem 'sinatra-contrib', '2.2.0'
 gem 'sprockets', '4.0.2'
 gem 'test-unit', '3.4.0', require: false
 gem 'xcop', '0.6.2'
