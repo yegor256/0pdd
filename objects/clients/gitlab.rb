@@ -47,7 +47,5 @@ class GitlabClient
       puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
     end.enable
     client
-  rescue Gitlab::Error::MissingCredentials
-    puts 'Issue with credentials'
   end
 end
