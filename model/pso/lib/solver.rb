@@ -12,7 +12,7 @@ module Pso
       din: 5,
       density: 50,
       f: Pso::Rastrigin,
-      center: ZeroVector[0, 0, 0, 0, 0],
+      center: nil,
       radius: 5.12,
       method: :min_by,
       **options
@@ -59,10 +59,12 @@ module Pso
       end
     end
 
-    def solve(precision: 200_000, threads: 1)
+    def solve(precision: 100, threads: 1)
+      n_iterations = 0
       Array.new(threads).map do
         Thread.new do
           ((precision / @swarm.size) / threads).times do |_interation_number|
+            n_iterations += 1
             (0...@density).each do |index|
               perfect = perfect_particle
               puts @f.f(perfect, **@options)
@@ -78,7 +80,7 @@ module Pso
       end.each(&:join)
 
       perfect = perfect_particle
-      [@f.f(perfect, **@options), perfect]
+      [@f.f(perfect, **@options), perfect, n_iterations]
     end
 
     private
