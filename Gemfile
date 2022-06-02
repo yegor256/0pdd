@@ -20,12 +20,14 @@
 source 'https://rubygems.org'
 
 gem 'activesupport', '6.1.5'
+gem 'atlassian-jwt', '~> 0.2.1'
 gem 'aws-sdk-dynamodb', '1.59.0'
 gem 'aws-sdk-s3', '1.90.0'
 gem 'codecov', '0.5.1'
 gem 'gitlab', '4.17.0'
 gem 'glogin', '0.7.0'
 gem 'haml', '5.2.1'
+gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
 gem 'mocha', '1.11.2', require: false
 gem 'nokogiri', '1.13.6'
