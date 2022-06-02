@@ -1,6 +1,7 @@
-# require_relative './pso/solver'
 require 'json'
+require 'active_support/core_ext/hash'
 require_relative './pso/pso.rb'
+require_relative '../objects/storage/s3.rb'
 
 def argsort(arr)
     arr.map.with_index.sort.map(&:last)
@@ -101,19 +102,72 @@ end
 # y = [[1, 2, 3]]
 # data = [[[0.1, 0.3, 0.8, 1, -0.2, -0.6], [1, -0.3, 0.5, 0, 0.2, -0.6], [0.3, 0.3, -0.9, -0.5, -1, 0.7]]]
 
-y_path = File.join(File.dirname(__FILE__), 'data/Y_example.json')
-X_path = File.join(File.dirname(__FILE__), 'data/X_example.json')
-y = JSON.parse(File.read(y_path))
-X = JSON.parse(File.read(X_path))
 
-clf = Predictor.new(layers: [{ name: 'w1', shape: [10, 1] }, { name: 'w2', shape: [1, 1] }])
-solver = Pso::Solver.new(f: clf, center: ZeroVector.zero(y[0].size), data: X, true_order: y)
+class Model
+    def initialize(config, repo)
+        @repo = repo
+        @config = config
+        @storage = S3.new(
+            "#{@repo}.weights",
+            @config['s3']['weights'],
+            @config['s3']['region'],
+            @config['s3']['key'],
+            @config['s3']['secret']
+        )
+    end
 
-best = solver.solve
+    def predict(puzzles)
+        weights = load_weights # load weights for repo from s3
+        clf = Predictor.new(layers: [{ name: 'w1', shape: [10, 1] }, { name: 'w2', shape: [1, 1] }])
 
-puts best
+        unless weights.nil?
+            # get x and y data for puzzles
+            x = [[0.1, 0.3, 0.8, 1, -0.2, -0.6], [1, -0.3, 0.5, 0, 0.2, -0.6], [0.3, 0.3, -0.9, -0.5, -1, 0.7]]
+            y = [1, 3, 2]
+            ranks = clf.predict(weights, x, y, debug=true)
+            return ranks # model rank of puzzles if weights are loaded
+        else
+            train(clf, puzzles) # find weights for repo backlog of puzzles
+            return naive_rank(puzzles) # naive rank of puzzles in each repo
+        end
+    end
 
-X_test = [[0.1, 0.3, 0.8, 1, -0.2, -0.6], [1, -0.3, 0.5, 0, 0.2, -0.6], [0.3, 0.3, -0.9, -0.5, -1, 0.7]]
-y_test = [1, 3, 2]
-clf.predict(best[1], X_test, y_test, debug=true)
+    private
 
+    def load_weights
+        @storage.load
+    end
+
+    def save_weights(weights)
+        @storage.save(weights)
+    end
+
+    def train(clf, puzzles)
+        Thread.new {
+            features_path = File.join(File.dirname(__FILE__), 'data/X_example.json')
+            x = JSON.parse(File.read(features_path))
+
+            labels_path = File.join(File.dirname(__FILE__), 'data/Y_example.json')
+            y = JSON.parse(File.read(labels_path))
+
+            solver = Pso::Solver.new(f: clf, center: ZeroVector.zero(y[0].size), data: x, true_order: y)
+            _rank, weights, _n_iterations = solver.solve
+            save_weights(weights)
+        }
+    end
+
+    def naive_rank(puzzles)
+        estimates = puzzles.map { |puzzle| puzzle['estimate'].to_i || Infinity }
+        ranks = argsort(estimates)
+        ranks
+    end
+end
+
+ranks = Model.new({
+    's3' => {
+        'region' => '?',
+        'bucket' => '?',
+        'key' => '?',
+        'secret' => '?'
+    },   
+}, 'repo1').predict(puzzles)
