@@ -81,6 +81,11 @@ configure do
         'client_id' => '?',
         'client_secret' => '?'
       },
+      'jira' => {
+        'token' => '--the-token--',
+        'client_id' => '?',
+        'client_secret' => '?'
+      },
       'sentry' => '',
       's3' => {
         'region' => '?',
@@ -118,6 +123,7 @@ configure do
   set :server_settings, timeout: 25
   set :github, Github.new(config).client
   set :gitlab, GitlabClient.new(config).client
+  set :jira, JiraClient.new(config).client
   set :dynamo, Dynamo.new(config).aws
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
