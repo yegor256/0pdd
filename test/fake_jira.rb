@@ -19,10 +19,96 @@
 # SOFTWARE.
 
 class FakeJira
-  def test_configuration_right
-    jira = JiraClient.new.client
-    assert_raises JIRA::Error::MissingCredentials do
-      jira.user('0pdd')['username']
-    end
+  attr_reader :name, :repo
+
+  def initialize(options = {})
+    @name = 'JIRA'
+    @repositories = options[:repositories] || []
+    @repo = options[:repo]
+  end
+
+  def repositories(user = nil, _options = {})
+    @repositories unless user
+  end
+
+  def issue(_)
+    {
+      state: 'open',
+      author: {
+        id: '1',
+        username: 'yegor256'
+      },
+      milestone: {
+        number: 1,
+        title: 'v0.1'
+      }
+    }
+  end
+
+  def close_issue(_); end
+
+  def create_issue(_)
+    {
+      number: 1,
+      html_url: 'url'
+    }
+  end
+
+  def update_issue(_, _); end
+
+  def labels
+    [
+      {
+        id: ``,
+        name: 'Dev',
+        color: '#ff00ff'
+      }
+    ]
+  end
+
+  def add_label(_, _); end
+
+  def add_labels_to_an_issue(_, _); end
+
+  def add_comment(_, _); end
+
+  def create_commit_comment(_, _)
+    {
+      html_url: 'url'
+    }
+  end
+
+  def list_commits
+    [
+      {
+        sha: '123456',
+        html_url: 'url'
+      }
+    ]
+  end
+
+  def user(_)
+    {
+      name: 'yegor256',
+      email: 'yegor256@example.com'
+    }
+  end
+
+  def star; end
+
+  def repository(_ = nil)
+    {
+      private: false
+    }
+  rescue JIRA::Error::NotFound => e
+    raise "Repository #{name} is not available: #{e.message}"
+  end
+
+  private
+
+  def git_repo
+    # Output:
+    # repo -> GitRepo
+    raise NotImplementedError, 'You must implement this method'
   end
 end
