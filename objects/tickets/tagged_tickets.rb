@@ -44,7 +44,7 @@ class TaggedTickets
       begin
         needed.each { |t| @vcs.add_label(t, 'F74219') }
         @vcs.add_labels_to_an_issue(issue_id, tags)
-      rescue Octokit::Error, Gitlab::Error::Error => e
+      rescue Octokit::Error, Gitlab::Error::Error, JIRA::Error::Error => e
         @vcs.add_comment(
           issue_id,
           "I can't create #{@vcs.name} labels `#{needed.join('`, `')}`. \
@@ -53,7 +53,7 @@ Please, make sure @0pdd user is in the \
 [list of collaborators](#{@vcs.collaborators_link}):\
 \n\n```#{e.class.name}\n#{e.message}\n#{e.backtrace.join("\n")}\n```"
         )
-      rescue Octokit::NotFound, Gitlab::Error::NotFound => e
+      rescue Octokit::NotFound, Gitlab::Error::NotFound, JIRA::Error::NotFound => e
         @vcs.add_comment(
           issue_id,
           "For some reason I wasn't able to add #{@vcs.name} labels \
