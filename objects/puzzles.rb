@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 require 'nokogiri'
+require_relative '../model/linear'
 
 #
 # Puzzles in XML/S3
@@ -66,16 +67,8 @@ class Puzzles
   end
 
   def rank(puzzles)
-    doc = Nokogiri.XML('<puzzles></puzzles>')
-    puzzles.each { |puzzle| doc.root << puzzle }
-    file = Tempfile.new('puzzles')
-    file.write(doc.to_xml)
-    file.close
-    Tempfile.open('rank') do |f|
-      Exec.new("ruby model/model.rb -p #{file.path} -f #{f.path}").run
-      idxs = File.read(f).strip
-      idxs.split(' ').map(&:to_i)
-    end
+    puzzles = puzzles.map { |puzzle| Hash.from_xml(puzzle) }
+    LinearModel.new(@repo.name).predict(puzzles)
   end
 
   def expose(xml, tickets)

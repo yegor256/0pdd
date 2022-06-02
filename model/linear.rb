@@ -1,7 +1,6 @@
 require 'json'
-require 'active_support/core_ext/hash'
-require_relative './pso/pso.rb'
-require_relative '../objects/storage/s3.rb'
+require_relative './pso/pso'
+require_relative '../objects/storage/s3'
 
 def argsort(arr)
     arr.map.with_index.sort.map(&:last)
@@ -103,16 +102,18 @@ end
 # data = [[[0.1, 0.3, 0.8, 1, -0.2, -0.6], [1, -0.3, 0.5, 0, 0.2, -0.6], [0.3, 0.3, -0.9, -0.5, -1, 0.7]]]
 
 
-class Model
-    def initialize(config, repo)
+class LinearModel
+    def initialize(repo)
         @repo = repo
-        @config = config
+        settings = Sinatra::Application.settings
+        # need to create new storage object because previous storage object 
+        # is tightly coupled to xml artefact
         @storage = S3.new(
             "#{@repo}.weights",
-            @config['s3']['weights'],
-            @config['s3']['region'],
-            @config['s3']['key'],
-            @config['s3']['secret']
+            settings.config['s3']['weights'],
+            settings.config['s3']['region'],
+            settings.config['s3']['key'],
+            settings.config['s3']['secret']
         )
     end
 
@@ -124,12 +125,12 @@ class Model
             # get x and y data for puzzles
             x = [[0.1, 0.3, 0.8, 1, -0.2, -0.6], [1, -0.3, 0.5, 0, 0.2, -0.6], [0.3, 0.3, -0.9, -0.5, -1, 0.7]]
             y = [1, 3, 2]
-            ranks = clf.predict(weights, x, y, debug=true)
-            return ranks # model rank of puzzles if weights are loaded
+            ranks = clf.predict(weights, x, y, debug=true) # model rank of puzzles if weights are loaded
         else
             train(clf, puzzles) # find weights for repo backlog of puzzles
-            return naive_rank(puzzles) # naive rank of puzzles in each repo
+            ranks = naive_rank(puzzles) # naive rank of puzzles in each repo
         end
+        ranks.map(&:to_i)
     end
 
     private
@@ -144,6 +145,7 @@ class Model
 
     def train(clf, puzzles)
         Thread.new {
+            # properly train model here and save weights to s3 for later
             features_path = File.join(File.dirname(__FILE__), 'data/X_example.json')
             x = JSON.parse(File.read(features_path))
 
@@ -158,16 +160,8 @@ class Model
 
     def naive_rank(puzzles)
         estimates = puzzles.map { |puzzle| puzzle['estimate'].to_i || Infinity }
-        ranks = argsort(estimates)
-        ranks
+        argsort(estimates)
     end
 end
 
-ranks = Model.new({
-    's3' => {
-        'region' => '?',
-        'bucket' => '?',
-        'key' => '?',
-        'secret' => '?'
-    },   
-}, 'repo1').predict(puzzles)
+# ranks = LinearModel.new('repo1').predict(puzzles)
