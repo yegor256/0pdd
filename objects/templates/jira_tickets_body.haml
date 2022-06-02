@@ -1,0 +1,17 @@
+The puzzle `#{puzzle.xpath('id')[0].text}` |
+from ##{puzzle.xpath('ticket')[0].text} has to be resolved: |
+\
+#{url}
+\
+The puzzle was created by #{puzzle.xpath('author')[0].text} on |
+#{Time.parse(puzzle.xpath('time')[0].text).strftime('%d-%b-%y')}. |
+\
+#{MaybeText.new("Estimate: #{puzzle.xpath('estimate')[0].text} minutes, ", puzzle.xpath('estimate')[0].text, '0')} |
+#{MaybeText.new("role: #{puzzle.xpath('role')[0].text}.", puzzle.xpath('role')[0].text, 'IMP')} |
+\
+If you have any technical questions, don't ask me, |
+submit new tickets instead. The task will be \"done\" when |
+the problem is fixed and the text of the puzzle is |
+_removed_ from the source code. Here is more about |
+[PDD](http://www.yegor256.com/2009/03/04/pdd.html) and |
+[about me](http://www.yegor256.com/2017/04/05/pdd-in-action.html). |
