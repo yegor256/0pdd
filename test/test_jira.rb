@@ -27,5 +27,10 @@ require_relative '../objects/clients/jira'
 # Copyright:: Copyright (c) 2016-2022 Yegor Bugayenko
 # License:: MIT
 class TestGitlab < Test::Unit::TestCase
-
+  def test_configuration_right
+    jira = JiraClient.new.client
+    assert_raises JIRA::Error::MissingCredentials do
+      jira.user('0pdd')['username']
+    end
+  end
 end
