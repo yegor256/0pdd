@@ -32,8 +32,9 @@ class JiraClient
 
   def client
     client = if @config['testing']
-               require_relative '../../test/fake_jira'
-               FakeJira.new
+               puts 'testing...'
+               # require_relative '../../test/fake_jira'
+               # FakeJira.new
              else
                username = @config['jira']['username'] if @config['jira']
                token = @config['jira']['token'] if @config['jira']
