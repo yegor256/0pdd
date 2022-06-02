@@ -42,7 +42,16 @@ class JiraRepo
   end
 
   def close_issue(issue_id)
-    @client.Project
+    issue = @client.Issue.find(issue_id)
+    issue.save(
+      'fields' => {
+        'summary' => data[:description],
+        'project' => { 'id' => data[:repo] },
+        'issuetype' => { 'id' => '3' },
+        'status' => 'closed'
+      }
+    )
+    issue.fetch
   end
 
   def create_issue(data)
