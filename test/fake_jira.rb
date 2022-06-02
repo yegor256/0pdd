@@ -19,5 +19,10 @@
 # SOFTWARE.
 
 class FakeJira
-
+  def test_configuration_right
+    jira = JiraClient.new.client
+    assert_raises JIRA::Error::MissingCredentials do
+      jira.user('0pdd')['username']
+    end
+  end
 end
