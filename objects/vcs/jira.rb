@@ -20,12 +20,77 @@
 
 require 'jira-ruby'
 require_relative '../git_repo'
-require_relative '../clients/jira'
 
 #
-# Jira repo
-# API:https://github.com/sumoheavy/jira-ruby
+# Jira VCS
 #
 class JiraRepo
+  attr_reader :is_valid, :repo, :name
 
+  def initialize(client, json, config = {})
+    @name = 'JIRA'
+    @client = client
+    @config = config
+    @json = json
+    # TODO: rewrite @is_valid
+    @is_valid = {}
+    @repo = git_repo if @is_valid
+  end
+
+  def issue(issue_id); end
+
+  def close_issue(issue_id); end
+
+  def create_issue(data); end
+
+  def update_issue(issue_id, data); end
+
+  def labels; end
+
+  def add_label(label, color); end
+
+  def add_labels_to_an_issue(issue_id, labels); end
+
+  def add_comment(issue_id, comment); end
+
+  def create_commit_comment(sha, comment); end
+
+  def list_commits; end
+
+  def user(username); end
+
+  def star; end
+
+  def repository(name = nil)
+
+  rescue JIRA::NotFound => e
+    raise "Repository #{name} is not available: #{e.message}"
+  end
+
+  def repository_link; end
+
+  def collaborators_link; end
+
+  def file_link(file); end
+
+  def puzzle_link_for_commit(sha, file, start, stop); end
+
+  def issue_link(issue_id); end
+
+  private
+
+  def git_repo
+    uri = @json['repository']['ssh_url'] || @json['repository']['url']
+    name = @json['repository']['full_name']
+    default_branch = @json['repository']['master_branch']
+    head_commit_hash = @json['head_commit']['id']
+    repository(name) # checks that repository exists
+    GitRepo.new(
+      uri: uri,
+      name: name,
+      id_rsa: @config['id_rsa'],
+      master: default_branch,
+      head_commit_hash: head_commit_hash
+    )
+  end
 end
