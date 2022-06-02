@@ -52,7 +52,7 @@ class MilestoneTickets
 `#{parent[:milestone][:title]}` from issue ##{num}."
             )
           end
-        rescue Octokit::Error, Gitlab::Error::Error => e
+        rescue Octokit::Error, Gitlab::Error::Error, JIRA::Error::Error => e
           @vcs.add_comment(
             submitted[:number],
             "For some reason I wasn't able to set milestone \
