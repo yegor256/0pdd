@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'json'
+require "crack"
 require 'nokogiri'
 require_relative '../model/linear'
 
@@ -67,7 +69,7 @@ class Puzzles
   end
 
   def rank(puzzles)
-    puzzles = puzzles.map { |puzzle| Hash.from_xml(puzzle) }
+    puzzles = puzzles.map { |puzzle| JSON.parse(Crack::XML.parse(puzzle.to_s).to_json)['puzzle'] }
     LinearModel.new(@repo.name).predict(puzzles)
   end
 
