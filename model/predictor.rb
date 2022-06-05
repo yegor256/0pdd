@@ -58,7 +58,7 @@ class Predictor
     normalised_kendall_tau_distance(ranks, true_order)
   end
 
-  def predict(model_weights, data, true_order, debug = false)
+  def predict(model_weights, data, true_order = [], debug = false)
     ranks = []
     (0...data.size).each do |i|
       row = data[i]
@@ -66,7 +66,10 @@ class Predictor
       r = forward_one(weights, row)
       ranks.append(r)
     end
-    puts "\n\n\n-- Pred Rank #{argsort(ranks)}\n-- True Rank #{argsort(true_order)}" if debug
+    if debug
+        puts "-- Pred Rank \n#{argsort(ranks)}\n--"
+        puts "-- True Rank \n#{argsort(true_order)}\n--\n" if true_order
+    end
     ranks
   end
 

@@ -19,7 +19,7 @@
 # SOFTWARE.
 
 require 'json'
-require "crack"
+require 'crack'
 require 'nokogiri'
 require_relative '../model/linear'
 
@@ -70,7 +70,7 @@ class Puzzles
 
   def rank(puzzles)
     puzzles = puzzles.map { |puzzle| JSON.parse(Crack::XML.parse(puzzle.to_s).to_json)['puzzle'] }
-    LinearModel.new(@repo.name).predict(puzzles)
+    LinearModel.new(@repo.name, @storage).predict(puzzles)
   end
 
   def expose(xml, tickets)
