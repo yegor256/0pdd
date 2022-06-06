@@ -10,10 +10,10 @@ require_relative './storage'
 class LinearModel
   def initialize(repo, storage)
     @repo = repo
-    settings = Sinatra::Application.settings
     @xml_storage = storage
     # need to create new storage object because previous storage object
     # is tightly coupled to xml artefact
+    settings = Sinatra::Application.settings
     @storage = Storage.new(
       "#{@repo}.marshal",
       settings.config['s3']['weights'],
@@ -55,8 +55,8 @@ class LinearModel
         s['n_deletions']
       ].append(s['vectorized_description'])
     end
-    y = samples.map { |s| s['closed'] ? Time.parse(s['closed']).to_i : Infinity }.with_index.sort.map(&:last)
-    [x, y]
+    y = samples.map { |_, s| s['closed'] ? Time.parse(s['closed']).to_i : 0 }.map.with_index.sort.map(&:last)
+    [[x], [y]] # single backlog of puzzles
   end
 
   # depth first feature extraction
@@ -65,14 +65,16 @@ class LinearModel
       prev_puzzle = samples[samples.keys.last]
       time_before = 0
       unless prev_puzzle.nil?
-        time_before = (Time.parse(prev_puzzle['closed']).to_i - Time.parse(prev_puzzle['time']).to_i) / 60 # in minutes
+        opened = Time.parse(prev_puzzle['time']).to_i
+        closed = prev_puzzle['closed'] ? Time.parse(prev_puzzle['closed']).to_i : opened
+        time_before = (closed - opened) / 60 # in minutes
 
         unless prev_puzzle['time_after'].nil?
           time_after = (Time.parse(puzzle['closed']).to_i - Time.parse(puzzle['time']).to_i) / 60 # in minutes
           prev_puzzle['time_after'] = time_after
         end
       end
-      n_characters = "#{puzzle['title'].gsub(/\s/, '')}#{puzzle['description'].gsub(/\s/, '')}".length
+      n_characters = puzzle['body'].gsub(/\s/, '').length
       samples[puzzle['id']] = {
         'time_estimate' => puzzle['estimate'].to_i,
         'n_characters' => n_characters,
@@ -115,7 +117,7 @@ class LinearModel
       unless puzzles.nil?
         samples, labels = extract_features(puzzles['puzzle'])
 
-        solver = Pso::Solver.new(f: clf, center: ZeroVector.zero(y[0].size), data: samples, true_order: labels)
+        solver = Pso::Solver.new(f: clf, center: ZeroVector.zero(labels[0].size), data: samples, true_order: labels)
         _rank, weights, _n_iterations = solver.solve
         @storage.save(weights)
       end
@@ -127,5 +129,3 @@ class LinearModel
     estimates.map.with_index.sort.map(&:last)
   end
 end
-
-# ranks = LinearModel.new('repo1').predict(puzzles)
