@@ -6,6 +6,7 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
@@ -17,30 +18,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-source 'https://rubygems.org'
+require 'gitlab'
 
-gem 'aws-sdk-dynamodb', '1.59.0'
-gem 'aws-sdk-s3', '1.90.0'
-gem 'codecov', '0.5.1'
-gem 'crack', '0.4.3'
-gem 'gitlab', '4.17.0'
-gem 'glogin', '0.7.0'
-gem 'haml', '5.2.1'
-gem 'mail', '2.7.1'
-gem 'mocha', '1.11.2', require: false
-gem 'nokogiri', '1.13.6'
-gem 'octokit', '4.20.0'
-gem 'pdd', '0.20.6'
-gem 'rack', '2.2.3.1'
-gem 'rack-test', '1.1.0'
-gem 'rake', '13.0.3', require: false
-gem 'rubocop', '0.69.0', require: false
-gem 'rubocop-rspec', '1.33.0', require: false
-gem 'ruby-fann'
-gem 'sass', '3.7.4'
-gem 'sentry-raven', '3.1.1'
-gem 'sinatra', '2.2.0'
-gem 'sinatra-contrib', '2.2.0'
-gem 'sprockets', '4.0.2'
-gem 'test-unit', '3.4.0', require: false
-gem 'xcop', '0.6.2'
+#
+# Gitlab client
+# API: https://github.com/NARKOZ/gitlab
+#
+class GitlabClient
+  def initialize(config = {})
+    @config = config
+  end
+
+  def client
+    client = if @config['testing']
+      require_relative '../../test/fake_gitlab'
+      FakeGitlab.new
+    else
+      token = @config['gitlab']['token'] if @config['gitlab']
+      Gitlab.client(
+        endpoint: 'https://gitlab.com/api/v4',
+        private_token: token,
+        httparty: {
+          headers: { 'Cookie' => 'gitlab_canary=true' }
+        }
+      )
+    end
+    TracePoint.new(:call) do |tp|
+      puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
+    end.enable
+    client
+  end
+end

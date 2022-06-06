@@ -28,11 +28,14 @@ require_relative '../version'
 # Log.
 #
 class Log
-  def initialize(dynamo, repo)
+  def initialize(dynamo, repo, vcs = 'github')
     @dynamo = dynamo
     # @todo #312:30min Be sure to handle the use case where projects from
     #  different vcs have the same <user/repo_name>. This will cause a conflict.
-    @repo = repo
+    @vcs = (vcs || 'github').downcase
+    @repo = @vcs == 'github' ? repo : Base64.encode64(repo + @vcs).gsub(%r{[\s=\/]+}, '')
+
+    raise 'You need to specify your cloud VCS' unless ['github'].include?(@vcs)
   end
 
   def put(tag, text)
@@ -40,6 +43,7 @@ class Log
       table_name: '0pdd-events',
       item: {
         'repo' => @repo,
+        'vcs' => @vcs,
         'time' => Time.now.to_i,
         'tag' => tag,
         'text' => "#{text} /#{VERSION}"

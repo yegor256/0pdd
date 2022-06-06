@@ -30,7 +30,9 @@ class FakeStorage
   end
 
   def load
+    # rubocop:disable Security/MarshalLoad
     Marshal.load(IO.read(@file)) if File.exist?(@file)
+    # rubocop:enable Security/MarshalLoad
   end
 
   def save(weights)
