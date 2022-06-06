@@ -3,6 +3,7 @@ require 'time'
 require 'crack'
 require_relative './predictor'
 require_relative './storage'
+require_relative './fake_storage'
 
 #
 # Linear Model
@@ -11,16 +12,18 @@ class LinearModel
   def initialize(repo, storage)
     @repo = repo
     @xml_storage = storage
-    # need to create new storage object because previous storage object
-    # is tightly coupled to xml artefact
-    settings = Sinatra::Application.settings
-    @storage = Storage.new(
-      "#{@repo}.marshal",
-      settings.config['s3']['weights'],
-      settings.config['s3']['region'],
-      settings.config['s3']['key'],
-      settings.config['s3']['secret']
-    )
+    if ENV['RACK_ENV'] == 'test'
+      @storage = FakeStorage.new(@repo)
+    else
+      settings = Sinatra::Application.settings
+      @storage = Storage.new(
+        "#{@repo}.marshal",
+        settings.config['s3']['bucket'],
+        settings.config['s3']['region'],
+        settings.config['s3']['key'],
+        settings.config['s3']['secret']
+      )
+    end
   end
 
   def predict(puzzles)
