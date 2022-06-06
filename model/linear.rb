@@ -2,7 +2,7 @@ require 'json'
 require 'time'
 require 'crack'
 require_relative './predictor'
-require_relative '../objects/storage/s3'
+require_relative './storage'
 
 #
 # Linear Model
@@ -14,8 +14,8 @@ class LinearModel
     @xml_storage = storage
     # need to create new storage object because previous storage object
     # is tightly coupled to xml artefact
-    @storage = S3.new(
-      "#{@repo}.weights",
+    @storage = Storage.new(
+      "#{@repo}.marshal",
       settings.config['s3']['weights'],
       settings.config['s3']['region'],
       settings.config['s3']['key'],
@@ -24,7 +24,7 @@ class LinearModel
   end
 
   def predict(puzzles)
-    weights = load_weights # load weights for repo from s3
+    weights = @storage.load # load weights for repo from s3
     clf = Predictor.new(layers: [{ name: 'w1', shape: [10, 1] }, { name: 'w2', shape: [1, 1] }])
     if weights.nil?
       train(clf) # find weights for repo backlog of puzzles
@@ -40,14 +40,6 @@ class LinearModel
   end
 
   private
-
-  def load_weights
-    @storage.load
-  end
-
-  def save_weights(weights)
-    @storage.save(weights)
-  end
 
   # depth first feature extraction
   def extract_features(puzzles, level = 1)
@@ -121,7 +113,7 @@ class LinearModel
 
         solver = Pso::Solver.new(f: clf, center: ZeroVector.zero(y[0].size), data: samples, true_order: labels)
         _rank, weights, _n_iterations = solver.solve
-        save_weights(weights)
+        @storage.save(weights)
       end
     end
   end
