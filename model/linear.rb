@@ -41,9 +41,26 @@ class LinearModel
 
   private
 
+  def get_features_labels(samples)
+    x = samples.map do |_, s|
+      [
+        s['time_estimate'],
+        s['n_characters'],
+        s['level'],
+        s['n_puzzles_before'],
+        s['n_puzzles_after'],
+        s['time_before'],
+        s['time_after'],
+        s['n_additions'],
+        s['n_deletions']
+      ].append(s['vectorized_description'])
+    end
+    y = samples.map { |s| s['closed'] ? Time.parse(s['closed']).to_i : Infinity }.with_index.sort.map(&:last)
+    [x, y]
+  end
+
   # depth first feature extraction
-  def extract_features(puzzles, level = 1)
-    samples = {}
+  def extract_features(puzzles, samples = {}, level = 1)
     puzzles.each do |puzzle|
       prev_puzzle = samples[samples.keys.last]
       time_before = 0
@@ -65,22 +82,9 @@ class LinearModel
         'time_before' => time_before
       }.merge(puzzle)
 
-      extract_features(puzzle['children']['puzzle'], level + 1) unless puzzle['children'].nil?
+      extract_features(puzzle['children']['puzzle'], samples, level + 1) unless puzzle['children'].nil?
     end
-
-    samples.map do |_, s|
-      [
-        s['time_estimate'],
-        s['n_characters'],
-        s['level'],
-        s['n_puzzles_before'],
-        s['n_puzzles_after'],
-        s['time_before'],
-        s['time_after'],
-        s['n_additions'],
-        s['n_deletions']
-      ].append(s['vectorized_description'])
-    end
+    get_features_labels(samples) if level == 1
   end
 
   def train(clf)
