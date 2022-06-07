@@ -1,4 +1,3 @@
-require 'pry'
 require_relative './zero_vector'
 require_relative './functions/rastrigin'
 
@@ -59,7 +58,7 @@ module Pso
       end
     end
 
-    def solve(precision: 100, threads: 1)
+    def solve(precision: 100, threads: 1, debug: false)
       n_iterations = 0
       Array.new(threads).map do
         Thread.new do
@@ -67,7 +66,7 @@ module Pso
             n_iterations += 1
             (0...@density).each do |index|
               perfect = perfect_particle
-              puts @f.f(perfect, **@options)
+              puts @f.f(perfect, **@options) if debug
               new_vector = normalize(interate(@swarm[index], @swarm_best[index].last, perfect, @swarm_speed[index]))
               if best?(@swarm_best[index].first, @f.f(new_vector, **@options))
                 @swarm_best[index] = [@f.f(new_vector, **@options), new_vector]

@@ -27,7 +27,7 @@ SOFTWARE.
     <puzzles date="2016-12-10T16:26:36Z">
       <puzzle>
         <ticket>516</ticket>
-        <estimate>15</estimate>
+        <estimate>60</estimate>
         <role>IMP</role>
         <id>516-ffdd7ae8</id>
         <lines>61-63</lines>
@@ -55,7 +55,7 @@ SOFTWARE.
     <puzzles date="2016-12-03T16:26:36Z" version="0.1">
       <puzzle alive="true">
         <ticket>516</ticket>
-        <estimate>15</estimate>
+        <estimate>60</estimate>
         <role>IMP</role>
         <id>516-ffdd7ae8</id>
         <lines>61-63</lines>
@@ -89,8 +89,8 @@ SOFTWARE.
     <xpath>//puzzle[id='516-eedd7ae8' and issue!='unknown']</xpath>
   </assertions>
   <submit>
-    <ticket>516-ffdd7ae8</ticket>
     <ticket>516-eedd7ae8</ticket>
+    <ticket>516-ffdd7ae8</ticket>
   </submit>
   <close/>
 </test>

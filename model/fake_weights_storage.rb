@@ -19,9 +19,9 @@
 # SOFTWARE.
 
 #
-# FakeStorage Model
+# FakeWeightsStorage
 #
-class FakeStorage
+class FakeWeightsStorage
   def initialize(
     repo,
     dir = Dir.mktmpdir

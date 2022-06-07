@@ -106,7 +106,8 @@ class Puzzles
         '//puzzle[@alive="true" and (not(issue) or issue="unknown")]'
       )
       break if puzzles.empty? || ranked_idx.empty? || submitted >= @max_issues
-      puzzle = puzzles.find { |p| p.xpath('id')[0].text == unique_puzzles[ranked_idx.shift].xpath('id')[0].text }
+      next_idx = ranked_idx.shift
+      puzzle = puzzles.find { |p| p.xpath('id')[0].text == unique_puzzles[next_idx].xpath('id')[0].text }
       issue = tickets.submit(puzzle)
       next if issue.nil?
       puzzle.search('issue').remove

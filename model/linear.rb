@@ -3,7 +3,7 @@ require 'time'
 require 'crack'
 require_relative './predictor'
 require_relative './storage'
-require_relative './fake_storage'
+require_relative './fake_weights_storage'
 
 #
 # Linear Model
@@ -13,7 +13,7 @@ class LinearModel
     @repo = repo
     @xml_storage = storage
     if ENV['RACK_ENV'] == 'test'
-      @storage = FakeStorage.new(@repo)
+      @storage = FakeWeightsStorage.new(@repo)
     else
       settings = Sinatra::Application.settings
       @storage = Storage.new(
@@ -66,7 +66,9 @@ class LinearModel
 
   # depth first feature extraction
   def extract_features(puzzles, samples = {}, level = 1)
+    puzzles = [puzzles] unless puzzles.is_a?(Array)
     puzzles.each do |puzzle|
+      next if puzzle.nil?
       prev_puzzle = samples[samples.keys.last]
       time_before = 0
       unless prev_puzzle.nil?
@@ -101,10 +103,12 @@ class LinearModel
       puzzles = JSON.parse(Crack::XML.parse(puzzles.to_s).to_json)['puzzles']
       unless puzzles.nil?
         samples, labels = extract_features(puzzles['puzzle'])
-
-        solver = Pso::Solver.new(f: clf, center: ZeroVector.zero(samples[0][0].size), data: samples, true_order: labels)
-        _rank, weights, _n_iterations = solver.solve
-        @storage.save(weights)
+        if labels[0].length > 1 # train only when there's data
+          center = ZeroVector.zero(samples[0][0].size)
+          solver = Pso::Solver.new(f: clf, center: center, data: samples, true_order: labels)
+          _rank, weights, _n_iterations = solver.solve
+          @storage.save(weights)
+        end
       end
     end
   end
