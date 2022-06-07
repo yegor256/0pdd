@@ -32,7 +32,7 @@ class JiraRepo
     @client = client
     @config = config
     @json = json
-    # TODO: rewrite @is_valid
+    # @todo #378:30min rewrite @is_valid = {} as it suppose to be  after the jira server part integration
     @is_valid = {}
     @repo = git_repo if @is_valid
   end
