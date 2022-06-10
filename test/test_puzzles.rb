@@ -43,6 +43,7 @@ class TestPuzzles < Test::Unit::TestCase
       test_xml(d, 'ignores-unknown-issues.xml')
       test_xml(d, 'submits-old-puzzles.xml')
       test_xml(d, 'submits-three-tickets.xml')
+      test_xml(d, 'submits-ranked-puzzles.xml')
     end
   end
 
@@ -92,9 +93,9 @@ class TestPuzzles < Test::Unit::TestCase
         "#{xpath} not found in #{after}"
       )
     end
-    xml.xpath('/test/submit/ticket/text()').each do |id|
+    xml.xpath('/test/submit/ticket/text()').each_with_index do |id, idx|
       assert(
-        tickets.submitted.include?(id.text),
+        tickets.submitted[idx] == id.text,
         "Puzzle #{id} was not submitted: #{tickets.submitted}"
       )
     end
