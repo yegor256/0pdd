@@ -133,7 +133,7 @@ class FakeGithub
 
   def add_comment(_, _); end
 
-  def create_commit_comment(_, _)
+  def create_commit_comment(_, _, _)
     {
       html_url: 'url'
     }

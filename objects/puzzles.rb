@@ -18,7 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'json'
+require 'crack'
 require 'nokogiri'
+require_relative '../model/linear'
 
 #
 # Puzzles in XML/S3
@@ -66,16 +69,8 @@ class Puzzles
   end
 
   def rank(puzzles)
-    doc = Nokogiri.XML('<puzzles></puzzles>')
-    puzzles.each { |puzzle| doc.root << puzzle }
-    file = Tempfile.new('puzzles')
-    file.write(doc.to_xml)
-    file.close
-    Tempfile.open('rank') do |f|
-      Exec.new("ruby model/model.rb -p #{file.path} -f #{f.path}").run
-      idxs = File.read(f).strip
-      idxs.split(' ').map(&:to_i)
-    end
+    puzzles = puzzles.map { |puzzle| JSON.parse(Crack::XML.parse(puzzle.to_s).to_json)['puzzle'] }
+    LinearModel.new(@repo.name, @storage).predict(puzzles)
   end
 
   def expose(xml, tickets)
@@ -111,7 +106,8 @@ class Puzzles
         '//puzzle[@alive="true" and (not(issue) or issue="unknown")]'
       )
       break if puzzles.empty? || ranked_idx.empty? || submitted >= @max_issues
-      puzzle = puzzles.find { |p| p.xpath('id')[0].text == unique_puzzles[ranked_idx.shift].xpath('id')[0].text }
+      next_idx = ranked_idx.shift
+      puzzle = puzzles.find { |p| p.xpath('id')[0].text == unique_puzzles[next_idx].xpath('id')[0].text }
       issue = tickets.submit(puzzle)
       next if issue.nil?
       puzzle.search('issue').remove

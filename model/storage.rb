@@ -6,6 +6,7 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
@@ -17,33 +18,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-source 'https://rubygems.org'
+require 'json'
+require 'aws-sdk-s3'
+require_relative '../version'
 
-gem 'activesupport', '6.1.5'
-gem 'atlassian-jwt', '~> 0.2.1'
-gem 'aws-sdk-dynamodb', '1.59.0'
-gem 'aws-sdk-s3', '1.90.0'
-gem 'codecov', '0.5.1'
-gem 'crack', '0.4.3'
-gem 'gitlab', '4.17.0'
-gem 'glogin', '0.7.0'
-gem 'haml', '5.2.1'
-gem 'jira-ruby', '2.2.0'
-gem 'mail', '2.7.1'
-gem 'mocha', '1.11.2', require: false
-gem 'nokogiri', '1.13.6'
-gem 'octokit', '4.20.0'
-gem 'pdd', '0.20.6'
-gem 'rack', '2.2.3.1'
-gem 'rack-test', '1.1.0'
-gem 'rake', '13.0.3', require: false
-gem 'rubocop', '0.69.0', require: false
-gem 'rubocop-rspec', '1.33.0', require: false
-gem 'ruby-fann'
-gem 'sass', '3.7.4'
-gem 'sentry-raven', '3.1.1'
-gem 'sinatra', '2.2.0'
-gem 'sinatra-contrib', '2.2.0'
-gem 'sprockets', '4.0.2'
-gem 'test-unit', '3.4.0', require: false
-gem 'xcop', '0.6.2'
+#
+# S3 storage.
+#
+class Storage
+  def initialize(ocket, bucket, region, key, secret)
+    @object = Aws::S3::Resource.new(
+      region: region,
+      credentials: Aws::Credentials.new(key, secret)
+    ).bucket(bucket).object(ocket)
+  end
+
+  def load
+    return unless @object.exists?
+    data = @object.get.body
+    puts "S3 #{data.size} from #{@object.bucket_name}/#{@object.key}"
+    # rubocop:disable Security/MarshalLoad
+    Marshal.load(data)
+    # rubocop:enable Security/MarshalLoad
+  end
+
+  def save(weights)
+    data = Marshal.dump(weights)
+    @object.put(body: data)
+    puts "S3 #{data.size} to #{@object.bucket_name}/#{@object.key}"
+  end
+end
