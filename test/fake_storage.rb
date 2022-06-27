@@ -31,10 +31,10 @@ class FakeStorage
   end
 
   def load
-    Nokogiri.XML(IO.read(@file))
+    Nokogiri.XML(File.read(@file))
   end
 
   def save(xml)
-    IO.write(@file, xml.to_s)
+    File.write(@file, xml.to_s)
   end
 end

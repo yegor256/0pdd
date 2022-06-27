@@ -59,7 +59,7 @@ module Pso
     end
 
     def generate_random_noise_particle
-      @center.map { rand * 2 - 1 }
+      @center.map { (rand * 2) - 1 }
     end
 
     def generate_random_particle
@@ -120,13 +120,13 @@ module Pso
     def interate(vector, best, perfect, speed)
       if vector == perfect
         out = generate_random_noise_particle
-        new_vec = vector + (best - vector).normalize * 0.2 + out * rand * 0.05 + speed * 0.05
+        new_vec = vector + ((best - vector).normalize * 0.2) + (out * rand * 0.05) + (speed * 0.05)
         minimal = @f.f(vector, **@options) > @f.f(new_vec, **@options)
         return minimal ? new_vec : vector if @method == :min_by
         return minimal ? vector : new_vec unless @method == :min_by
       end
       out = generate_random_noise_particle
-      vector + out * rand * 0.1 + (best - vector).normalize * 0.5 + (perfect - vector).normalize + speed
+      vector + (out * rand * 0.1) + ((best - vector).normalize * 0.5) + (perfect - vector).normalize + speed
     end
   end
 end

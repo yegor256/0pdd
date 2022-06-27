@@ -40,7 +40,7 @@ end
 
 def default_option_generator_linear(attribute_num)
   [
-    { 'layers': [{ 'name': 'w1', 'shape': [attribute_num, 1] }, { 'name': 'w2', 'shape': [1, 1] }] },
+    { layers: [{ name: 'w1', shape: [attribute_num, 1] }, { name: 'w2', shape: [1, 1] }] },
     [attribute_num] + 1
   ]
 end

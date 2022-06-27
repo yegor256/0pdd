@@ -115,7 +115,7 @@ class GitRepo
     dir = "#{Dir.home}/.ssh"
     return if File.exist?(dir)
     FileUtils.mkdir_p(dir)
-    IO.write("#{dir}/id_rsa", @id_rsa) unless @id_rsa.empty?
+    File.write("#{dir}/id_rsa", @id_rsa) unless @id_rsa.empty?
     Exec.new(
       [
         'echo "Host *" > ~/.ssh/config',

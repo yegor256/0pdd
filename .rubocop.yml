@@ -41,3 +41,5 @@ Metrics/PerceivedComplexity:
   Max: 11
 Layout/LineLength:
   Max: 120
+Style/OpenStructUse:
+  Enabled: false

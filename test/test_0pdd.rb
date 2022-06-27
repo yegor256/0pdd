@@ -116,7 +116,7 @@ class AppTest < Test::Unit::TestCase
     get('/svg?name=yegor256/pdd')
     assert(last_response.ok?)
     svg = last_response.body
-    IO.write('/tmp/0pdd-button.svg', svg)
+    File.write('/tmp/0pdd-button.svg', svg)
     assert(
       svg.include?('<svg '),
       "broken SVG: #{svg}"

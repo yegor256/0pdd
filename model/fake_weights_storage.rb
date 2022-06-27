@@ -36,6 +36,6 @@ class FakeWeightsStorage
   end
 
   def save(weights)
-    IO.write(@file, Marshal.dump(weights))
+    File.write(@file, Marshal.dump(weights))
   end
 end

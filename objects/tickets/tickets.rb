@@ -61,7 +61,7 @@ class Tickets
         "The puzzle `#{puzzle.xpath('id')[0].text}` has disappeared",
         " from the source code, that's why I closed this issue.",
         (users.empty? ? '' : " //cc #{users.join(' ')}")
-      ].join('')
+      ].join
     )
     true
   end
@@ -98,7 +98,7 @@ class Tickets
           ':',
           (start == stop ? start : "#{start}-#{stop}"),
           ": #{puzzle.xpath('body')[0].text}"
-        ].join('')
+        ].join
       end,
       [[len ? len.gsub(/^title-length=/, '').to_i : 60, 30].max, 255].min
     ).to_s
