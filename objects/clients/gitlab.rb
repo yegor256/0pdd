@@ -30,7 +30,7 @@ class GitlabClient
   end
 
   def client
-    client = if @config['testing']
+    if @config['testing']
       require_relative '../../test/fake_gitlab'
       FakeGitlab.new
     else
@@ -43,9 +43,5 @@ class GitlabClient
         }
       )
     end
-    TracePoint.new(:call) do |tp|
-      puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
-    end.enable
-    client
   end
 end

@@ -30,7 +30,7 @@ class Github
   end
 
   def client
-    client = if @config['testing']
+    if @config['testing']
       require_relative '../../test/fake_github'
       FakeGithub.new
     else
@@ -45,9 +45,5 @@ class Github
       Octokit.auto_paginate = true
       Octokit::Client.new(args)
     end
-    TracePoint.new(:call) do |tp|
-      puts "#{tp.defined_class}##{tp.method_id}()" if tp.defined_class == client.class
-    end.enable
-    client
   end
 end
