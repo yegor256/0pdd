@@ -38,7 +38,7 @@ class CachedStorage
   end
 
   def save(xml)
-    File.delete(@file) if File.exist?(@file)
+    FileUtils.rm_rf(@file)
     @origin.save(xml)
     write(xml.to_s)
   end
