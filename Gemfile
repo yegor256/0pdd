@@ -27,16 +27,16 @@ gem 'codecov', '0.6.0'
 gem 'crack', '0.4.5'
 gem 'gitlab', '4.17.0'
 gem 'glogin', '0.7.0'
-gem 'haml', '5.2.1'
+gem 'haml', '5.2.2'
 gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
-gem 'mocha', '1.11.2', require: false
+gem 'mocha', '1.14.0', require: false
 gem 'nokogiri', '1.13.6'
-gem 'octokit', '4.20.0'
-gem 'pdd', '0.20.6'
+gem 'octokit', '4.25.0'
+gem 'pdd', '0.20.8'
 gem 'rack', '2.2.3.1'
-gem 'rack-test', '1.1.0'
-gem 'rake', '13.0.3', require: false
+gem 'rack-test', '2.0.0'
+gem 'rake', '13.0.6', require: false
 gem 'rubocop', '1.30.1', require: false
 gem 'rubocop-rspec', '2.11.1', require: false
 gem 'ruby-fann'
