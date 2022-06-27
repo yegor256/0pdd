@@ -30,6 +30,7 @@ require_relative '../objects/jobs/job_commiterrors'
 class TestJobCommitErrors < Test::Unit::TestCase
   class Stub
     attr_reader :name, :reported, :repo
+
     def initialize(repo)
       @repo = repo
       @name = 'GITHUB'

@@ -217,6 +217,7 @@ class TestDiff < Test::Unit::TestCase
 
   class Tickets
     attr_reader :messages
+
     def initialize
       @messages = []
     end

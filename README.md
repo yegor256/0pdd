@@ -1,7 +1,5 @@
 <img src="https://avatars2.githubusercontent.com/u/24456188" width="64px" height="64px"/>
 
-[![Donate via Zerocracy](https://www.0crat.com/contrib-badge/C3T46CUJJ.svg)](https://www.0crat.com/contrib/C3T46CUJJ)
-
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![Managed by Zerocracy](https://www.0crat.com/badge/C3T46CUJJ.svg)](https://www.0crat.com/p/C3T46CUJJ)
 [![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/0pdd)](https://www.rultor.com/p/yegor256/0pdd)

@@ -71,7 +71,7 @@ only now."
   end
 
   def suppressed_repo?
-    suppressed_options = ['on-found-puzzle', 'on-scope']
+    suppressed_options = %w[on-found-puzzle on-scope]
     suppressed_options.any? { |item| opts.include?(item) }
   end
 end

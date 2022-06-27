@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-STDOUT.sync = true
+$stdout.sync = true
 
 require 'mail'
 require 'haml'
@@ -295,7 +295,7 @@ get '/ping-github' do
   invitations = GithubInvitations.new(gh)
   invitations.accept
   invitations.accept_orgs
-  gh.notifications.map do |n|
+  msgs = gh.notifications.map do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
     puts "GitHub notification in #{repo}: #{reason} #{n['updated_at']} #{n['subject']['type']}"
@@ -320,7 +320,8 @@ get '/ping-github' do
     end
     gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
     "#{repo}: #{reason}"
-  end.join("\n") + "\n"
+  end
+  "#{msgs.join("\n")}\n"
 end
 
 get '/hook/github' do

@@ -84,7 +84,7 @@ class FakeGithub
   def accept_repository_invitation(id, _options = {})
     invitation = @invitations.find { |i| i['id'] == id }
     return false if invitation.nil?
-    @repositories = @repositories.push(invitation['repository']['name'])
+    @repositories.push(invitation['repository']['name'])
     true
   end
 

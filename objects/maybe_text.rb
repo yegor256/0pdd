@@ -22,7 +22,7 @@
 # Maybe text
 #
 class MaybeText
-  def initialize(text_if_present, maybe, exclude_if = false)
+  def initialize(text_if_present, maybe, exclude_if: false)
     @maybe = maybe
     @text = text_if_present
     @exclude_if = exclude_if

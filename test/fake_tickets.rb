@@ -20,6 +20,7 @@
 
 class FakeTickets
   attr_reader :submitted, :closed
+
   def initialize
     @submitted = []
     @closed = []

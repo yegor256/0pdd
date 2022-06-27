@@ -77,9 +77,11 @@ class Puzzles
     seen = []
     Kernel.loop do
       puzzles = xml.xpath(
-        '//puzzle[@alive="false" and issue
-        and issue != "unknown" and not(issue/@closed)' +
-        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
+        [
+          '//puzzle[@alive="false" and issue and issue != "unknown" and not(issue/@closed)',
+          seen.map { |i| "and id != '#{i}'" }.join(' '),
+          ']'
+        ].join(' ')
       )
       break if puzzles.empty?
       puzzle = puzzles[0]
@@ -90,8 +92,11 @@ class Puzzles
     unique_puzzles = []
     Kernel.loop do
       puzzles = xml.xpath(
-        '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
-        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
+        [
+          '//puzzle[@alive="true" and (not(issue) or issue="unknown")',
+          seen.map { |i| "and id != '#{i}'" }.join(' '),
+          ']'
+        ].join(' ')
       )
       break if puzzles.empty?
       puzzle = puzzles[0]

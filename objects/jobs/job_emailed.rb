@@ -35,7 +35,7 @@ class JobEmailed
     yaml = @vcs.repo.config
     emails = yaml['errors'] || []
     emails << 'admin@0pdd.com'
-    trace = e.message + "\n\n" + e.backtrace.join("\n")
+    trace = "#{e.message}\n\n#{e.backtrace.join("\n")}"
     name = @vcs.repo.name
     repo_owner_login = repo_user_login
     repo_owner_email = user_email(repo_owner_login)

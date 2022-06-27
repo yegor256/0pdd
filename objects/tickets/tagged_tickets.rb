@@ -35,7 +35,7 @@ class TaggedTickets
     issue = @tickets.submit(puzzle)
     issue_id = issue[:number]
     yaml = @vcs.repo.config
-    if yaml['tags']&.is_a?(Array)
+    if yaml['tags'].is_a?(Array)
       tags = yaml['tags'].map(&:strip).map(&:downcase)
       labels = @vcs.labels
         .map { |json| json[:name] }

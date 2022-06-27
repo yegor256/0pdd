@@ -4,12 +4,14 @@ AllCops:
     - 'assets/**/*'
   DisplayCopNames: true
   TargetRubyVersion: 2.6.0
+  NewCops: enable
+  SuggestExtensions: false
 
 Layout/MultilineOperationIndentation:
   Enabled: false
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   MinNameLength: 1
 Style/CommandLiteral:
   Enabled: false
@@ -34,8 +36,8 @@ Metrics/BlockLength:
 Layout/MultilineMethodCallIndentation:
   Enabled: false
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Max: 11
 Metrics/PerceivedComplexity:
-  Max: 10
-Metrics/LineLength:
+  Max: 11
+Layout/LineLength:
   Max: 120

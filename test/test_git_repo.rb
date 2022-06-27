@@ -215,6 +215,6 @@ class TestGitRepo < Test::Unit::TestCase
       echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
     ").run
     path = File.join(dir, subdir)
-    [path, 'file://' + path]
+    [path, "file://#{path}"]
   end
 end

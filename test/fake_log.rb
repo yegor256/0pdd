@@ -20,6 +20,7 @@
 
 class FakeLog
   attr_reader :tag, :title
+
   def exists(_)
     false
   end

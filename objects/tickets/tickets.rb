@@ -45,7 +45,7 @@ class Tickets
     unless users.empty?
       @vcs.add_comment(
         issue[:number],
-        users.join(' ') + ' please pay attention to this new issue.'
+        (users + ['please pay attention to this new issue.']).join(' ')
       )
     end
     { number: issue[:number], href: issue[:html_url] }
@@ -57,9 +57,11 @@ class Tickets
     @vcs.close_issue(issue)
     @vcs.add_comment(
       issue,
-      "The puzzle `#{puzzle.xpath('id')[0].text}` has disappeared from the \
-source code, that's why I closed this issue." +
-      (users.empty? ? '' : ' //cc ' + users.join(' '))
+      [
+        "The puzzle `#{puzzle.xpath('id')[0].text}` has disappeared",
+        " from the source code, that's why I closed this issue.",
+        (users.empty? ? '' : " //cc #{users.join(' ')}")
+      ].join('')
     )
     true
   end
@@ -91,10 +93,12 @@ source code, that's why I closed this issue." +
       else
         subject = File.basename(puzzle.xpath('file')[0].text)
         start, stop = puzzle.xpath('lines')[0].text.split('-')
-        subject +
-          ':' +
-          (start == stop ? start : "#{start}-#{stop}") +
+        [
+          subject,
+          ':',
+          (start == stop ? start : "#{start}-#{stop}"),
           ": #{puzzle.xpath('body')[0].text}"
+        ].join('')
       end,
       [[len ? len.gsub(/^title-length=/, '').to_i : 60, 30].max, 255].min
     ).to_s

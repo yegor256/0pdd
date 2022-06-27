@@ -153,7 +153,7 @@ format:
     assert(vcs.data[:description].include?('Estimate:'))
   end
 
-  def test_skips_estimate_if_0
+  def test_skips_estimate_if_zero
     config = YAML.safe_load("\n\n")
     repo = object(
       name: 'github',

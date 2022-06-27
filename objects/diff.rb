@@ -35,7 +35,7 @@ class Diff
       previous = summary(@before, t)
       next if previous == current
       next if current.empty?
-      tickets.notify(t, current + '.')
+      tickets.notify(t, "#{current}.")
     end
   end
 

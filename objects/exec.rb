@@ -29,6 +29,7 @@ class Exec
   # When it fails.
   class Error < StandardError
     attr_reader :code
+
     def initialize(code, msg)
       super(msg)
       @code = code
