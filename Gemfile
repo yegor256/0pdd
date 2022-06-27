@@ -19,7 +19,7 @@
 
 source 'https://rubygems.org'
 
-gem 'activesupport', '6.1.5'
+gem 'activesupport', '7.0.3'
 gem 'atlassian-jwt', '~> 0.2.1'
 gem 'aws-sdk-dynamodb', '1.59.0'
 gem 'aws-sdk-s3', '1.90.0'
