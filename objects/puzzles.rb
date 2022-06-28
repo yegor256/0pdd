@@ -31,7 +31,7 @@ class Puzzles
     @repo = repo
     @storage = storage
     t = repo.config && repo.config['threshold'].to_i
-    @threshold = t.positive? && t : 256
+    @threshold = t.positive? && t < 256 ? t : 256
   end
 
   def deploy(tickets)
@@ -73,16 +73,7 @@ class Puzzles
     LinearModel.new(@repo.name, @storage).predict(puzzles)
   end
 
-  def expose(xml, tickets)
-    Kernel.loop do
-      puzzles = xml.xpath(
-        '//puzzle[@alive="false" and issue and issue != "unknown" and not(issue/@closed)'
-      )
-      break if puzzles.empty?
-      puzzle = puzzles[0]
-      puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
-      save(xml)
-    end
+  def submit_ranked(xml, tickets)
     seen = []
     unique_puzzles = []
     Kernel.loop do
@@ -112,10 +103,42 @@ class Puzzles
       next if issue.nil?
       puzzle.search('issue').remove
       puzzle.add_child(
-        "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
+        "<issue href='#{issue[:href]}' model='#{next_idx}'>#{issue[:number]}</issue>"
       )
       save(xml)
       submitted += 1
+    end
+  end
+
+  def expose(xml, tickets)
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="false" and issue and issue != "unknown" and not(issue/@closed)]'
+      )
+      break if puzzles.empty?
+      puzzle = puzzles[0]
+      puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
+      save(xml)
+    end
+    skip_model = xml.xpath('/puzzles[@model="true"]').empty?
+    return submit_ranked(xml, tickets) unless skip_model
+    seen = []
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
+        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
+      )
+      break if puzzles.empty?
+      puzzle = puzzles[0]
+      id = puzzle.xpath('id')[0].text
+      seen << id
+      issue = tickets.submit(puzzle)
+      next if issue.nil?
+      puzzle.search('issue').remove
+      puzzle.add_child(
+        "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
+      )
+      save(xml)
     end
   end
 end

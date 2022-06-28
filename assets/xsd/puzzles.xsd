@@ -41,6 +41,7 @@ SOFTWARE.
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="issue_name">
+              <xs:attribute name="model" type="xs:integer" use="optional"/>
               <xs:attribute name="href" type="xs:anyURI" use="optional"/>
               <xs:attribute name="closed" use="optional" type="xs:dateTime"/>
             </xs:extension>
@@ -121,6 +122,7 @@ SOFTWARE.
         <xs:element name="puzzle" type="puzzle" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="date" use="required" type="xs:dateTime"/>
+      <xs:attribute name="model" use="optional" type="xs:boolean"/>
       <xs:attribute name="version" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:string">

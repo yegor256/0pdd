@@ -43,7 +43,7 @@ class TestPuzzles < Test::Unit::TestCase
       test_xml(d, 'ignores-unknown-issues.xml')
       test_xml(d, 'submits-old-puzzles.xml')
       test_xml(d, 'submits-three-tickets.xml')
-      test_xml(d, 'submits-ranked-puzzles.xml')
+      test_xml(d, 'submits-ranked-puzzles.xml', true)
     end
   end
 
@@ -69,7 +69,7 @@ class TestPuzzles < Test::Unit::TestCase
 
   private
 
-  def test_xml(dir, name)
+  def test_xml(dir, name, ordered=false)
     xml = File.open("test-assets/puzzles/#{name}") { |f| Nokogiri::XML(f) }
     storage = VersionedStorage.new(
       SafeStorage.new(
@@ -94,8 +94,9 @@ class TestPuzzles < Test::Unit::TestCase
       )
     end
     xml.xpath('/test/submit/ticket/text()').each_with_index do |id, idx|
+      submitted = ordered ? tickets.submitted[idx] == id.text : tickets.submitted.include?(id.text)
       assert(
-        tickets.submitted[idx] == id.text,
+        submitted,
         "Puzzle #{id} was not submitted: #{tickets.submitted}"
       )
     end

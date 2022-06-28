@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <test>
   <snapshot>
-    <puzzles date="2016-12-10T16:26:36Z">
+    <puzzles date="2016-12-10T16:26:36Z" model="true">
       <puzzle>
         <ticket>516</ticket>
         <estimate>60</estimate>
@@ -64,7 +64,7 @@ SOFTWARE.
     </puzzles>
   </snapshot>
   <before>
-    <puzzles date="2016-12-03T16:26:36Z" version="0.1"/>
+    <puzzles date="2016-12-03T16:26:36Z" version="0.1" model="true" />
   </before>
   <assertions>
     <xpath>/puzzles[count(//puzzle)=3]</xpath>
