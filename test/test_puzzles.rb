@@ -43,7 +43,7 @@ class TestPuzzles < Test::Unit::TestCase
       test_xml(d, 'ignores-unknown-issues.xml')
       test_xml(d, 'submits-old-puzzles.xml')
       test_xml(d, 'submits-three-tickets.xml')
-      test_xml(d, 'submits-ranked-puzzles.xml', true)
+      test_xml(d, 'submits-ranked-puzzles.xml', ordered: true)
     end
   end
 
@@ -69,7 +69,7 @@ class TestPuzzles < Test::Unit::TestCase
 
   private
 
-  def test_xml(dir, name, ordered=false)
+  def test_xml(dir, name, ordered: false)
     xml = File.open("test-assets/puzzles/#{name}") { |f| Nokogiri::XML(f) }
     storage = VersionedStorage.new(
       SafeStorage.new(

@@ -124,10 +124,11 @@ class Puzzles
     return submit_ranked(xml, tickets) unless skip_model
     seen = []
     Kernel.loop do
-      puzzles = xml.xpath(
-        '//puzzle[@alive="true" and (not(issue) or issue="unknown")' +
-        seen.map { |i| "and id != '#{i}'" }.join(' ') + ']'
-      )
+      puzzles = xml.xpath([
+        '//puzzle[@alive="true" and (not(issue) or issue="unknown")',
+        seen.map { |i| "and id != '#{i}'" }.join(' '),
+        ']'
+      ].join(' '))
       break if puzzles.empty?
       puzzle = puzzles[0]
       id = puzzle.xpath('id')[0].text
