@@ -1,7 +1,6 @@
 <img src="https://avatars2.githubusercontent.com/u/24456188" width="64px" height="64px"/>
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
-[![Managed by Zerocracy](https://www.0crat.com/badge/C3T46CUJJ.svg)](https://www.0crat.com/p/C3T46CUJJ)
 [![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/0pdd)](https://www.rultor.com/p/yegor256/0pdd)
 [![We recommend RubyMine](https://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
 
@@ -14,6 +13,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/7462387124cf5f9b8ef8/maintainability)](https://codeclimate.com/github/yegor256/0pdd/maintainability)
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/0pdd.svg)](https://codecov.io/github/yegor256/0pdd?branch=master)
 
+![Lines of code](https://img.shields.io/tokei/lines/github/yegor256/0pdd)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/0pdd)](https://hitsofcode.com/view/github/yegor256/0pdd)
 
 Read this blog post first: [PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html)
@@ -57,7 +57,7 @@ It has to be a [YAML](https://en.wikipedia.org/wiki/YAML) file with the followin
 optional parameters inside:
 
 ```yaml
-max_issues: 10
+threshold: 10
 errors:
   - yegor256@gmail.com
 alerts:
@@ -75,7 +75,7 @@ tags:
   - bug
 ```
 
-Section `max_issues` allows you to limit the number of issues created from the puzzles in your code - in the example above, each time the appropriate push event is sent to your webhook 10 issues will be created regardless of the number of puzzles found in the code. The maximum value allowed for `max_issues` is `99`.
+The element `threshold` allows you to limit the number of issues created from the puzzles in your code. In the example above, each time the appropriate push event is sent to your webhook up to 10 issues will be created regardless of the number of puzzles found in the code. If this limit is not set, `threshold` is assumed to be equal to 256.
 
 Section `errors` allows you to specify a list of email addresses which will
 receive notifications when PDD processing fails for your repo. It's
