@@ -25,18 +25,14 @@ require_relative '../git_repo'
 # Github VCS
 #
 class GithubRepo
-  attr_reader :is_valid, :repo, :name
+  attr_reader :repo, :name
 
   def initialize(client, json, config = {})
     @name = 'GITHUB'
     @client = client
     @config = config
     @json = json
-    @is_valid = json['repository'] && json['repository']['full_name'] &&
-    json['ref'] == "refs/heads/#{json['repository']['master_branch']}" &&
-    json['head_commit'] && json['head_commit']['id']
-
-    @repo = git_repo if @is_valid
+    @repo = git_repo(json, config)
   end
 
   def issue(issue_id)
@@ -134,16 +130,16 @@ class GithubRepo
 
   private
 
-  def git_repo
-    uri = @json['repository']['ssh_url'] || @json['repository']['url']
-    name = @json['repository']['full_name']
-    default_branch = @json['repository']['master_branch']
-    head_commit_hash = @json['head_commit']['id']
+  def git_repo(json, config)
+    uri = json['repository']['ssh_url'] || json['repository']['url']
+    name = json['repository']['full_name']
+    default_branch = json['repository']['master_branch']
+    head_commit_hash = json['head_commit']['id']
     repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
       name: name,
-      id_rsa: @config['id_rsa'],
+      id_rsa: config['id_rsa'],
       master: default_branch,
       head_commit_hash: head_commit_hash
     )

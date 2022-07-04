@@ -350,7 +350,6 @@ post '/hook/github' do
     end
   )
   github = GithubRepo.new(settings.github, json, settings.config)
-  return 'Thanks' unless github.is_valid
   unless ENV['RACK_ENV'] == 'test'
     process_request(github)
     puts "GitHub hook from #{github.repo.name}"
@@ -384,7 +383,6 @@ post '/hook/gitlab' do
     end
   )
   gitlab = GitlabRepo.new(settings.gitlab, json, settings.config)
-  return 'Thanks' unless gitlab.is_valid
   unless ENV['RACK_ENV'] == 'test'
     process_request(gitlab)
     puts "Gitlab hook from #{gitlab.repo.name}"

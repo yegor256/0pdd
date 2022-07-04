@@ -27,18 +27,14 @@ require_relative '../clients/gitlab'
 # API: https://github.com/NARKOZ/gitlab
 #
 class GitlabRepo
-  attr_reader :is_valid, :repo, :name
+  attr_reader :repo, :name
 
   def initialize(client, json, config = {})
     @name = 'GITLAB'
     @client = client
     @config = config
     @json = json
-    @is_valid = json['project'] && json['project']['path_with_namespace'] &&
-    json['ref'] == "refs/heads/#{json['project']['default_branch']}" &&
-    json['checkout_sha']
-
-    @repo = git_repo if @is_valid
+    @repo = git_repo(json, config)
   end
 
   def issue(issue_id)
@@ -173,16 +169,16 @@ class GitlabRepo
 
   private
 
-  def git_repo
-    uri = @json['project']['url']
-    name = @json['project']['path_with_namespace']
-    default_branch = @json['project']['default_branch']
-    head_commit_hash = @json['checkout_sha']
+  def git_repo(json, config)
+    uri = json['project']['url']
+    name = json['project']['path_with_namespace']
+    default_branch = json['project']['default_branch']
+    head_commit_hash = json['checkout_sha']
     repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
       name: name,
-      id_rsa: @config['id_rsa'],
+      id_rsa: config['id_rsa'],
       master: default_branch,
       head_commit_hash: head_commit_hash
     )

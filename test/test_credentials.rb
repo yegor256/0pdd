@@ -28,6 +28,7 @@ require_relative 'test__helper'
 require_relative '../objects/storage/s3'
 require_relative '../objects/tickets/tickets'
 require_relative '../objects/log'
+require_relative '../objects/vcs/github'
 require_relative '../objects/git_repo'
 
 class CredentialsTest < Test::Unit::TestCase
@@ -61,7 +62,20 @@ class CredentialsTest < Test::Unit::TestCase
       access_token: cfg['github']['token']
     )
     tickets = Tickets.new(
-      'yegor256/0pdd', github, nil
+      GithubRepo.new(
+        github,
+        {
+          'repository' => {
+            'full_name' => 'yegor256/0pdd',
+            'url' => 'https://github.com/yegor256/0pdd',
+            'master_branch' => 'master'
+          },
+          'ref' => 'master',
+          'head_commit' => {
+            'id' => '---'
+          },
+        }
+      )
     )
     tickets.close(
       Nokogiri::XML(
@@ -111,6 +125,7 @@ class CredentialsTest < Test::Unit::TestCase
 
   def config
     file = File.join(File.dirname(__FILE__), '../config.yml')
+    file = ENV['PDD_CONFIG'] if ENV['PDD_CONFIG']
     omit unless File.exist?(file)
     YAML.safe_load(File.open(file))
   end
