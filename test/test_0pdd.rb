@@ -87,7 +87,12 @@ class AppTest < Test::Unit::TestCase
     }
     post(
       '/hook/github',
-      '{"repository":{"full_name":"yegor256-one/com.github.0pdd-test"}, "ref":"refs/heads/master"}',
+      [
+        '{"head_commit":{"id":"-"},',
+        '"repository":{"url":"localhost",',
+        '"full_name":"yegor256-one/com.github.0pdd-test"},',
+        '"ref":"refs/heads/master"}'
+      ].join,
       headers
     )
     assert(last_response.ok?)

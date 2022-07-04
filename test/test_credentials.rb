@@ -73,7 +73,7 @@ class CredentialsTest < Test::Unit::TestCase
           'ref' => 'master',
           'head_commit' => {
             'id' => '---'
-          },
+          }
         }
       )
     )
