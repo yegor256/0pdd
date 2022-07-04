@@ -21,6 +21,7 @@
 require 'test/unit'
 require 'mail'
 require 'yaml'
+require 'octokit'
 require 'tmpdir'
 require 'aws-sdk-dynamodb'
 require_relative 'test__helper'
