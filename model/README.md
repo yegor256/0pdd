@@ -1,6 +1,10 @@
 Puzzle Ranking (Linear ML Model)
 
+<<<<<<< Updated upstream
 ###### Note: This is an opt-in feature
+=======
+The data for puzzles is pre-processed and available in `~/data/proper_pdd_data_regression.csv`. In the data, The first row is the column index, the first column is the repo id the puzzle belongs to and the last column is the output variable (`y`).
+>>>>>>> Stashed changes
 
 ### Internals
 
