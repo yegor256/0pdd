@@ -18,6 +18,7 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
+ruby '~> 2.6'
 
 gem 'atlassian-jwt', '~> 0.2.1'
 gem 'aws-sdk-dynamodb', '1.75.0'
