@@ -10,7 +10,7 @@ install: |-
   git config --global user.email "server@0pdd.com"
   git config --global user.name "0pdd.com"
   pdd -f /dev/null
-  sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
+  sudo gem install bundler
   sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
 release:
   sensitive:
