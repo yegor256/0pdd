@@ -134,7 +134,7 @@ class GithubRepo
     uri = json['repository']['ssh_url'] || json['repository']['url']
     name = json['repository']['full_name']
     default_branch = json['repository']['master_branch']
-    head_commit_hash = json['head_commit']['id']
+    head_commit_hash = json['head_commit'] ? json['head_commit']['id'] : ''
     repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
