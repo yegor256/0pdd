@@ -177,7 +177,7 @@ get '/' do
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
     remaining: settings.github.rate_limit.remaining,
-    tail: projects.first(10)
+    tail: projects.first(10),
     total_projects: projects.length
   )
 end
