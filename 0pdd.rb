@@ -169,15 +169,14 @@ end
 get '/' do
   projects = Exec.new(
     "(sort /tmp/0pdd-done.txt 2>/dev/null || echo '')\
-    | uniq\
-    | tail -r"
+    | uniq"
   ).run.split("\n").reject(&:empty?)
   haml :index, layout: :layout, locals: merged(
     title: '0pdd',
     ruby_version: settings.ruby_version,
     git_version: settings.git_version,
     remaining: settings.github.rate_limit.remaining,
-    tail: projects.first(10),
+    tail: projects.last(10).reverse,
     total_projects: projects.length
   )
 end
