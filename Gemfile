@@ -25,25 +25,25 @@ gem 'aws-sdk-dynamodb', '1.75.0'
 gem 'aws-sdk-s3', '1.114.0'
 gem 'codecov', '0.6.0'
 gem 'crack', '0.4.5'
-gem 'gitlab', '4.17.0'
+gem 'gitlab', '4.19.0'
 gem 'glogin', '0.8.0'
 gem 'haml', '5.2.2'
 gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
 gem 'mocha', '1.14.0', require: false
 gem 'nokogiri', '1.13.6'
-gem 'octokit', '4.25.0'
+gem 'octokit', '4.25.1'
 gem 'pdd', '0.21.1'
-gem 'rack', '2.2.3.1'
-gem 'rack-test', '2.0.0'
+gem 'rack', '2.2.4'
+gem 'rack-test', '2.0.2'
 gem 'rake', '13.0.6', require: false
-gem 'rubocop', '1.31.0', require: false
-gem 'rubocop-rspec', '2.11.1', require: false
+gem 'rubocop', '1.31.2', require: false
+gem 'rubocop-rspec', '2.12.1', require: false
 gem 'ruby-fann'
 gem 'sass', '3.7.4'
-gem 'sentry-raven', '3.1.1'
+gem 'sentry-raven', '3.1.2'
 gem 'sinatra', '2.2.0'
 gem 'sinatra-contrib', '2.2.0'
-gem 'sprockets', '4.1.0'
+gem 'sprockets', '4.1.1'
 gem 'test-unit', '3.5.3', require: false
 gem 'xcop', '0.7.1'
