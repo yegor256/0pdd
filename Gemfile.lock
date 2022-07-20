@@ -1,19 +1,20 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.3)
+    activesupport (6.1.6.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.2)
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
     aws-eventstream (1.2.0)
-    aws-partitions (1.604.0)
-    aws-sdk-core (3.131.2)
+    aws-partitions (1.608.0)
+    aws-sdk-core (3.131.3)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.525.0)
       aws-sigv4 (~> 1.1)
@@ -21,14 +22,14 @@ GEM
     aws-sdk-dynamodb (1.75.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-kms (1.57.0)
+    aws-sdk-kms (1.58.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-s3 (1.114.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.4)
-    aws-sigv4 (1.5.0)
+    aws-sigv4 (1.5.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base58 (0.2.3)
     codecov (0.6.0)
@@ -54,7 +55,7 @@ GEM
     httparty (0.20.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.11.0)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     jira-ruby (2.2.0)
       activesupport
@@ -70,17 +71,13 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.0)
     minitest (5.16.2)
     mocha (1.14.0)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.2.3)
-    mustermann (1.1.1)
+    mustermann (1.1.2)
       ruby2_keywords (~> 0.0.1)
-    nokogiri (1.13.6)
-      mini_portile2 (~> 2.8.0)
-      racc (~> 1.4)
     nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
     oauth (0.5.10)
@@ -165,7 +162,7 @@ GEM
     test-unit (3.5.3)
       power_assert
     tilt (2.0.10)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.2.0)
     xcop (0.7.1)
@@ -173,11 +170,9 @@ GEM
       nokogiri (~> 1.10)
       rainbow (~> 3.0)
       slop (~> 4.4)
+    zeitwerk (2.6.0)
 
 PLATFORMS
-  ruby
-  x86_64-darwin-19
-  x86_64-darwin-20
   x86_64-darwin-21
 
 DEPENDENCIES
@@ -210,7 +205,7 @@ DEPENDENCIES
   xcop (= 0.7.1)
 
 RUBY VERSION
-   ruby 2.7.6
+   ruby 2.6.0p0
 
 BUNDLED WITH
-   2.3.17
+   2.3.16
