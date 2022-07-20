@@ -60,6 +60,22 @@ class TestDiff < Test::Unit::TestCase
     )
   end
 
+  def test_notification_unknown_issue
+    tickets = Tickets.new
+    xml = File.open('test-assets/puzzles/notify-unknown-open-issues.xml') do |f|
+      Nokogiri::XML(f)
+    end
+    Diff.new(Nokogiri::XML('<puzzles/>'), xml).notify(tickets)
+    assert(
+      tickets.messages.length == 1,
+      "Incorrect number of messages: #{tickets.messages.length}"
+    )
+    assert(
+      tickets.messages[0] == '5 the puzzle [#125](//issue/125) is still not solved.',
+      "Text is wrong: #{tickets.messages[0]}"
+    )
+  end
+
   def test_notification_on_two_new_puzzles
     tickets = Tickets.new
     Diff.new(
