@@ -47,7 +47,10 @@ class Diff
       if issue.empty?
         "`#{p.xpath('id')}`"
       else
-        "[##{issue[0].text}](#{issue[0]['href']})"
+        number = issue[0].text
+        link = issue[0]['href']
+        number = link.split('/')[-1] if link && number == 'unknown'
+        "[##{number}](#{link})"
       end
     end.sort
   end
