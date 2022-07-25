@@ -444,7 +444,7 @@ def merged(hash)
 end
 
 def storage(repo, vcs)
-  file_name = "#{vcs}-#{repo}"
+  file_name = vcs == 'github' ? repo : "#{vcs}-#{repo}"
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(
