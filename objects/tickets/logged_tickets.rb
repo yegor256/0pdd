@@ -43,7 +43,7 @@ class LoggedTickets
 This situation most probably means that \
 this puzzle was already seen in the code and \
 you're trying to create it again. We would recommend you to re-phrase \
-the text of the puzzle and push again. If this doesn't work, pleas let us know \
+the text of the puzzle and push again. If this doesn't work, please let us know \
 in GitHub: https://github.com/yegor256/0pdd/issues. More details here: \
 http://www.0pdd.com/log-item?repo=#{CGI.escape(@vcs.repo.name)}&tag=#{CGI.escape(tag)}&vcs=#{@vcs.name.downcase} ."
     end

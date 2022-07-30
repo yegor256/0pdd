@@ -351,7 +351,7 @@ post '/hook/github' do
     end
   )
   github = GithubRepo.new(settings.github, json, settings.config)
-  return "I can't access #{github.repo.name}" unless github.exists?
+  return [400, "No access to #{github.repo.name}"] unless github.exists?
   unless ENV['RACK_ENV'] == 'test'
     process_request(github)
     puts "GitHub hook from #{github.repo.name}"
@@ -385,7 +385,7 @@ post '/hook/gitlab' do
     end
   )
   gitlab = GitlabRepo.new(settings.gitlab, json, settings.config)
-  return "I can't access #{github.repo.name}" unless gitlab.exists?
+  return [400, "No access to #{gitlab.repo.name}"] unless gitlab.exists?
   unless ENV['RACK_ENV'] == 'test'
     process_request(gitlab)
     puts "Gitlab hook from #{gitlab.repo.name}"

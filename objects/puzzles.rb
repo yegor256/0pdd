@@ -34,24 +34,28 @@ class Puzzles
     @threshold = t.positive? && t < 256 ? t : 256
   end
 
+  # Find out which puzzles deservers to become new tickets and submit
+  # them to the repository (GitHub, for example). Also, find out which
+  # puzzles are no longer active and remove them from GitHub.
   def deploy(tickets)
-    expose(
-      save(
-        group(
-          join(@storage.load, @repo.xml)
-        )
-      ),
-      tickets
-    )
+    xml = join(@storage.load, @repo.xml)
+    xml = group(xml)
+    save(xml)
+    expose(xml, tickets)
   end
 
   private
 
+  # Save new XML into the storage, replacing the existing one.
   def save(xml)
     @storage.save(xml)
-    xml
   end
 
+  # Join existing XML with the snapshot just arrived from PDD
+  # toolkit output after the analysis of the code base. New <puzzle>
+  # elements are added as <extra> elements. They later inside the
+  # method join() will be placed to the right positions and will
+  # either replace existing ones of will become new puzzles.
   def join(before, snapshot)
     after = Nokogiri::XML(before.to_s)
     target = after.xpath('/puzzles')[0]
@@ -62,15 +66,57 @@ class Puzzles
     after
   end
 
+  # Merge <extra> elements with <puzzle> elements in the XML. Some
+  # extras will be simply deleted, while others will become new
+  # puzzles.
   def group(xml)
     Nokogiri::XSLT(File.read('assets/xsl/group.xsl')).transform(
       Nokogiri::XSLT(File.read('assets/xsl/join.xsl')).transform(xml)
     )
   end
 
+  # Take some puzzles from the XML and either close their tickets in GitHub
+  # or create new tickets.
+  def expose(xml, tickets)
+    Kernel.loop do
+      puzzles = xml.xpath(
+        '//puzzle[@alive="false" and issue and issue != "unknown" and not(issue/@closed)]'
+      )
+      break if puzzles.empty?
+      puzzle = puzzles[0]
+      puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
+      save(xml)
+    end
+    skip_model = xml.xpath('/puzzles[@model="true"]').empty?
+    return submit_ranked(xml, tickets) unless skip_model
+    seen = []
+    Kernel.loop do
+      puzzles = xml.xpath([
+        '//puzzle[@alive="true" and (not(issue) or issue="unknown")',
+        seen.map { |i| "and id != '#{i}'" }.join(' '),
+        ']'
+      ].join(' '))
+      break if puzzles.empty?
+      puzzle = puzzles[0]
+      id = puzzle.xpath('id')[0].text
+      seen << id
+      issue = tickets.submit(puzzle)
+      next if issue.nil?
+      puzzle.search('issue').remove
+      puzzle.add_child(
+        "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
+      )
+      save(xml)
+    end
+  end
+
+  # Reads the list of all puzzles from the XML in the storage and then
+  # sorts them in the right order, in which they should be present in the
+  # backlog.
   def rank(puzzles)
-    puzzles = puzzles.map { |puzzle| JSON.parse(Crack::XML.parse(puzzle.to_s).to_json)['puzzle'] }
-    LinearModel.new(@repo.name, @storage).predict(puzzles)
+    LinearModel.new(@repo.name, @storage).predict(
+      puzzles.map { |puzzle| JSON.parse(Crack::XML.parse(puzzle.to_s).to_json)['puzzle'] }
+    )
   end
 
   def submit_ranked(xml, tickets)
@@ -107,39 +153,6 @@ class Puzzles
       )
       save(xml)
       submitted += 1
-    end
-  end
-
-  def expose(xml, tickets)
-    Kernel.loop do
-      puzzles = xml.xpath(
-        '//puzzle[@alive="false" and issue and issue != "unknown" and not(issue/@closed)]'
-      )
-      break if puzzles.empty?
-      puzzle = puzzles[0]
-      puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
-      save(xml)
-    end
-    skip_model = xml.xpath('/puzzles[@model="true"]').empty?
-    return submit_ranked(xml, tickets) unless skip_model
-    seen = []
-    Kernel.loop do
-      puzzles = xml.xpath([
-        '//puzzle[@alive="true" and (not(issue) or issue="unknown")',
-        seen.map { |i| "and id != '#{i}'" }.join(' '),
-        ']'
-      ].join(' '))
-      break if puzzles.empty?
-      puzzle = puzzles[0]
-      id = puzzle.xpath('id')[0].text
-      seen << id
-      issue = tickets.submit(puzzle)
-      next if issue.nil?
-      puzzle.search('issue').remove
-      puzzle.add_child(
-        "<issue href='#{issue[:href]}'>#{issue[:number]}</issue>"
-      )
-      save(xml)
     end
   end
 end
