@@ -100,8 +100,6 @@ class FakeGitlab
     {
       private: false
     }
-  rescue Gitlab::Error::NotFound => e
-    raise "Repository #{name} is not available: #{e.message}"
   end
 
   def repository_link

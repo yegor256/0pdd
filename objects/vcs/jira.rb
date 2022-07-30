@@ -76,10 +76,12 @@ class JiraRepo
     issue.fetch
   end
 
-  def repository(name = nil)
-    @client.Project.find(name)
+  def exists?
+    @client.Project.find(@repo.name)
+    true
   rescue JIRA::NotFound => e
-    raise "Repository #{name} is not available: #{e.message}"
+    puts "Repository #{@repo.name} is not available: #{e.message}"
+    false
   end
 
   def repository_link
@@ -93,7 +95,6 @@ class JiraRepo
     name = json['repository']['full_name']
     default_branch = json['repository']['master_branch']
     head_commit_hash = json['head_commit']['id']
-    repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
       name: name,

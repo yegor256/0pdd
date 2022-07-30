@@ -35,6 +35,14 @@ class GithubRepo
     @repo = git_repo(json, config)
   end
 
+  def exists?
+    @client.repository(@repo.name)
+    true
+  rescue Octokit::NotFound => e
+    puts "Repository #{@repo.name} is not available: #{e.message}"
+    false
+  end
+
   def issue(issue_id)
     hash = @client.issue(@repo.name, issue_id)
     id = hash[:user][:id] if hash[:user]
@@ -102,12 +110,6 @@ class GithubRepo
     @client.star(@repo.name)
   end
 
-  def repository(name = nil)
-    @client.repository(name || @repo.name)
-  rescue Octokit::NotFound => e
-    raise "Repository #{name} is not available: #{e.message}"
-  end
-
   def repository_link
     "https://github.com/#{@repo.name}"
   end
@@ -135,7 +137,6 @@ class GithubRepo
     name = json['repository']['full_name']
     default_branch = json['repository']['master_branch']
     head_commit_hash = json['head_commit'] ? json['head_commit']['id'] : ''
-    repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
       name: name,

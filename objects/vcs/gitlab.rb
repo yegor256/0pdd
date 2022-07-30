@@ -134,17 +134,19 @@ class GitlabRepo
     @client.star_project(@repo.name)
   end
 
-  def repository(name = nil)
+  def exists?
     hash = JSON.parse(
-      @client.project(name || @repo.name).to_hash.to_json,
+      @client.project(@repo.name).to_hash.to_json,
       symbolize_names: true
     )
     hash[:private] = hash[:visibility] == 'private'
-    hash
+    true
   rescue Gitlab::Error::NotFound => e
-    raise "Repository #{name} is not available: #{e.message}"
+    puts "Repository #{@repo.name} is not available: #{e.message}"
+    false
   rescue Gitlab::Error::Forbidden => e
-    raise "Repository #{name} is not accessible: #{e.message}"
+    puts "Repository #{@repo.name} is not accessible: #{e.message}"
+    false
   end
 
   def repository_link
@@ -174,7 +176,6 @@ class GitlabRepo
     name = json['project']['path_with_namespace']
     default_branch = json['project']['default_branch']
     head_commit_hash = json['checkout_sha']
-    repository(name) # checks that repository exists
     GitRepo.new(
       uri: uri,
       name: name,
