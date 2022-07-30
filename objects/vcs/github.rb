@@ -35,6 +35,10 @@ class GithubRepo
     @repo = git_repo(json, config)
   end
 
+  # Check whether this repository exists in GitHub and we have
+  # access to it. Well, the actual access permissions are not checked
+  # here, but we only try to read properties of the repo. If such a HTTP
+  # request fails, the method returns FALSE.
   def exists?
     @client.repository(@repo.name)
     true
