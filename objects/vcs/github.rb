@@ -28,7 +28,7 @@ class GithubRepo
   attr_reader :repo, :name
 
   def initialize(client, json, config = {})
-    @name = 'GITHUB'
+    @name = 'github'
     @client = client
     @config = config
     @json = json
