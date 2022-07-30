@@ -47,6 +47,8 @@ class GithubRepo
     false
   end
 
+  # Read information about one issue in GitHub and return it
+  # as a map.
   def issue(issue_id)
     hash = @client.issue(@repo.name, issue_id)
     id = hash[:user][:id] if hash[:user]
