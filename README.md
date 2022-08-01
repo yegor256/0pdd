@@ -1,18 +1,15 @@
-<img src="https://avatars2.githubusercontent.com/u/24456188" width="64px" height="64px"/>
+<img alt="logo" src="https://avatars2.githubusercontent.com/u/24456188" width="64px" height="64px"/>
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/0pdd)](https://www.rultor.com/p/yegor256/0pdd)
 [![We recommend RubyMine](https://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
 
+[![rake](https://github.com/yegor256/0pdd/actions/workflows/rake.yml/badge.svg)](https://github.com/yegor256/0pdd/actions/workflows/rake.yml)
 [![Availability at SixNines](https://www.sixnines.io/b/574a)](https://www.sixnines.io/h/574a)
 [![Webhook via ReHTTP](https://www.rehttp.net/b?u=http%3A%2F%2Fwww.0pdd.com%2Fhook%2Fgithub)](https://www.rehttp.net/i?u=http%3A%2F%2Fwww.0pdd.com%2Fhook%2Fgithub)
-
-[![Build Status](https://travis-ci.org/yegor256/0pdd.svg)](https://travis-ci.org/yegor256/0pdd)
-[![Build status](https://ci.appveyor.com/api/projects/status/j84qweo34e11rprr?svg=true)](https://ci.appveyor.com/project/yegor256/0pdd)
 [![PDD status](https://www.0pdd.com/svg?name=yegor256/0pdd)](https://www.0pdd.com/p?name=yegor256/0pdd)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7462387124cf5f9b8ef8/maintainability)](https://codeclimate.com/github/yegor256/0pdd/maintainability)
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/0pdd.svg)](https://codecov.io/github/yegor256/0pdd?branch=master)
-
 ![Lines of code](https://img.shields.io/tokei/lines/github/yegor256/0pdd)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/0pdd)](https://hitsofcode.com/view/github/yegor256/0pdd)
 
