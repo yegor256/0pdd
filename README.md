@@ -12,6 +12,7 @@
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/0pdd.svg)](https://codecov.io/github/yegor256/0pdd?branch=master)
 ![Lines of code](https://img.shields.io/tokei/lines/github/yegor256/0pdd)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/0pdd)](https://hitsofcode.com/view/github/yegor256/0pdd)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d23061346143451db3abedca5ad9cbf2)](https://www.codacy.com/gh/yegor256/0pdd/dashboard)
 
 Read this blog post first: [PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html)
 
