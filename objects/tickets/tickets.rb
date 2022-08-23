@@ -19,6 +19,9 @@
 # SOFTWARE.
 
 require 'haml'
+require 'gitlab'
+require 'octokit'
+require 'jira-ruby'
 require_relative '../truncated'
 require_relative '../maybe_text'
 
