@@ -1,7 +1,7 @@
 %div.center
   %p
     %a{href:url('/')}
-      %img.logo{src:'https://avatars2.githubusercontent.com/u/24456188'}
+      %img.logo{src:'/images/logo.svg'}
   %p
     PDD puzzles collector.
   %p
@@ -13,9 +13,6 @@
       - tail.each_with_index do |r|
         %span
           %a{href:'https://github.com/' + r}>= r
-    %p
-      Total projects using 0pdd: 
-      = total_projects
   %p
     Made by
     %a{href:'https://www.yegor256.com'} @yegor256
