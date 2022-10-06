@@ -170,7 +170,7 @@ GEM
     temple (0.8.2)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
-    test-unit (3.5.3)
+    test-unit (3.5.5)
       power_assert
     tilt (2.0.11)
     tzinfo (2.0.5)
@@ -215,7 +215,7 @@ DEPENDENCIES
   sinatra (= 2.2.2)
   sinatra-contrib (= 2.2.2)
   sprockets (= 4.1.1)
-  test-unit (= 3.5.3)
+  test-unit (= 3.5.5)
   xcop (= 0.7.1)
 
 BUNDLED WITH
