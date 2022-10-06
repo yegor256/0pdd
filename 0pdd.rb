@@ -31,6 +31,8 @@ require 'raven'
 require 'octokit'
 require 'tmpdir'
 require 'glogin'
+require 'uri'
+require 'net/http'
 
 require_relative 'version'
 require_relative 'objects/log'
@@ -132,6 +134,18 @@ configure do
   set :ruby_version, Exec.new('ruby -e "print RUBY_VERSION"').run
   set :git_version, Exec.new('git --version | cut -d" " -f 3').run
   set :temp_dir, Dir.mktmpdir('0pdd')
+  if ENV['RACK_ENV'] != 'test'
+    Thread.new do
+      loop do
+        sleep(10)
+        Net::HTTP.get_response(URI('https://www.0pdd.com/ping-github'))
+      rescue Exception
+        # If we reach this point, we must not even try to
+        # do anything. Here we must quietly ignore everything
+        # and let the daemon go to the next cycle.
+      end
+    end
+  end
 end
 
 before '/*' do
