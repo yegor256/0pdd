@@ -36,8 +36,8 @@ gem 'pdd', '0.22.0'
 gem 'rack', '2.2.4'
 gem 'rack-test', '2.0.2'
 gem 'rake', '13.0.6', require: false
-gem 'rubocop', '1.35.1', require: false
-gem 'rubocop-rspec', '2.12.1', require: false
+gem 'rubocop', '1.36.0', require: false
+gem 'rubocop-rspec', '2.13.2', require: false
 gem 'ruby-fann'
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.2'
