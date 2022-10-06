@@ -20,7 +20,7 @@
 source 'https://rubygems.org'
 
 gem 'atlassian-jwt', '~> 0.2.1'
-gem 'aws-sdk-dynamodb', '1.76.0'
+gem 'aws-sdk-dynamodb', '1.77.0'
 gem 'aws-sdk-s3', '1.114.0'
 gem 'codecov', '0.6.0'
 gem 'crack', '0.4.5'
