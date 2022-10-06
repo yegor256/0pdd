@@ -101,7 +101,7 @@ SOFTWARE.
       <plugin>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-dynamodb-maven-plugin</artifactId>
-        <version>0.9</version>
+        <version>0.10.1</version>
         <executions>
           <execution>
             <id>dynamodb-integration-test</id>
