@@ -26,7 +26,7 @@ gem 'codecov', '0.6.0'
 gem 'crack', '0.4.5'
 gem 'gitlab', '4.19.0'
 gem 'glogin', '0.8.0'
-gem 'haml', '5.2.2'
+gem 'haml', '6.0.6'
 gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
 gem 'mocha', '1.15.0', require: false
