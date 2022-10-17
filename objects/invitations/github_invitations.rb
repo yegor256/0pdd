@@ -49,9 +49,9 @@ class GithubInvitations
         @github.update_organization_membership(org, 'state' => 'active')
         puts "Invitation for @#{org} accepted"
       rescue Octokit::NotFound => e
-        puts "Failed to join @#{org} organization: #{e.message}"
+        # puts "Failed to join @#{org} organization: #{e.message}"
         @github.remove_organization_membership(org)
-        puts "Membership in @#{org} organization removed"
+        # puts "Membership in @#{org} organization removed"
       end
     end
   end
