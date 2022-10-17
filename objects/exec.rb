@@ -76,6 +76,7 @@ More information here: https://github.com/yegor256/pdd#how-to-run:\
 \n\n#{err}"
       )
     end
+    puts "+ #{c}"
     out
   end
 end
