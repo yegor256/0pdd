@@ -31,7 +31,7 @@ gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
 gem 'mocha', '1.16.0', require: false
 gem 'nokogiri', '1.13.9'
-gem 'octokit', '5.6.1'
+gem 'octokit', '6.0.0'
 gem 'pdd', '0.22.0'
 gem 'rack', '2.2.4'
 gem 'rack-test', '2.0.2'
