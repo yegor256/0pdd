@@ -29,7 +29,7 @@ gem 'glogin', '0.8.0'
 gem 'haml', '5.2.2'
 gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
-gem 'mocha', '1.16.0', require: false
+gem 'mocha', '2.0.0', require: false
 gem 'nokogiri', '1.13.9'
 gem 'octokit', '6.0.0'
 gem 'pdd', '0.22.0'
