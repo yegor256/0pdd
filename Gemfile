@@ -44,5 +44,5 @@ gem 'sentry-raven', '3.1.2'
 gem 'sinatra', '3.0.4'
 gem 'sinatra-contrib', '3.0.4'
 gem 'sprockets', '4.1.1'
-gem 'test-unit', '3.5.5', require: false
+gem 'test-unit', '3.5.6', require: false
 gem 'xcop', '0.7.1'
