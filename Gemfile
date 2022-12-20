@@ -32,7 +32,7 @@ gem 'mail', '2.7.1'
 gem 'mocha', '2.0.2', require: false
 gem 'nokogiri', '1.13.10'
 gem 'octokit', '6.0.0'
-gem 'pdd', '0.22.0'
+gem 'pdd', '0.23.1'
 gem 'rack', '2.2.4'
 gem 'rack-test', '2.0.2'
 gem 'rake', '13.0.6', require: false
