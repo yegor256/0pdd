@@ -43,6 +43,6 @@ gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.2'
 gem 'sinatra', '3.0.4'
 gem 'sinatra-contrib', '3.0.4'
-gem 'sprockets', '4.1.1'
+gem 'sprockets', '4.2.0'
 gem 'test-unit', '3.5.7', require: false
 gem 'xcop', '0.7.1'
