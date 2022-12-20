@@ -116,7 +116,7 @@ GEM
       ffi (~> 1.0)
     regexp_parser (2.6.1)
     rexml (3.2.5)
-    rubocop (1.40.0)
+    rubocop (1.41.0)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.2.1)
@@ -208,7 +208,7 @@ DEPENDENCIES
   rack (= 2.2.4)
   rack-test (= 2.0.2)
   rake (= 13.0.6)
-  rubocop (= 1.40.0)
+  rubocop (= 1.41.0)
   rubocop-rspec (= 2.16.0)
   ruby-fann
   sass (= 3.7.4)
