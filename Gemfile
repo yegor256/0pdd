@@ -21,7 +21,7 @@ source 'https://rubygems.org'
 
 gem 'atlassian-jwt', '~> 0.2.1'
 gem 'aws-sdk-dynamodb', '1.80.0'
-gem 'aws-sdk-s3', '1.117.2'
+gem 'aws-sdk-s3', '1.122.0'
 gem 'codecov', '0.6.0'
 gem 'crack', '0.4.5'
 gem 'gitlab', '4.19.0'
