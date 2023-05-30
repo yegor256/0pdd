@@ -30,7 +30,7 @@ gem 'haml', '5.2.2'
 gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
 gem 'mocha', '2.0.2', require: false
-gem 'nokogiri', '1.13.10'
+gem 'nokogiri', '1.14.3'
 gem 'octokit', '6.0.0'
 gem 'pdd', '0.23.1'
 gem 'rack', '2.2.5'
