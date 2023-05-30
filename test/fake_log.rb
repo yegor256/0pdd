@@ -29,4 +29,12 @@ class FakeLog
     @title = text
     @tag = tag
   end
+
+  def get(_tag); end
+
+  def delete(_time, _tag); end
+
+  def list(_since = Time.now.to_i)
+    []
+  end
 end
