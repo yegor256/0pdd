@@ -7,6 +7,7 @@ assets:
 install: |-
   git config --global user.email "server@0pdd.com"
   git config --global user.name "0pdd.com"
+  sudo gem install openssl -- --with-openssl-dir=/usr/local/rvm/rubies/ruby-3.0.1/lib/ruby/3.0.0/openssl
   sudo gem install pdd
   pdd -f /dev/null
   sudo gem install bundler
