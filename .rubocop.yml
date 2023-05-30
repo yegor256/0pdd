@@ -43,3 +43,5 @@ Layout/LineLength:
   Max: 120
 Style/OpenStructUse:
   Enabled: false
+Style/ComparableClamp:
+  Enabled: false

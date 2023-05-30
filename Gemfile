@@ -21,26 +21,28 @@ source 'https://rubygems.org'
 
 gem 'atlassian-jwt', '~> 0.2.1'
 gem 'aws-sdk-dynamodb', '1.84.0'
-gem 'aws-sdk-s3', '1.117.2'
-gem 'codecov', '0.6.0'
+gem 'aws-sdk-s3', '1.122.0'
 gem 'crack', '0.4.5'
 gem 'gitlab', '4.19.0'
-gem 'glogin', '0.9.0'
+gem 'glogin', '0.11.0'
 gem 'haml', '5.2.2'
 gem 'jira-ruby', '2.2.0'
 gem 'mail', '2.7.1'
+gem 'matrix', '0.4.2'
 gem 'mocha', '2.0.2', require: false
+gem 'net-smtp', '0.3.3'
 gem 'nokogiri', '1.13.10'
 gem 'octokit', '6.0.0'
 gem 'pdd', '0.23.1'
 gem 'rack', '2.2.6.4'
 gem 'rack-test', '2.0.2'
 gem 'rake', '13.0.6', require: false
-gem 'rubocop', '1.41.1', require: false
-gem 'rubocop-rspec', '2.16.0', require: false
-gem 'ruby-fann'
+gem 'rubocop', '1.51.0', require: false
+gem 'rubocop-rspec', '2.22.0', require: false
+gem 'ruby-fann', '1.3.2'
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.2'
+gem 'simplecov', '0.22.0'
 gem 'sinatra', '3.0.4'
 gem 'sinatra-contrib', '3.0.4'
 gem 'sprockets', '4.2.0'
