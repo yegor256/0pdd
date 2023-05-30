@@ -43,7 +43,7 @@ gem 'ruby-fann', '1.3.2'
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.2'
 gem 'simplecov', '0.22.0'
-gem 'sinatra', '3.0.4'
+gem 'sinatra', '3.0.6'
 gem 'sinatra-contrib', '3.0.4'
 gem 'sprockets', '4.2.0'
 gem 'test-unit', '3.5.7', require: false
