@@ -26,7 +26,7 @@ gem 'crack', '0.4.5'
 gem 'gitlab', '4.19.0'
 gem 'glogin', '0.11.0'
 gem 'haml', '5.2.2'
-gem 'jira-ruby', '2.2.0'
+gem 'jira-ruby', '2.3.0'
 gem 'mail', '2.8.1'
 gem 'matrix', '0.4.2'
 gem 'mocha', '2.0.2', require: false
