@@ -34,6 +34,7 @@ GEM
     concurrent-ruby (1.2.2)
     crack (0.4.5)
       rexml
+    date (0.0.1)
     differ (0.1.2)
     docile (1.4.0)
     faraday (2.7.5)
@@ -64,8 +65,11 @@ GEM
     jmespath (1.6.2)
     json (2.6.3)
     jwt (2.7.0)
-    mail (2.7.1)
+    mail (2.8.1)
       mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
     matrix (0.4.2)
     mini_mime (1.1.2)
     mini_portile2 (2.8.2)
@@ -77,6 +81,11 @@ GEM
     multipart-post (2.3.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
+    net-imap (0.3.4)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
     net-protocol (0.2.1)
       timeout
     net-smtp (0.3.3)
@@ -204,7 +213,7 @@ DEPENDENCIES
   glogin (= 0.11.0)
   haml (= 5.2.2)
   jira-ruby (= 2.2.0)
-  mail (= 2.7.1)
+  mail (= 2.8.1)
   matrix (= 0.4.2)
   mocha (= 2.0.2)
   net-smtp (= 0.3.3)
