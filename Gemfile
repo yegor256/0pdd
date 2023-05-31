@@ -35,7 +35,7 @@ gem 'nokogiri', '1.13.10'
 gem 'octokit', '6.1.1'
 gem 'pdd', '0.23.1'
 gem 'rack', '2.2.7'
-gem 'rack-test', '2.0.2'
+gem 'rack-test', '2.1.0'
 gem 'rake', '13.0.6', require: false
 gem 'rubocop', '1.51.0', require: false
 gem 'rubocop-rspec', '2.22.0', require: false
