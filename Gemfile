@@ -46,5 +46,5 @@ gem 'simplecov', '0.22.0'
 gem 'sinatra', '3.0.6'
 gem 'sinatra-contrib', '3.0.6'
 gem 'sprockets', '4.2.0'
-gem 'test-unit', '3.6.0', require: false
+gem 'test-unit', '3.6.1', require: false
 gem 'xcop', '0.7.1'
