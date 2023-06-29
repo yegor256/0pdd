@@ -48,9 +48,16 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_renders_some_pages
-    ['/css/main.css'].each do |page|
+    [
+      '/',
+      '/robots.txt',
+      '/version',
+      '/puzzles.xsd',
+      '/logout',
+      '/css/main.css'
+    ].each do |page|
       get(page)
-      assert(last_response.ok?)
+      assert(last_response.status < 400, "Failed to render #{page}")
     end
   end
 
