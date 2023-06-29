@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative './pso/pso'
+require_relative 'pso/pso'
 
 def argsort(arr)
   arr.map.with_index.sort.map(&:last)

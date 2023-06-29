@@ -18,8 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative './zero_vector'
-require_relative './functions/rastrigin'
+require_relative 'zero_vector'
+require_relative 'functions/rastrigin'
 
 # rubocop:disable Metrics/ParameterLists
 module Pso

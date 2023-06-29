@@ -21,9 +21,9 @@
 require 'json'
 require 'time'
 require 'crack'
-require_relative './predictor'
-require_relative './storage'
-require_relative './fake_weights_storage'
+require_relative 'predictor'
+require_relative 'storage'
+require_relative 'fake_weights_storage'
 
 #
 # Linear Model
