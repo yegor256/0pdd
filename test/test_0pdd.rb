@@ -47,6 +47,13 @@ class AppTest < Test::Unit::TestCase
     assert(last_response.body.include?('0pdd'))
   end
 
+  def test_renders_some_pages
+    ['/css/main.css'].each do |page|
+      get(page)
+      assert(last_response.ok?)
+    end
+  end
+
   def test_it_renders_puzzles_xsd
     get('/puzzles.xsd')
     assert(last_response.ok?)

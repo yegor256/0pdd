@@ -407,7 +407,8 @@ end
 get '/css/*.css' do
   content_type 'text/css', charset: 'utf-8'
   file = params[:splat].first
-  sass file.to_sym, views: "#{settings.root}/assets/sass"
+  template = File.join(File.absolute_path('./assets/sass/'), "#{file}.sass")
+  Sass::Engine.new(File.read(template)).render
 end
 
 get '/puzzles.xsd' do
