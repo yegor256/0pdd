@@ -29,7 +29,7 @@ gem 'haml', '5.2.2'
 gem 'jira-ruby', '2.3.0'
 gem 'mail', '2.8.1'
 gem 'matrix', '0.4.2'
-gem 'mocha', '2.0.4', require: false
+gem 'mocha', '2.1.0', require: false
 gem 'net-smtp', '0.3.3'
 gem 'nokogiri', '1.13.10'
 gem 'octokit', '6.1.1'
