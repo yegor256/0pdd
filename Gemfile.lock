@@ -113,7 +113,7 @@ GEM
     power_assert (2.0.3)
     public_suffix (5.0.3)
     racc (1.7.1)
-    rack (2.2.7)
+    rack (2.2.8)
     rack-protection (3.0.6)
       rack
     rack-test (2.1.0)
@@ -223,7 +223,7 @@ DEPENDENCIES
   nokogiri (= 1.13.10)
   octokit (= 7.0.0)
   pdd (= 0.23.2)
-  rack (= 2.2.7)
+  rack (= 2.2.8)
   rack-test (= 2.1.0)
   rake (= 13.0.6)
   rubocop (= 1.54.2)
