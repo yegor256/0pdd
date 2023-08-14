@@ -39,7 +39,7 @@ gem 'rack-test', '2.1.0'
 gem 'rake', '13.0.6', require: false
 gem 'rubocop', '1.55.1', require: false
 gem 'rubocop-rspec', '2.23.2', require: false
-gem 'ruby-fann', '1.3.2'
+gem 'ruby-fann', '1.4.0'
 gem 'sass', '3.7.4'
 gem 'sentry-raven', '3.1.2'
 gem 'simplecov', '0.22.0'
