@@ -185,7 +185,7 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
-    sprockets (4.2.0)
+    sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
     temple (0.10.2)
@@ -238,7 +238,7 @@ DEPENDENCIES
   simplecov (= 0.22.0)
   sinatra (= 3.0.6)
   sinatra-contrib (= 3.0.6)
-  sprockets (= 4.2.0)
+  sprockets (= 4.2.1)
   test-unit (= 3.6.1)
   xcop (= 0.7.1)
 
