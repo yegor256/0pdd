@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.7.2)
+    activesupport (7.0.8)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -12,8 +12,8 @@ GEM
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
     aws-eventstream (1.2.0)
-    aws-partitions (1.809.0)
-    aws-sdk-core (3.181.0)
+    aws-partitions (1.823.0)
+    aws-sdk-core (3.181.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.5)
@@ -31,13 +31,15 @@ GEM
     aws-sigv4 (1.6.0)
       aws-eventstream (~> 1, >= 1.0.2)
     base58 (0.2.3)
+    base64 (0.1.1)
     concurrent-ruby (1.2.2)
     crack (0.4.5)
       rexml
     date (3.3.3)
     differ (0.1.2)
     docile (1.4.0)
-    faraday (2.7.10)
+    faraday (2.7.11)
+      base64
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
@@ -72,9 +74,9 @@ GEM
       net-pop
       net-smtp
     matrix (0.4.2)
-    mini_mime (1.1.2)
+    mini_mime (1.1.5)
     mini_portile2 (2.8.4)
-    minitest (5.19.0)
+    minitest (5.20.0)
     mocha (2.1.0)
       ruby2_keywords (>= 0.0.5)
     multi_json (1.15.0)
@@ -82,7 +84,7 @@ GEM
     multipart-post (2.3.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
-    net-imap (0.3.6)
+    net-imap (0.3.7)
       date
       net-protocol
     net-pop (0.1.2)
@@ -193,12 +195,13 @@ GEM
       unicode-display_width (>= 1.1.1, < 3)
     test-unit (3.6.1)
       power_assert
-    tilt (2.2.0)
+    tilt (2.3.0)
     timeout (0.4.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
     version_gem (1.1.3)
+    webrick (1.8.1)
     xcop (0.7.1)
       differ (~> 0.1.2)
       nokogiri (~> 1.10)
@@ -240,6 +243,7 @@ DEPENDENCIES
   sinatra-contrib (= 3.0.6)
   sprockets (= 4.2.1)
   test-unit (= 3.6.1)
+  webrick (= 1.8.1)
   xcop (= 0.7.1)
 
 BUNDLED WITH

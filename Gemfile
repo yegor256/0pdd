@@ -47,4 +47,5 @@ gem 'sinatra', '3.0.6'
 gem 'sinatra-contrib', '3.0.6'
 gem 'sprockets', '4.2.1'
 gem 'test-unit', '3.6.1', require: false
+gem 'webrick', '1.8.1'
 gem 'xcop', '0.7.1'
