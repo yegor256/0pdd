@@ -1,5 +1,5 @@
 docker:
-  image: yegor256/rultor-image:1.20.0
+  image: yegor256/rultor-image:1.22.0
 assets:
   config.yml: yegor256/home#assets/0pdd/config.yml
   id_rsa: yegor256/home#assets/heroku-key
@@ -7,17 +7,13 @@ assets:
 install: |-
   git config --global user.email "server@0pdd.com"
   git config --global user.name "0pdd.com"
-  sudo gem install openssl -- --with-openssl-dir=/usr/local/rvm/rubies/ruby-3.0.1/lib/ruby/3.0.0/openssl
-  sudo gem install pdd
   pdd -f /dev/null
-  sudo gem install bundler
   sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
 release:
   sensitive:
     - config.yml
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
-
     bundle exec rake
     git remote add dokku dokku@dokku.0pdd.com:zeropdd
     rm -rf ~/.ssh
