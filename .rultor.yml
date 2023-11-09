@@ -7,6 +7,7 @@ assets:
 install: |-
   git config --global user.email "server@0pdd.com"
   git config --global user.name "0pdd.com"
+  sudo bundle install pdd
   pdd -f /dev/null
   sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
 release:
