@@ -31,7 +31,7 @@ gem 'mail', '2.8.1'
 gem 'matrix', '0.4.2'
 gem 'mocha', '2.1.0', require: false
 gem 'net-smtp', '0.4.0'
-gem 'nokogiri', '1.15.4'
+gem 'nokogiri', '1.15.5'
 gem 'octokit', '8.0.0'
 gem 'pdd', '0.23.2'
 gem 'rack', '2.2.8'
