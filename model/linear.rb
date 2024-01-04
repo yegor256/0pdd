@@ -27,6 +27,9 @@ require_relative 'fake_weights_storage'
 
 #
 # Linear Model
+# @todo #532 Add unit-tests.
+#  We should add unit-tests for this class that checks puzzle ranking.
+#  For now its untested, don't forget to remove this puzzle.
 #
 class LinearModel
   def initialize(repo, storage)
@@ -46,9 +49,23 @@ class LinearModel
     end
   end
 
+  # ranks the puzzles using Machine-Learning
+  # @param puzzles XML puzzles
+  # @return array of positional index of the input puzzles
+  # @todo #532 Implement a ranked puzzles.
+  #  Let's implement a class that will use `LinearModel` to rank puzzles.
+  #  This class is need in order to do an integration between original 0pdd
+  #  and model modules. Probably it can be a decorator for `Puzzles`
+  #  that ranks XML puzzles, and then submits them into `Puzzles`.
+  #  Don't forget to remove this puzzle.
   def predict(puzzles)
     weights = @storage.load # load weights for repo from s3
-    clf = Predictor.new(layers: [{ name: 'w1', shape: [10, 1] }, { name: 'w2', shape: [1, 1] }])
+    clf = Predictor.new(
+      layers: [
+        { name: 'w1', shape: [10, 1] },
+        { name: 'w2', shape: [1, 1] }
+      ]
+    )
     if weights.nil?
       train(clf) # find weights for repo backlog of puzzles
       ranks = naive_rank(puzzles) # naive rank of puzzles in each repo
