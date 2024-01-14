@@ -10,7 +10,6 @@
 [![PDD status](https://www.0pdd.com/svg?name=yegor256/0pdd)](https://www.0pdd.com/p?name=yegor256/0pdd)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7462387124cf5f9b8ef8/maintainability)](https://codeclimate.com/github/yegor256/0pdd/maintainability)
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/0pdd.svg)](https://codecov.io/github/yegor256/0pdd?branch=master)
-![Lines of code](https://img.shields.io/tokei/lines/github/yegor256/0pdd)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/0pdd)](https://hitsofcode.com/view/github/yegor256/0pdd)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d23061346143451db3abedca5ad9cbf2)](https://www.codacy.com/gh/yegor256/0pdd/dashboard)
 
