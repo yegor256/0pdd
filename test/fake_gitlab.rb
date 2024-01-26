@@ -28,7 +28,7 @@ class FakeGitlab
   end
 
   def repositories(user = nil, _options = {})
-    return @repositories unless user
+    @repositories unless user
   end
 
   def issue(_)
