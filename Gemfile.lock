@@ -32,8 +32,10 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     base58 (0.2.3)
     base64 (0.1.1)
+    bigdecimal (1.1.0)
     concurrent-ruby (1.2.2)
-    crack (0.4.5)
+    crack (0.4.6)
+      bigdecimal
       rexml
     date (3.3.3)
     differ (0.1.2)
@@ -218,7 +220,7 @@ DEPENDENCIES
   atlassian-jwt (~> 0.2.1)
   aws-sdk-dynamodb (= 1.101.0)
   aws-sdk-s3 (= 1.143.0)
-  crack (= 0.4.5)
+  crack (= 0.4.6)
   gitlab (= 4.19.0)
   glogin (= 0.14.2)
   haml (= 5.2.2)
