@@ -147,8 +147,8 @@ class GithubRepo
     GitRepo.new(
       uri: uri,
       name: name,
-      target: target,
       id_rsa: config['id_rsa'],
+      target: target,
       master: default_branch,
       head_commit_hash: head_commit_hash
     )

@@ -29,6 +29,8 @@ Metrics/MethodLength:
   Max: 50
 Metrics/ClassLength:
   Max: 200
+  Exclude:
+    - "test/test_*.rb"
 Metrics/AbcSize:
   Max: 60
 Metrics/BlockLength:

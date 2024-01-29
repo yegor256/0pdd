@@ -37,7 +37,6 @@ class GitRepo
   def initialize(
     uri:,
     name:,
-    target: 'master',
     master: 'master',
     head_commit_hash: '',
     **options
@@ -50,7 +49,7 @@ class GitRepo
     @id_rsa = options[:id_rsa] || ''
     @master = master
     @head_commit_hash = head_commit_hash
-    @target = target
+    @target = options[:target] || 'master'
   end
 
   def lock
