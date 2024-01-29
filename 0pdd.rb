@@ -367,8 +367,8 @@ post '/hook/github' do
     process_request(github) if github.repo.change_in_master?
     puts "GitHub hook from #{github.repo.name} to branch #{github.repo.target}"
   end
-  ignore = github.repo.change_in_master? ?
-             "Push is not to master branch, nothing is done. " : ''
+  ignore = ''
+  ignore = 'Push is not to master branch, nothing is done. ' unless github.repo.change_in_master?
   "#{ignore}Thanks #{github.repo.name}"
 end
 
@@ -403,8 +403,8 @@ post '/hook/gitlab' do
     process_request(gitlab) if gitlab.repo.change_in_master?
     puts "Gitlab hook from #{gitlab.repo.name} to branch #{gitlab.repo.target}"
   end
-  ignore = github.repo.change_in_master? ?
-             "Push is not to master branch, nothing is done. " : ''
+  ignore = ''
+  ignore = 'Push is not to master branch, nothing is done. ' unless gitlab.repo.change_in_master?
   "#{ignore}Thanks #{gitlab.repo.name}"
 end
 

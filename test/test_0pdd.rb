@@ -101,10 +101,10 @@ class AppTest < Test::Unit::TestCase
     }
     post(
       '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-        "repository":{"url":"localhost",
-          "full_name":"yegor256-one/com.github.0pdd-test"},
-        "ref":"refs/heads/master"}].join,
+      ['{"head_commit":{"id":"-"},',
+       '"repository":{"url":"localhost",',
+       '"full_name":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/master"}'].join,
       headers
     )
     assert(last_response.ok?)
@@ -119,10 +119,10 @@ class AppTest < Test::Unit::TestCase
     }
     post(
       '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-          "repository":{"url":"localhost",
-          "full_name":"yegor256-one/com.github.0pdd-test"},
-          "ref":"refs/heads/main"}].join,
+      ['{"head_commit":{"id":"-"},',
+       '"repository":{"url":"localhost",',
+       '"full_name":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/main"}'].join,
       headers
     )
     assert(last_response.ok?)
@@ -138,11 +138,11 @@ class AppTest < Test::Unit::TestCase
     }
     post(
       '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-          "repository":{"url":"localhost",
-          "master_branch":"main",
-          "full_name":"yegor256-one/com.github.0pdd-test"},
-          "ref":"refs/heads/main"}].join,
+      ['{"head_commit":{"id":"-"},',
+       '"repository":{"url":"localhost",',
+       '"master_branch": "main",',
+       '"full_name":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/main"}'].join,
       headers
     )
     assert(last_response.ok?)
@@ -158,11 +158,11 @@ class AppTest < Test::Unit::TestCase
     }
     post(
       '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-          "repository":{"url":"localhost",
-          "master_branch":"main",
-          "full_name":"yegor256-one/com.github.0pdd-test"},
-          "ref":"refs/heads/master"}].join,
+      ['{"head_commit":{"id":"-"},',
+       '"repository":{"url":"localhost",',
+       '"master_branch": "main",',
+       '"full_name":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/master"}'].join,
       headers
     )
     assert(last_response.ok?)
@@ -173,15 +173,15 @@ class AppTest < Test::Unit::TestCase
   def test_it_understands_push_from_gitlab
     headers = {
       'CONTENT_TYPE' => 'application/json',
-      'X-Gitlab-Event' => 'Push Hook'
+      'HTTP_USER_AGENT' => 'GitLab 16.6',
+      'HTTP_X_GITLAB_EVENT' => 'Push Hook'
     }
     post(
-      '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-        "checkout_sha": "da156088",
-        "project":{"url":"localhost",
-        "path_with_namespace":"yegor256-one/com.github.0pdd-test"},
-        "ref":"refs/heads/master"}].join,
+      '/hook/gitlab',
+      ['{"checkout_sha": "da1560886d4",',
+       '"project":{"url":"localhost",',
+       '"path_with_namespace":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/master"}'].join,
       headers
     )
     assert(last_response.ok?)
@@ -191,15 +191,15 @@ class AppTest < Test::Unit::TestCase
   def test_it_ignores_push_from_gitlab_to_not_master
     headers = {
       'CONTENT_TYPE' => 'application/json',
-      'X-Gitlab-Event' => 'Push Hook'
+      'HTTP_USER_AGENT' => 'GitLab 16.6',
+      'HTTP_X_GITLAB_EVENT' => 'Push Hook'
     }
     post(
-      '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-          "checkout_sha": "da156088",
-          "repository":{"url":"localhost",
-          "path_with_namespace":"yegor256-one/com.github.0pdd-test"},
-          "ref":"refs/heads/main"}].join,
+      '/hook/gitlab',
+      ['{"checkout_sha": "da1560886d4",',
+       '"project":{"url":"localhost",',
+       '"path_with_namespace":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/main"}'].join,
       headers
     )
     assert(last_response.ok?)
@@ -210,36 +210,36 @@ class AppTest < Test::Unit::TestCase
   def test_it_accepts_push_from_gitlab_to_not_default_master
     headers = {
       'CONTENT_TYPE' => 'application/json',
-      'X-Gitlab-Event' => 'Push Hook'
+      'HTTP_USER_AGENT' => 'GitLab 16.6',
+      'HTTP_X_GITLAB_EVENT' => 'Push Hook'
     }
     post(
-      '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-          "checkout_sha": "da156088",
-          "repository":{"url":"localhost",
-          "default_branch":"main",
-          "path_with_namespace":"yegor256-one/com.github.0pdd-test"},
-          "ref":"refs/heads/main"}].join,
+      '/hook/gitlab',
+      ['{"checkout_sha": "da1560886d4",',
+       '"project":{"url":"localhost",',
+       '"default_branch": "main",',
+       '"path_with_namespace":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/main"}'].join,
       headers
     )
     assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
+    assert(last_response.body.start_with?('Thanks'))
     assert(!last_response.body.include?('nothing is done'))
   end
 
   def test_it_ignores_push_from_gitlab_to_not_default_master
     headers = {
       'CONTENT_TYPE' => 'application/json',
-      'X-Gitlab-Event' => 'Push Hook'
+      'HTTP_USER_AGENT' => 'GitLab 16.6',
+      'HTTP_X_GITLAB_EVENT' => 'Push Hook'
     }
     post(
-      '/hook/github',
-      %w[{"head_commit":{"id":"-"},
-          "checkout_sha": "da156088",
-          "repository":{"url":"localhost",
-          "default_branch":"main",
-          "path_with_namespace":"yegor256-one/com.github.0pdd-test"},
-          "ref":"refs/heads/master"}].join,
+      '/hook/gitlab',
+      ['{"checkout_sha": "da1560886d4",',
+       '"project":{"url":"localhost",',
+       '"default_branch": "main",',
+       '"path_with_namespace":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/master"}'].join,
       headers
     )
     assert(last_response.ok?)

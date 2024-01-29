@@ -24,6 +24,7 @@ class FakeGitlab
   def initialize(options = {})
     @name = 'GITLAB'
     @repositories = options[:repositories] || []
+    @projects = options[:projects] || []
     @repo = options[:repo]
   end
 
@@ -97,6 +98,12 @@ class FakeGitlab
   def star; end
 
   def repository(_ = nil)
+    {
+      private: false
+    }
+  end
+
+  def project(_ = nil)
     {
       private: false
     }
