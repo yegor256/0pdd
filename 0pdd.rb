@@ -364,10 +364,12 @@ post '/hook/github' do
   github = GithubRepo.new(settings.github, json, settings.config)
   return [400, "No access to #{github.repo.name}"] unless github.exists?
   unless ENV['RACK_ENV'] == 'test'
-    process_request(github)
-    puts "GitHub hook from #{github.repo.name}"
+    process_request(github) if github.repo.change_in_master?
+    puts "GitHub hook from #{github.repo.name} to branch #{github.repo.target}"
   end
-  "Thanks #{github.repo.name}"
+  ignore = github.repo.change_in_master? ?
+             "Push is not to master branch, nothing is done. " : ''
+  "#{ignore}Thanks #{github.repo.name}"
 end
 
 get '/hook/gitlab' do
@@ -398,10 +400,12 @@ post '/hook/gitlab' do
   gitlab = GitlabRepo.new(settings.gitlab, json, settings.config)
   return [400, "No access to #{gitlab.repo.name}"] unless gitlab.exists?
   unless ENV['RACK_ENV'] == 'test'
-    process_request(gitlab)
-    puts "Gitlab hook from #{gitlab.repo.name}"
+    process_request(gitlab) if gitlab.repo.change_in_master?
+    puts "Gitlab hook from #{gitlab.repo.name} to branch #{gitlab.repo.target}"
   end
-  "Thanks #{gitlab.repo.name}"
+  ignore = github.repo.change_in_master? ?
+             "Push is not to master branch, nothing is done. " : ''
+  "#{ignore}Thanks #{gitlab.repo.name}"
 end
 
 get '/css/*.css' do

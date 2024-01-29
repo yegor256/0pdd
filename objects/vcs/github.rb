@@ -140,12 +140,14 @@ class GithubRepo
 
   def git_repo(json, config)
     uri = json['repository']['ssh_url'] || json['repository']['url']
+    target = json['ref']
     name = json['repository']['full_name']
     default_branch = json['repository']['master_branch']
     head_commit_hash = json['head_commit'] ? json['head_commit']['id'] : ''
     GitRepo.new(
       uri: uri,
       name: name,
+      target: target,
       id_rsa: config['id_rsa'],
       master: default_branch,
       head_commit_hash: head_commit_hash

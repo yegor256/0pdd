@@ -30,7 +30,7 @@ to your repository, if it's private
 Then, add a `@todo` [puzzle](https://www.yegor256.com/2009/03/04/pdd.html)
 to the source code (format it [right](https://github.com/teamed/pdd)).
 
-Then, `git push` something and see what happens. You should see a new
+Then, `git push` to master branch something and see what happens. You should see a new
 issue created in your repository by [@0pdd](https://github.com/0pdd).
 
 The dependency tree of all puzzles in your repository you can find

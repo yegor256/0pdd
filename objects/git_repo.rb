@@ -32,11 +32,12 @@ require_relative 'user_error'
 # Repository in Git
 #
 class GitRepo
-  attr_reader :uri, :name, :path, :master, :head_commit_hash
+  attr_reader :uri, :name, :path, :master, :head_commit_hash, :target
 
   def initialize(
     uri:,
     name:,
+    target: 'master',
     master: 'master',
     head_commit_hash: '',
     **options
@@ -49,6 +50,7 @@ class GitRepo
     @id_rsa = options[:id_rsa] || ''
     @master = master
     @head_commit_hash = head_commit_hash
+    @target = target
   end
 
   def lock
@@ -83,6 +85,10 @@ class GitRepo
     else
       clone
     end
+  end
+
+  def change_in_master?
+    "refs/heads/#{master}".eql?(target)
   end
 
   private

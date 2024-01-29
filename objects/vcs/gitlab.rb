@@ -174,11 +174,13 @@ class GitlabRepo
   def git_repo(json, config)
     uri = json['project']['url']
     name = json['project']['path_with_namespace']
+    target = json['ref']
     default_branch = json['project']['default_branch']
     head_commit_hash = json['checkout_sha']
     GitRepo.new(
       uri: uri,
       name: name,
+      target: target,
       id_rsa: config['id_rsa'],
       master: default_branch,
       head_commit_hash: head_commit_hash
