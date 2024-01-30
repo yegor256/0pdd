@@ -11,9 +11,10 @@ jobs:
   test:
     name: test
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04]
-        ruby: [2.7]
+        ruby: ['2.7', '3.0']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
