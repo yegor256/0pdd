@@ -30,6 +30,10 @@ end
 
 SimpleCov.start do
   add_filter '/test/'
+  add_filter '/test-assets/'
   add_filter '/features/'
-  # minimum_coverage 30
+  add_filter '/assets/'
+  add_filter '/dynamodb-local/'
+  add_filter '/public/'
+  minimum_coverage 30
 end

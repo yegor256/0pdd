@@ -170,6 +170,9 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
+    simplecov-cobertura (2.1.0)
+      rexml
+      simplecov (~> 0.19)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     sinatra (3.0.6)
@@ -239,6 +242,7 @@ DEPENDENCIES
   sass (= 3.7.4)
   sentry-raven (= 3.1.2)
   simplecov (= 0.22.0)
+  simplecov-cobertura (~> 2.1)
   sinatra (= 3.0.6)
   sinatra-contrib (= 3.0.6)
   sprockets (= 4.2.1)
