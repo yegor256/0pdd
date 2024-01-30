@@ -235,6 +235,7 @@ DEPENDENCIES
   aws-sdk-dynamodb (= 1.101.0)
   aws-sdk-s3 (= 1.143.0)
   crack (= 0.4.6)
+  faraday (>= 2.0.1)
   gitlab (= 4.19.0)
   glogin (= 0.14.2)
   haml (= 5.2.2)
