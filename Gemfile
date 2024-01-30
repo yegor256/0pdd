@@ -34,7 +34,7 @@ gem 'net-smtp', '0.4.0'
 gem 'nokogiri', '1.15.5'
 gem 'octokit', '8.0.0'
 gem 'pdd', '0.23.2'
-gem 'rack', '2.2.8'
+gem 'rack', '3.0.8'
 gem 'rack-test', '2.1.0'
 gem 'rake', '13.1.0', require: false
 gem 'rubocop', '1.60.2', require: false
@@ -45,7 +45,7 @@ gem 'sentry-raven', '3.1.2'
 gem 'simplecov', '0.22.0'
 gem 'simplecov-cobertura', '~> 2.1'
 gem 'sinatra', '4.0.0'
-gem 'sinatra-contrib', '3.0.6'
+gem 'sinatra-contrib', '4.0.0'
 gem 'sprockets', '4.2.1'
 gem 'test-unit', '3.6.1', require: false
 gem 'webrick', '1.8.1'
