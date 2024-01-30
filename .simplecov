@@ -35,5 +35,5 @@ SimpleCov.start do
   add_filter '/assets/'
   add_filter '/dynamodb-local/'
   add_filter '/public/'
-  minimum_coverage 30
+  minimum_coverage 34
 end
