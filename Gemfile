@@ -35,7 +35,7 @@ gem 'net-smtp', '0.4.0'
 gem 'nokogiri', '1.15.5'
 gem 'octokit', '8.0.0'
 gem 'pdd', '0.23.2'
-gem 'rack', '3.0.8'
+gem 'rack', '3.0.9'
 gem 'rack-test', '2.1.0'
 gem 'rake', '13.1.0', require: false
 gem 'rubocop', '1.60.2', require: false
