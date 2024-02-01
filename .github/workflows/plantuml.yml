@@ -16,11 +16,11 @@ jobs:
       - name: Generate SVG Diagrams
         uses: holowinski/plantuml-github-action@main
         with:
-          args: -v -tsvg diagrams/*.puml
+          args: -v -tsvg doc/*.puml
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          author_name: ${{ secrets.USERNAME }}
-          author_email: ${{ secrets.EMAIL }}
+          author_name: ${{ github.actor }}
+          author_email: ${{ github.event.pusher.email }}
           message: 'Diagram generated'
           add: 'doc/*'
