@@ -13,7 +13,19 @@
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/0pdd)](https://hitsofcode.com/view/github/yegor256/0pdd)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d23061346143451db3abedca5ad9cbf2)](https://www.codacy.com/gh/yegor256/0pdd/dashboard)
 
-Read this blog post first: [PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html)
+Read this blog post first: [PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html).
+If you're too lazy to read it, here is how it works:
+
+  1. Your boss tells you to fix issue `#42`
+  1. You do it, but not completely (you have no time, you are lazy, etc.)
+  1. You put `TODO #42:30min bla-bla-bla` into the code base (in a pull request)
+  1. CI checks that you didn't break the format of the TODO
+  1. You merge the pull request
+  1. The bot picks up the `TODO` and creates issue `#43` (new one)
+  1. The boss asks your friend to fix `#43`
+  1. The friend fixes it, and merges
+  1. The `TODO` is gone from the code base
+  1. The bot closes the issue `#43`
 
 [0pdd.com](https://www.0pdd.com) is a hosted service that
 finds new "puzzles" in your repository and posts them as GitHub
