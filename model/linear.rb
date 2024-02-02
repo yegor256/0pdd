@@ -27,7 +27,7 @@ require_relative 'fake_weights_storage'
 
 #
 # Linear Model
-# @todo #532 Add unit-tests.
+# @todo #532:60min Add unit-tests.
 #  We should add unit-tests for this class that checks puzzle ranking.
 #  For now its untested, don't forget to remove this puzzle.
 #
@@ -52,7 +52,7 @@ class LinearModel
   # ranks the puzzles using Machine-Learning
   # @param puzzles XML puzzles
   # @return array of positional index of the input puzzles
-  # @todo #532 Implement a ranked puzzles.
+  # @todo #532:60min Implement a ranked puzzles.
   #  Let's implement a class that will use `LinearModel` to rank puzzles.
   #  This class is need in order to do an integration between original 0pdd
   #  and model modules. Probably it can be a decorator for `Puzzles`
