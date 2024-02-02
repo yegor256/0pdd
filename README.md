@@ -14,7 +14,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d23061346143451db3abedca5ad9cbf2)](https://www.codacy.com/gh/yegor256/0pdd/dashboard)
 
 Read this blog post first: [PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html).
-In a nutshell, here is the protocol:
+TL;DR:
 
   1. Your boss tells you to fix issue `#42`
   1. You do it, but not completely (you have no time, you are lazy, etc.)
