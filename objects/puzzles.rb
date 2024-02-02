@@ -25,6 +25,11 @@ require_relative '../model/linear'
 
 #
 # Puzzles in XML/S3
+# @todo #532:60min Implement a decorator for optional model configuration load.
+#  Let's implement a class that decorates `Puzzles` and
+#  based on presence of `model: true` attribute in YAML config, decides
+#  whether the puzzles should be ranked or not.
+#  Don't forget to remove this puzzle.
 #
 class Puzzles
   def initialize(repo, storage)

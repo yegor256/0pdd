@@ -1,0 +1,14 @@
+@startuml
+title LinerModel 0pdd Integration
+participant "Git Repo" as repo
+participant 0pdd
+participant LinerModel as lm
+
+0pdd -> repo
+repo --> 0pdd: .0pdd.yml
+alt model: true
+  0pdd -> lm: Puzzles
+  lm --> 0pdd: Ranked puzzles
+  0pdd --> repo: Ranked puzzles
+end
+@enduml
