@@ -19,7 +19,7 @@ TL;DR:
   1. Your boss tells you to fix issue `#42`
   1. You do it, but not completely (you have no time, you are lazy, etc.)
   1. You put `TODO #42:30min bla-bla-bla` into the code base (in a pull request)
-  1. CI checks that you didn't break the format of the `TODO` (use our [`pdd.yml`])
+  1. CI checks that you didn't break the format of the `TODO` (use our [`pdd.yml`](https://github.com/yegor256/0pdd/blob/master/.github/workflows/pdd.yml))
   1. You merge the pull request
   1. The bot picks up the `TODO` and creates issue `#43` (new one)
   1. The boss asks your friend to fix `#43`
