@@ -105,8 +105,12 @@ GEM
       timeout
     net-smtp (0.4.0.1)
       net-protocol
-    nokogiri (1.15.5)
+    nokogiri (1.16.2)
       mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.16.2-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.2-x86_64-linux)
       racc (~> 1.4)
     oauth (0.6.2)
       snaky_hash (~> 2.0)
@@ -244,7 +248,7 @@ DEPENDENCIES
   matrix (= 0.4.2)
   mocha (= 2.1.0)
   net-smtp (= 0.4.0.1)
-  nokogiri (= 1.15.5)
+  nokogiri (= 1.16.2)
   octokit (= 8.0.0)
   pdd (= 0.23.2)
   rack (= 3.0.9)
