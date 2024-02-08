@@ -29,7 +29,12 @@ class CachedStorage
 
   def load
     if File.exist?(@file)
-      xml = Nokogiri::XML(File.read(@file))
+      begin
+        content = File.read(@file)
+      rescue StandardError => e
+        raise "Failed to read #{@file} due to #{e.cause.inspect}"
+      end
+      xml = Nokogiri::XML(content)
     else
       xml = @origin.load
       write(xml)
