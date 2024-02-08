@@ -9,8 +9,9 @@ install: |-
   git config --global user.name "0pdd.com"
   sudo gem install pdd
   pdd -f /dev/null
-  sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
+  bundle install --no-color
 release:
+  pre: false
   sensitive:
     - config.yml
   script: |-
