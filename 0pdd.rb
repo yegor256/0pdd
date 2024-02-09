@@ -149,7 +149,7 @@ configure do
   end
 end
 use Rack::Deflater
-# @todo #572 rewind is removed from rack 3.0, so it is moved to
+# @todo #572:1h rewind is removed from rack 3.0, so it is moved to
 #  rewindableInput for now, but it is better to check another solutions
 use Rack::RewindableInput::Middleware
 
