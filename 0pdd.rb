@@ -27,6 +27,7 @@ require 'ostruct'
 require 'sinatra'
 require 'sinatra/cookies'
 require 'sass'
+require 'rack'
 require 'raven'
 require 'octokit'
 require 'tmpdir'
@@ -148,6 +149,7 @@ configure do
   end
 end
 use Rack::Deflater
+use Rack::RewindableInput::Middleware
 
 before '/*' do
   @locals = {
@@ -350,7 +352,8 @@ post '/hook/github' do
       'Please, only register push events from GitHub webhook'
     ]
   end
-  request.body.rewind
+  request.env['rack.input'].rewind if request.env['rack.input'].respond_to?(:rewind)
+  request.body.rewind unless request.env['rack.input'].respond_to?(:rewind)
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
@@ -386,7 +389,8 @@ post '/hook/gitlab' do
       'Please, only register push events from Gitlab webhook'
     ]
   end
-  request.body.rewind
+  request.env['rack.input'].rewind if request.env['rack.input'].respond_to?(:rewind)
+  request.body.rewind unless request.env['rack.input'].respond_to?(:rewind)
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
