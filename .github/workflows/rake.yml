@@ -12,8 +12,8 @@ jobs:
     name: test
     strategy:
       matrix:
-        os: [ubuntu-20.04]
-        ruby: [3.2]
+        os: [ubuntu-22.04]
+        ruby: [3.1.0]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
