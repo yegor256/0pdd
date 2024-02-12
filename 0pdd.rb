@@ -27,6 +27,7 @@ require 'ostruct'
 require 'sinatra'
 require 'sinatra/cookies'
 require 'sass'
+require 'rack'
 require 'raven'
 require 'octokit'
 require 'tmpdir'
@@ -148,6 +149,9 @@ configure do
   end
 end
 use Rack::Deflater
+# @todo #572:1h rewind is removed from rack 3.0, so it is moved to
+#  rewindableInput for now, but it is better to check another solutions
+use Rack::RewindableInput::Middleware
 
 before '/*' do
   @locals = {
@@ -350,7 +354,8 @@ post '/hook/github' do
       'Please, only register push events from GitHub webhook'
     ]
   end
-  request.body.rewind
+  request.env['rack.input'].rewind if request.env['rack.input'].respond_to?(:rewind)
+  request.body.rewind unless request.env['rack.input'].respond_to?(:rewind)
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
@@ -386,7 +391,8 @@ post '/hook/gitlab' do
       'Please, only register push events from Gitlab webhook'
     ]
   end
-  request.body.rewind
+  request.env['rack.input'].rewind if request.env['rack.input'].respond_to?(:rewind)
+  request.body.rewind unless request.env['rack.input'].respond_to?(:rewind)
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
