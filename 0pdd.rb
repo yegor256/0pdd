@@ -359,7 +359,15 @@ post '/hook/github' do
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
-      params[:payload]
+      payload = params[:payload]
+      # see https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks
+      if payload.nil?
+        return [
+          400,
+          'URL-encoded content is expected in the "payload" query parameter, but it is not provided'
+        ]
+      end
+      payload
     when 'application/json'
       request.body.read
     else
