@@ -17,17 +17,15 @@ GEM
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
     aws-eventstream (1.3.0)
-    aws-partitions (1.891.0)
-    aws-sdk-core (3.191.2)
+    aws-partitions (1.894.0)
+    aws-sdk-core (3.191.3)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.8)
-      base64
       jmespath (~> 1, >= 1.6.1)
-    aws-sdk-dynamodb (1.103.0)
+    aws-sdk-dynamodb (1.104.0)
       aws-sdk-core (~> 3, >= 3.191.0)
       aws-sigv4 (~> 1.1)
-      bigdecimal
     aws-sdk-kms (1.77.0)
       aws-sdk-core (~> 3, >= 3.191.0)
       aws-sigv4 (~> 1.1)
@@ -242,7 +240,7 @@ PLATFORMS
 
 DEPENDENCIES
   atlassian-jwt (~> 0.2.1)
-  aws-sdk-dynamodb (= 1.103.0)
+  aws-sdk-dynamodb (= 1.104.0)
   aws-sdk-s3 (= 1.143.0)
   crack (= 1.0.0)
   faraday (>= 2.0.1)
