@@ -39,7 +39,7 @@ gem 'rack', '3.0.9.1'
 gem 'rack-test', '2.1.0'
 gem 'rackup', '2.1.0'
 gem 'rake', '13.1.0', require: false
-gem 'rubocop', '1.61.0', require: false
+gem 'rubocop', '1.62.0', require: false
 gem 'rubocop-rspec', '2.27.1', require: false
 gem 'ruby-fann', '1.4.1'
 gem 'sass', '3.7.4'
