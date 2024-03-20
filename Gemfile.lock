@@ -23,7 +23,7 @@ GEM
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.8)
       jmespath (~> 1, >= 1.6.1)
-    aws-sdk-dynamodb (1.105.0)
+    aws-sdk-dynamodb (1.106.0)
       aws-sdk-core (~> 3, >= 3.191.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.78.0)
@@ -240,7 +240,7 @@ PLATFORMS
 
 DEPENDENCIES
   atlassian-jwt (~> 0.2.1)
-  aws-sdk-dynamodb (= 1.105.0)
+  aws-sdk-dynamodb (= 1.106.0)
   aws-sdk-s3 (= 1.146.0)
   crack (= 1.0.0)
   faraday (>= 2.0.1)
