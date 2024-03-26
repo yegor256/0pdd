@@ -103,7 +103,7 @@ GEM
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.4.0.1)
+    net-smtp (0.5.0)
       net-protocol
     nokogiri (1.16.3)
       mini_portile2 (~> 2.8.2)
@@ -251,7 +251,7 @@ DEPENDENCIES
   mail (= 2.8.1)
   matrix (= 0.4.2)
   mocha (= 2.1.0)
-  net-smtp (= 0.4.0.1)
+  net-smtp (= 0.5.0)
   nokogiri (= 1.16.3)
   octokit (= 8.1.0)
   pdd (= 0.24.0)

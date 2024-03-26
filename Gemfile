@@ -31,7 +31,7 @@ gem 'jira-ruby', '2.3.0'
 gem 'mail', '2.8.1'
 gem 'matrix', '0.4.2'
 gem 'mocha', '2.1.0', require: false
-gem 'net-smtp', '0.4.0.1'
+gem 'net-smtp', '0.5.0'
 gem 'nokogiri', '1.16.3'
 gem 'octokit', '8.1.0'
 gem 'pdd', '0.24.0'
