@@ -128,6 +128,14 @@ The `tags` section lists GitHub labels that will automatically be attached
 to all new issues we create. If you don't have that labels in your GitHub
 repository, they will automatically be created.
 
+To exclude files from analysis, create a `.pdd` file with the following content:
+
+```
+--exclude=path/to/file.txt
+```
+
+See: [pdd usage](https://github.com/cqfn/pdd?tab=readme-ov-file#usage)
+
 ## What to expect?
 
 Pay attention to the comments @0pdd posts to your commits. They will
