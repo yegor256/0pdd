@@ -33,7 +33,7 @@ gem 'matrix', '0.4.2'
 gem 'mocha', '2.4.5', require: false
 gem 'net-smtp', '0.5.0'
 gem 'nokogiri', '1.16.7'
-gem 'octokit', '9.1.0'
+gem 'octokit', '9.2.0'
 gem 'pdd', '0.24.0'
 gem 'rack', '3.1.8'
 gem 'rack-test', '2.1.0'
