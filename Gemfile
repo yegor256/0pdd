@@ -20,7 +20,7 @@
 source 'https://rubygems.org'
 
 gem 'atlassian-jwt', '~> 0.2.1'
-gem 'aws-sdk-dynamodb', '1.111.0'
+gem 'aws-sdk-dynamodb', '1.126.0'
 gem 'aws-sdk-s3', '1.168.0'
 gem 'crack', '1.0.0'
 gem 'faraday', '>=2.0.1'
