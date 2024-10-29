@@ -56,7 +56,8 @@ GEM
     faraday-net_http (3.3.0)
       net-http
     ffi (1.16.3)
-    gitlab (5.0.0)
+    gitlab (5.1.0)
+      base64 (~> 0.2.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
     glogin (0.16.4)
@@ -244,7 +245,7 @@ DEPENDENCIES
   aws-sdk-s3 (= 1.169.0)
   crack (= 1.0.0)
   faraday (>= 2.0.1)
-  gitlab (= 5.0.0)
+  gitlab (= 5.1.0)
   glogin (= 0.16.4)
   haml (= 5.2.2)
   jira-ruby (= 2.3.0)
