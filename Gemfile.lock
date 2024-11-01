@@ -226,7 +226,7 @@ GEM
     unicode-display_width (2.6.0)
     uri (0.13.1)
     version_gem (1.1.3)
-    webrick (1.8.2)
+    webrick (1.9.0)
     xcop (0.7.1)
       differ (~> 0.1.2)
       nokogiri (~> 1.10)
@@ -271,7 +271,7 @@ DEPENDENCIES
   sinatra-contrib (= 4.0.0)
   sprockets (= 4.2.1)
   test-unit (= 3.6.2)
-  webrick (= 1.8.2)
+  webrick (= 1.9.0)
   xcop (= 0.7.1)
 
 BUNDLED WITH
