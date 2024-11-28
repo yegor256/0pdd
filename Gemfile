@@ -49,6 +49,6 @@ gem 'simplecov-cobertura', '~> 2.1'
 gem 'sinatra', '4.0.0'
 gem 'sinatra-contrib', '4.0.0'
 gem 'sprockets', '4.2.1'
-gem 'test-unit', '3.6.3', require: false
+gem 'test-unit', '3.6.4', require: false
 gem 'webrick', '1.9.0'
 gem 'xcop', '0.7.1'
