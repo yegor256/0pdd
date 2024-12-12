@@ -29,7 +29,7 @@ GEM
     aws-sdk-kms (1.96.0)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.176.0)
+    aws-sdk-s3 (1.176.1)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -241,7 +241,7 @@ PLATFORMS
 DEPENDENCIES
   atlassian-jwt (~> 0.2.1)
   aws-sdk-dynamodb (= 1.111.0)
-  aws-sdk-s3 (= 1.176.0)
+  aws-sdk-s3 (= 1.176.1)
   crack (= 1.0.0)
   faraday (>= 2.0.1)
   gitlab (= 5.1.0)
