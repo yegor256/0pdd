@@ -1,5 +1,4 @@
 {
-  "TableName": "0pdd-events",
   "AttributeDefinitions": [
     {
       "AttributeName": "repo",
@@ -14,20 +13,6 @@
       "AttributeType": "S"
     }
   ],
-  "KeySchema": [
-    {
-      "AttributeName": "repo",
-      "KeyType": "HASH"
-    },
-    {
-      "AttributeName": "time",
-      "KeyType": "RANGE"
-    }
-  ],
-  "ProvisionedThroughput": {
-    "ReadCapacityUnits": "1",
-    "WriteCapacityUnits": "1"
-  },
   "GlobalSecondaryIndexes": [
     {
       "IndexName": "tags",
@@ -49,5 +34,20 @@
         "WriteCapacityUnits": "1"
       }
     }
-  ]
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "repo",
+      "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "time",
+      "KeyType": "RANGE"
+    }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": "1",
+    "WriteCapacityUnits": "1"
+  },
+  "TableName": "0pdd-events"
 }
