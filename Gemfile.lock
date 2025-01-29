@@ -115,6 +115,8 @@ GEM
     nokogiri (1.18.1)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.18.1-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.18.1-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.1-x86_64-linux-gnu)
@@ -233,6 +235,7 @@ GEM
       slop (~> 4.4)
 
 PLATFORMS
+  arm64-darwin-23
   ruby
   x86_64-darwin-19
   x86_64-darwin-21
@@ -274,4 +277,4 @@ DEPENDENCIES
   xcop (= 0.7.1)
 
 BUNDLED WITH
-   2.5.6
+   2.5.16
