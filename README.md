@@ -208,11 +208,11 @@ smtp:
   key: AKIAI..........UTSQA
   secret: Z2FbKB..........viCKaYo4H..........vva21
 id_rsa: |
-  -----BEGIN RSA PRIVATE KEY-----
+  -----BEGIN RSА PRIVATE KEY-----
   MIIJKAIBAAKCAgEAoE94Xy8TGMbnoK5cKJXWccr9qLLDc/liKpMAMlnQEFDCgi0l
   ...
   NaaFpowFg8LKSiwc04ERduu72Imv5GJBCkhS8F7laURXFcZiYNqBnWYzY0U=
-  -----END RSA PRIVATE KEY-----
+  -----END RSА PRIVATE KEY-----
 ```
 
 We add this file to the repository while deploying to Heroku,

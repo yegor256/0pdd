@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd $(dirname $0)
+cd "$(dirname "$0")"
 bundle update
 # rake
 sed -i -s 's|Gemfile.lock||g' .gitignore
