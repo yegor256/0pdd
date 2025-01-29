@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-24.04]
-        ruby: [3.1.0]
+        ruby: [3.3]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
