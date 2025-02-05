@@ -40,6 +40,9 @@ gem 'rack-test', '2.2.0'
 gem 'rackup', '2.2.1'
 gem 'rake', '13.2.1', require: false
 gem 'rubocop', '1.69.2', require: false
+gem 'rubocop-minitest', '>0', require: false
+gem 'rubocop-performance', '>0', require: false
+gem 'rubocop-rake', '>0', require: false
 gem 'rubocop-rspec', '3.3.0', require: false
 gem 'ruby-fann', '2.0.2'
 gem 'sass', '3.7.4'

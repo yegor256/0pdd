@@ -7,7 +7,6 @@ AllCops:
   TargetRubyVersion: 2.6.0
   NewCops: enable
   SuggestExtensions: false
-
 Layout/MultilineOperationIndentation:
   Enabled: false
 Layout/EmptyLineAfterGuardClause:
@@ -48,3 +47,7 @@ Style/OpenStructUse:
   Enabled: false
 Style/ComparableClamp:
   Enabled: false
+required:
+  - rubocop-rake
+  - rubocop-minitest
+  - rubocop-performance
