@@ -54,4 +54,4 @@ gem 'sinatra-contrib', '4.0.0'
 gem 'sprockets', '4.2.1'
 gem 'test-unit', '3.6.7', require: false
 gem 'webrick', '1.9.1'
-gem 'xcop', '0.7.1'
+gem 'xcop', '0.8.0'
