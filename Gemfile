@@ -34,7 +34,7 @@ gem 'sentry-raven', '3.1.2'
 gem 'simplecov', '0.22.0'
 gem 'simplecov-cobertura', '~> 2.1'
 gem 'sinatra', '4.0.0'
-gem 'sinatra-contrib', '4.0.0'
+gem 'sinatra-contrib', '4.1.1'
 gem 'sprockets', '4.2.1'
 gem 'test-unit', '3.6.7', require: false
 gem 'webrick', '1.9.1'
