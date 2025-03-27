@@ -4,6 +4,10 @@
 version = 1
 [[annotations]]
 path = [
+    "Aptfile",
+    "Procfile",
+    "doc/integration.puml",
+    "nginx.conf.sigil",
     "**.json",
     "**.md",
     "**.png",
