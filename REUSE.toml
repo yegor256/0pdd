@@ -4,13 +4,10 @@
 version = 1
 [[annotations]]
 path = [
-    "Aptfile",
-    "Procfile",
-    "doc/integration.puml",
-    "nginx.conf.sigil",
     "**.json",
     "**.md",
     "**.png",
+    "**.sigil",
     "**.svg",
     "**.txt",
     "**/*.csv",
@@ -27,12 +24,17 @@ path = [
     "**/.pdd",
     "**/CNAME",
     "**/Gemfile.lock",
+    "**/Procfile",
     ".DS_Store",
     ".gitattributes",
     ".gitignore",
     ".pdd",
+    "Aptfile",
     "Gemfile.lock",
+    "Procfile",
     "README.md",
+    "doc/integration.puml",
+    "nginx.conf.sigil",
     "renovate.json",
 ]
 precedence = "override"
