@@ -19,7 +19,7 @@ class TestSafeStorage < Test::Unit::TestCase
       Nokogiri::XML(
         '<?xml version="1.0"?>
         <puzzles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="http://www.0pdd.com/puzzles.xsd"
+          xsi:noNamespaceSchemaLocation="https://www.0pdd.com/puzzles.xsd"
           date="2016-12-08T12:00:49Z" version="0.0.0">
           <puzzle alive="true">
             <issue>unknown</issue>

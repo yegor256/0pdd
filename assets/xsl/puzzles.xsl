@@ -24,7 +24,7 @@
       </head>
       <body>
         <p>
-          <a href="http://www.0pdd.com">
+          <a href="https://www.0pdd.com">
             <img class="logo" src="https://avatars2.githubusercontent.com/u/24456188"/>
           </a>
         </p>
@@ -68,7 +68,7 @@
           <xsl:text>Project "</xsl:text>
           <xsl:value-of select="$project"/>
           <xsl:text>" updated by </xsl:text>
-          <a href="http://www.0pdd.com">
+          <a href="https://www.0pdd.com">
             <xsl:text>0pdd</xsl:text>
           </a>
           <xsl:text> v</xsl:text>
@@ -78,7 +78,7 @@
           <xsl:text>.</xsl:text>
         </p>
         <p>
-          <a href="http://www.0pdd.com" title="Current version of 0pdd is {$version}">
+          <a href="https://www.0pdd.com" title="Current version of 0pdd is {$version}">
             <xsl:value-of select="$version"/>
           </a>
         </p>

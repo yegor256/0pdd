@@ -47,7 +47,7 @@ Sorry,\n\
             <p>If you think it's our bug, please submit it to
             <a href='https://github.com/yegor256/0pdd/issues'>GitHub</a>.
             Thanks.</p>
-            <p>Sorry,<br/><a href='http://www.0pdd.com'>0pdd</a></p>"
+            <p>Sorry,<br/><a href='https://www.0pdd.com'>0pdd</a></p>"
         end
       end
       mail.cc = repo_owner_email if repo_owner_email

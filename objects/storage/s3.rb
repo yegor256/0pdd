@@ -25,7 +25,7 @@ class S3
       else
         puts "Empty puzzles for #{@object.bucket_name}/#{@object.key}"
         '<puzzles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="http://www.0pdd.com/puzzles.xsd"/>'
+xsi:noNamespaceSchemaLocation="https://www.0pdd.com/puzzles.xsd"/>'
       end
     )
   end

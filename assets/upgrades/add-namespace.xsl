@@ -7,7 +7,7 @@
   <xsl:output method="xml"/>
   <xsl:strip-space elements="*"/>
   <xsl:template match="/puzzles">
-    <puzzles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.0pdd.com/puzzles.xsd">
+    <puzzles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://www.0pdd.com/puzzles.xsd">
       <xsl:apply-templates select="node()|@*"/>
     </puzzles>
   </xsl:template>
