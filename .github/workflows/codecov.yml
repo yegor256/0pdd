@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - run: sudo apt-get install --yes libmagic-dev
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3

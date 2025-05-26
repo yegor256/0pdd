@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'mail'
 require 'yaml'
 require 'octokit'
@@ -14,7 +13,7 @@ require_relative '../objects/log'
 require_relative '../objects/vcs/github'
 require_relative '../objects/git_repo'
 
-class CredentialsTest < Test::Unit::TestCase
+class CredentialsTest < Minitest::Test
   def test_connects_to_git_via_ssh
     cfg = config
     Dir.mktmpdir 'test' do |d|
@@ -25,7 +24,7 @@ class CredentialsTest < Test::Unit::TestCase
         dir: d
       )
       repo.push
-      assert(!repo.xml.xpath('//puzzles').nil?)
+      refute_nil(repo.xml.xpath('//puzzles'))
     end
   end
 
@@ -36,7 +35,7 @@ class CredentialsTest < Test::Unit::TestCase
       access_key_id: cfg['dynamo']['key'],
       secret_access_key: cfg['dynamo']['secret']
     )
-    assert(!Log.new(dynamo, 'yegor256/0pdd').exists('some stupid tag'))
+    refute(Log.new(dynamo, 'yegor256/0pdd').exists('some stupid tag'))
   end
 
   def test_connects_to_github
@@ -76,7 +75,7 @@ class CredentialsTest < Test::Unit::TestCase
       cfg['s3']['key'],
       cfg['s3']['secret']
     )
-    assert(!storage.load.xpath('//puzzles').nil?)
+    refute_nil(storage.load.xpath('//puzzles'))
   end
 
   def test_sends_email_via_smtp
@@ -109,7 +108,7 @@ class CredentialsTest < Test::Unit::TestCase
   def config
     file = File.join(File.dirname(__FILE__), '../config.yml')
     file = ENV['PDD_CONFIG'] if ENV['PDD_CONFIG']
-    omit unless File.exist?(file)
+    skip('...') unless File.exist?(file)
     YAML.safe_load(File.open(file))
   end
 end

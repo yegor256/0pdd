@@ -55,8 +55,7 @@ class Tickets
     yaml = @vcs.repo.config
     if !yaml.nil? && yaml['alerts'] && yaml['alerts'][@vcs.name.downcase]
       yaml['alerts'][@vcs.name.downcase]
-        .map(&:strip)
-        .map(&:downcase)
+        .map { |x| x.strip.downcase }
         .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
         .map { |n| n[0..64] }
         .map { |n| "@#{n}" }
@@ -68,7 +67,7 @@ class Tickets
   def title(puzzle)
     yaml = @vcs.repo.config
     format = []
-    format += yaml['format'].map(&:strip).map(&:downcase) if !yaml.nil? && yaml['format'].is_a?(Array)
+    format += yaml['format'].map { |x| x.strip.downcase } if !yaml.nil? && yaml['format'].is_a?(Array)
     len = format.find { |i| i =~ /title-length=\d+/ }
     Truncated.new(
       if format.include?('short-title')

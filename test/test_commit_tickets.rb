@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'yaml'
 require_relative 'test__helper'
 require_relative '../objects/tickets/commit_tickets'
@@ -10,7 +9,7 @@ require_relative '../objects/tickets/commit_tickets'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestCommitTickets < Test::Unit::TestCase
+class TestCommitTickets < Minitest::Test
   def test_submits_tickets
     config = YAML.safe_load(
       "
@@ -43,7 +42,7 @@ alerts:
     tickets.close(nil)
   end
 
-  def test_scope_supressed_repo_should_be_quiet
+  def test_scope_suppressed_repo_should_be_quiet
     config = YAML.safe_load(
       "
 alerts:

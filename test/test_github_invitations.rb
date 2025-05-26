@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require_relative 'test__helper'
 require_relative 'fake_github'
 require_relative '../objects/invitations/github_invitations'
@@ -10,13 +9,14 @@ require_relative '../objects/invitations/github_invitations'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestGithubInvitation < Test::Unit::TestCase
+class TestGithubInvitation < Minitest::Test
   def test_accepts_organization_invitations
     organizations = %w[github google microsoft zerocracy]
+    orgs = %w[github zerocracy]
     github = FakeGithub.new(
       memberships: organizations.collect do |org|
         {
-          'state' => %w[github zerocracy].include?(org) ? 'active' : 'pending',
+          'state' => orgs.include?(org) ? 'active' : 'pending',
           'organization' => {
             'login' => org
           }
@@ -47,6 +47,6 @@ class TestGithubInvitation < Test::Unit::TestCase
       end
     )
     GithubInvitations.new(github).accept
-    repositories.map { |repo| assert(github.repositories.include?(repo)) }
+    repositories.map { |repo| assert_includes(github.repositories, repo) }
   end
 end

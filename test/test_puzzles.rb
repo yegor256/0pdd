@@ -3,7 +3,6 @@
 
 require 'nokogiri'
 require 'ostruct'
-require 'test/unit'
 require 'tmpdir'
 require_relative 'test__helper'
 require_relative 'fake_storage'
@@ -18,7 +17,7 @@ require_relative '../objects/storage/versioned_storage'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestPuzzles < Test::Unit::TestCase
+class TestPuzzles < Minitest::Test
   def test_all_xml
     Dir.mktmpdir 'test' do |d|
       test_xml(d, 'simple.xml')
@@ -71,8 +70,8 @@ class TestPuzzles < Test::Unit::TestCase
     Puzzles.new(repo, storage).deploy(tickets)
     xml.xpath('/test/assertions/xpath/text()').each do |xpath|
       after = storage.load
-      assert(
-        !after.xpath(xpath.text).empty?,
+      refute_empty(
+        after.xpath(xpath.text),
         "#{xpath} not found in #{after}"
       )
     end
@@ -84,14 +83,14 @@ class TestPuzzles < Test::Unit::TestCase
       )
     end
     xml.xpath('/test/close/ticket/text()').each do |ticket|
-      assert(
-        tickets.closed.include?(ticket.text),
+      assert_includes(
+        tickets.closed, ticket.text,
         "Ticket #{ticket} was not closed: #{tickets.closed}"
       )
     end
     tickets.closed.each do |ticket|
-      assert(
-        !xml.xpath("/test/close[ticket='#{ticket}']").empty?,
+      refute_empty(
+        xml.xpath("/test/close[ticket='#{ticket}']"),
         "Ticket #{ticket} was closed by mistake"
       )
     end

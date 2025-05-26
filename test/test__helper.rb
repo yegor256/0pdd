@@ -4,10 +4,29 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'simplecov'
-SimpleCov.start
-
 require 'simplecov-cobertura'
-SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+unless SimpleCov.running || ENV['PICKS']
+  SimpleCov.command_name('test')
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+    [
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::CoberturaFormatter
+    ]
+  )
+  SimpleCov.minimum_coverage 65
+  SimpleCov.minimum_coverage_by_file 10
+  SimpleCov.start do
+    add_filter 'test/'
+    add_filter 'vendor/'
+    add_filter 'target/'
+    track_files 'lib/**/*.rb'
+    track_files '*.rb'
+  end
+end
+
+require 'minitest/autorun'
+require 'minitest/reporters'
+Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
 
 def object(hash)
   json = hash.to_json

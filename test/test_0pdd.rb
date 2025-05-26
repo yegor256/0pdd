@@ -1,13 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
-require 'mocha/test_unit'
 require 'rack/test'
 require_relative 'test__helper'
 require_relative '../0pdd'
 
-class AppTest < Test::Unit::TestCase
+class AppTest < Minitest::Test
   include Rack::Test::Methods
 
   def app
@@ -16,18 +14,18 @@ class AppTest < Test::Unit::TestCase
 
   def test_renders_version
     get('/version')
-    assert(last_response.ok?)
+    assert_predicate(last_response, :ok?)
   end
 
   def test_robots_txt
     get('/robots.txt')
-    assert(last_response.ok?)
+    assert_predicate(last_response, :ok?)
   end
 
   def test_it_renders_home_page
     get('/')
-    assert(last_response.ok?)
-    assert(last_response.body.include?('0pdd'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, '0pdd')
   end
 
   def test_renders_some_pages
@@ -40,14 +38,14 @@ class AppTest < Test::Unit::TestCase
       '/css/main.css'
     ].each do |page|
       get(page)
-      assert(last_response.status < 400, "Failed to render #{page}")
+      assert_operator(last_response.status, :<, 400, "Failed to render #{page}")
     end
   end
 
   def test_it_renders_puzzles_xsd
     get('/puzzles.xsd')
-    assert(last_response.ok?)
-    assert(last_response.body.include?('<xs:schema'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, '<xs:schema')
   end
 
   def test_renders_log_page
@@ -55,9 +53,9 @@ class AppTest < Test::Unit::TestCase
     log = Log.new(Dynamo.new.aws, repo)
     log.put('some-tag', 'some text here')
     get("/log?name=#{repo}")
-    assert(last_response.ok?, last_response.body)
-    assert(last_response.body.include?(repo), last_response.body)
-    assert(last_response.body.include?('some text'), last_response.body)
+    assert_predicate(last_response, :ok?, last_response.body)
+    assert_includes(last_response.body, repo, last_response.body)
+    assert_includes(last_response.body, 'some text', last_response.body)
   end
 
   def test_renders_log_item
@@ -66,14 +64,14 @@ class AppTest < Test::Unit::TestCase
     tag = 'some-tag'
     log.put(tag, 'some text here')
     get("/log-item?repo=#{repo}&tag=#{tag}")
-    assert(last_response.ok?, last_response.body)
-    assert(last_response.body.include?(repo), last_response.body)
-    assert(last_response.body.include?('some text'), last_response.body)
+    assert_predicate(last_response, :ok?, last_response.body)
+    assert_includes(last_response.body, repo, last_response.body)
+    assert_includes(last_response.body, 'some text', last_response.body)
   end
 
   def test_renders_page_not_found
     get('/the-url-that-is-absent')
-    assert(last_response.status == 404)
+    assert_equal(404, last_response.status)
   end
 
   def test_it_understands_push_from_github
@@ -90,8 +88,8 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/master"}'].join,
       headers
     )
-    assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
   end
 
   def test_it_ignores_push_from_github_to_not_master
@@ -108,9 +106,9 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/main"}'].join,
       headers
     )
-    assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
-    assert(last_response.body.include?('nothing is done'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
+    assert_includes(last_response.body, 'nothing is done')
   end
 
   def test_it_accepts_push_from_github_to_not_default_master
@@ -128,9 +126,9 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/main"}'].join,
       headers
     )
-    assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
-    assert(!last_response.body.include?('nothing is done'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
+    refute_includes(last_response.body, 'nothing is done')
   end
 
   def test_it_ignore_push_from_github_to_not_default_master
@@ -148,9 +146,9 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/master"}'].join,
       headers
     )
-    assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
-    assert(last_response.body.include?('nothing is done'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
+    assert_includes(last_response.body, 'nothing is done')
   end
 
   def test_it_understands_push_from_gitlab
@@ -167,8 +165,8 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/master"}'].join,
       headers
     )
-    assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
   end
 
   def test_it_ignores_push_from_gitlab_to_not_master
@@ -185,9 +183,9 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/main"}'].join,
       headers
     )
-    assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
-    assert(last_response.body.include?('nothing is done'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
+    assert_includes(last_response.body, 'nothing is done')
   end
 
   def test_it_accepts_push_from_gitlab_to_not_default_master
@@ -205,9 +203,9 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/main"}'].join,
       headers
     )
-    assert(last_response.ok?)
+    assert_predicate(last_response, :ok?)
     assert(last_response.body.start_with?('Thanks'))
-    assert(!last_response.body.include?('nothing is done'))
+    refute_includes(last_response.body, 'nothing is done')
   end
 
   def test_it_ignores_push_from_gitlab_to_not_default_master
@@ -225,14 +223,14 @@ class AppTest < Test::Unit::TestCase
        '"ref":"refs/heads/master"}'].join,
       headers
     )
-    assert(last_response.ok?)
-    assert(last_response.body.include?('Thanks'))
-    assert(last_response.body.include?('nothing is done'))
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
+    assert_includes(last_response.body, 'nothing is done')
   end
 
   def test_renders_html_puzzles
     get('/p?name=yegor256/pdd')
-    assert(last_response.ok?)
+    assert_predicate(last_response, :ok?)
     html = last_response.body
     assert(
       html.include?('<html') &&
@@ -242,41 +240,39 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_snapshots_unavailable_repo
-    assert_nothing_raised(Exec::Error) do
-      get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
-    end
-    assert(last_response.status == 400)
+    get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
+    assert_equal(400, last_response.status)
   end
 
   def test_renders_svg_puzzles
     get('/svg?name=yegor256/pdd')
-    assert(last_response.ok?)
+    assert_predicate(last_response, :ok?)
     svg = last_response.body
     File.write('/tmp/0pdd-button.svg', svg)
-    assert(
-      svg.include?('<svg '),
+    assert_includes(
+      svg, '<svg ',
       "broken SVG: #{svg}"
     )
   end
 
   def test_renders_xml_puzzles
     get('/xml?name=yegor256/pdd')
-    assert(last_response.ok?)
+    assert_predicate(last_response, :ok?)
     xml = last_response.body
-    assert(
-      xml.include?('<puzzles '),
+    assert_includes(
+      xml, '<puzzles ',
       "broken XML: #{xml}"
     )
   end
 
   def test_rejects_invalid_repo_name
     get('/svg?name=yego256/pdd+a')
-    assert(!last_response.ok?)
+    refute_predicate(last_response, :ok?)
   end
 
   def test_not_found
     get('/unknown_path')
-    assert(last_response.status == 404)
-    assert(last_response.content_type == 'text/html;charset=utf-8')
+    assert_equal(404, last_response.status)
+    assert_equal('text/html;charset=utf-8', last_response.content_type)
   end
 end

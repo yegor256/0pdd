@@ -54,7 +54,8 @@ class GithubRepo
   end
 
   def create_issue(data)
-    options = data.reject { |k| %i[title description].include? k }
+    fields = %i[title description]
+    options = data.reject { |k| fields.include? k }
     @client.create_issue(
       @repo.name,
       data[:title],

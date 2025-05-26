@@ -30,11 +30,11 @@ release:
     git fetch
     sed -i "s/BUILD/${tag}/g" ./version.rb
     git add ./version.rb
-    git commit -m 'build number set'
+    git commit --no-verify -m 'build number set'
     cp ../config.yml config.yml
     git add config.yml
     bundle exec ruby test/test_credentials.rb
-    git commit -m 'config.yml'
+    git commit --no-verify -m 'config.yml'
     git push -f dokku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     rm -rf config.yml

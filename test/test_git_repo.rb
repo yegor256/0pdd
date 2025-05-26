@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'tmpdir'
 require_relative 'test__helper'
 require_relative '../objects/git_repo'
@@ -11,14 +10,14 @@ require_relative '../objects/user_error'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestGitRepo < Test::Unit::TestCase
+class TestGitRepo < Minitest::Test
   def test_clone_and_pull
     Dir.mktmpdir 'test' do |d|
       _, uri = git(d)
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       repo.push
-      assert(File.exist?(File.join(repo.path, '.git')))
+      assert_path_exists(File.join(repo.path, '.git'))
     end
   end
 
@@ -27,18 +26,18 @@ class TestGitRepo < Test::Unit::TestCase
       path, uri = git(d, 'repo')
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
-      Exec.new("
+      qbash("
         set -e
-        cd '#{path}'
+        cd '#{Shellwords.escape(path)}'
         git checkout -b temp
         git branch -D master
         git checkout --orphan master
         echo 'hello, dude!' > new.txt
         git add new.txt
-        git commit --quiet -am 'new master'
-      ").run
+        git commit --no-verify --quiet -am 'new master'
+      ")
       repo.push
-      assert(File.exist?(File.join(repo.path, 'new.txt')))
+      assert_path_exists(File.join(repo.path, 'new.txt'))
     end
   end
 
@@ -47,35 +46,37 @@ class TestGitRepo < Test::Unit::TestCase
       path, uri = git(d, 'repo')
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
-      Exec.new("
+      qbash(
+        "
         set -e
-        cd '#{path}'
+        cd '#{Shellwords.escape(path)}'
         echo '...\x40todoBad puzzle' > z1.txt
         echo '\x40todo #1 Good puzzle' > z2.txt
         git add z1.txt z2.txt
-        git commit --quiet --amend --message 'zz'
-      ").run
+        git commit --no-verify --quiet --amend --message 'zz'
+        "
+      )
       repo.push
-      assert_raises UserError do
+      assert_raises(UserError) do
         repo.xml
       end
     end
   end
 
-  def test_merge_after_ammend
+  def test_merge_after_amend
     Dir.mktmpdir 'test' do |d|
       path, uri = git(d, 'repo')
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
-      Exec.new("
+      qbash("
         set -e
-        cd '#{path}'
+        cd '#{Shellwords.escape(path)}'
         echo 'hello, dude!' > z.txt
         git add z.txt
-        git commit --quiet --amend --message 'new fix'
-      ").run
+        git commit --no-verify --quiet --amend --message 'new fix'
+      ")
       repo.push
-      assert(File.exist?(File.join(repo.path, 'z.txt')))
+      assert_path_exists(File.join(repo.path, 'z.txt'))
     end
   end
 
@@ -84,18 +85,18 @@ class TestGitRepo < Test::Unit::TestCase
       path, uri = git(d, 'repo')
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
-      Exec.new("
+      qbash("
         set -e
-        cd '#{path}'
+        cd '#{Shellwords.escape(path)}'
         git reset HEAD~2
         git reset --hard
         git clean -fd
-        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
-      ").run
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+      ")
       repo.push
-      assert(File.exist?(File.join(repo.path, 'z.txt')))
+      assert_path_exists(File.join(repo.path, 'z.txt'))
     end
   end
 
@@ -104,24 +105,24 @@ class TestGitRepo < Test::Unit::TestCase
       path, uri = git(d, 'repo')
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
-      Exec.new("
+      qbash("
         set -e
-        cd '#{path}'
+        cd '#{Shellwords.escape(path)}'
         git checkout -b temp
         git branch -D master
         git checkout --orphan master
-        echo 'hello, new!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, new!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, new!' >> z2.txt && git add z2.txt && git commit -m ddd
-      ").run
+        echo 'hello, new!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, new!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, new!' >> z2.txt && git add z2.txt && git commit --no-verify -m ddd
+      ")
       repo.push
-      assert(File.exist?(File.join(repo.path, 'z.txt')))
-      assert(File.exist?(File.join(repo.path, 'z2.txt')))
+      assert_path_exists(File.join(repo.path, 'z.txt'))
+      assert_path_exists(File.join(repo.path, 'z2.txt'))
     end
   end
 
   def test_doesnt_touch_crlf
-    omit
+    skip('...')
     # I can't reproduce the problem of #125. The code works as it should
     # be, however in production it fails due to some issues with CRLF
     # in binary files.
@@ -129,17 +130,17 @@ class TestGitRepo < Test::Unit::TestCase
     Dir.mktmpdir 'test' do |d|
       path, uri = git(d, 'repo')
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
-      Exec.new("
+      qbash("
         set -e
-        cd '#{path}'
+        cd '#{Shellwords.escape(path)}'
         git config --local core.autocrlf false
         echo -n -e 'Hello, world!\r\nHow are you?' >> crlf.txt \
-          && git add . && git commit -am crlf.txt
-      ").run
+          && git add . && git commit --no-verify -am crlf.txt
+      ")
       repo.push
       assert_equal(
-        File.read(File.join(repo.path, 'crlf.txt')),
-        "Hello, world!\n\rHow are you?"
+        "Hello, world!\n\rHow are you?",
+        File.read(File.join(repo.path, 'crlf.txt'))
       )
     end
   end
@@ -150,7 +151,7 @@ class TestGitRepo < Test::Unit::TestCase
       repo = GitRepo.new(name: 'teamed/est', dir: d, uri: uri)
       repo.push
       repo.push
-      assert(File.exist?(File.join(repo.path, '.git')))
+      assert_path_exists(File.join(repo.path, '.git'))
     end
   end
 
@@ -159,7 +160,7 @@ class TestGitRepo < Test::Unit::TestCase
       _, uri = git(d)
       repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: uri)
       repo.push
-      assert(!repo.xml.xpath('/puzzles').empty?)
+      refute_empty(repo.xml.xpath('/puzzles'))
     end
   end
 
@@ -181,22 +182,22 @@ class TestGitRepo < Test::Unit::TestCase
   private
 
   def git(dir, subdir = 'repo')
-    Exec.new("
+    qbash("
       set -e
-      cd '#{dir}'
-      git init --quiet #{subdir}
-      cd #{subdir}
+      cd '#{Shellwords.escape(dir)}'
+      git init --quiet #{Shellwords.escape(subdir)}
+      cd #{Shellwords.escape(subdir)}
       git config user.email git@0pdd.com
       git config user.name 0pdd
       echo 'foo: hello' > .0pdd.yml
       git add .0pdd.yml
-      git commit --quiet -am 'add line'
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-    ").run
+      git commit --no-verify --quiet -am 'add line'
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+    ")
     path = File.join(dir, subdir)
     [path, "file://#{path}"]
   end

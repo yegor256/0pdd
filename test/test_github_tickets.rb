@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'nokogiri'
 require 'yaml'
 require_relative 'test__helper'
@@ -11,7 +10,7 @@ require_relative '../objects/tickets/tickets'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestGithubTickets < Test::Unit::TestCase
+class TestGithubTickets < Minitest::Test
   def test_submits_tickets
     config = YAML.safe_load(
       "
@@ -133,7 +132,7 @@ format:
       ).xpath('/puzzle')
     )
     assert(vcs.data[:description].start_with?('The puzzle `55-ab536de` from #123 has'))
-    assert(vcs.data[:description].include?('Estimate:'))
+    assert_includes(vcs.data[:description], 'Estimate:')
   end
 
   def test_skips_estimate_if_zero
@@ -170,7 +169,7 @@ format:
       ).xpath('/puzzle')
     )
     assert(vcs.data[:description].start_with?('The puzzle `55-ab536de` from #123 has'))
-    assert(!vcs.data[:description].include?('Estimate:'))
+    refute_includes(vcs.data[:description], 'Estimate:')
   end
 
   def test_closes_tickets

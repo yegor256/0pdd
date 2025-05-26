@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
@@ -12,7 +11,7 @@ require_relative '../objects/storage/versioned_storage'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestLoggedStorage < Test::Unit::TestCase
+class TestLoggedStorage < Minitest::Test
   def test_simple_xml_saving
     storage = LoggedStorage.new(
       VersionedStorage.new(FakeStorage.new, '0.0.1'), FakeLog.new

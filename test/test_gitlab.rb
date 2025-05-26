@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require_relative 'test__helper'
 require_relative '../objects/clients/gitlab'
 
@@ -9,7 +8,7 @@ require_relative '../objects/clients/gitlab'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestGitlab < Test::Unit::TestCase
+class TestGitlab < Minitest::Test
   def test_configures_everything_right
     gitlab = GitlabClient.new.client
     assert_raises Gitlab::Error::MissingCredentials do

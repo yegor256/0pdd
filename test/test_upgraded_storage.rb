@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'nokogiri'
 require_relative 'test__helper'
 require_relative 'fake_storage'
@@ -14,7 +13,7 @@ require_relative '../objects/storage/versioned_storage'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestUpgradedStorage < Test::Unit::TestCase
+class TestUpgradedStorage < Minitest::Test
   def test_safety_preserved
     fake = FakeStorage.new
     fake.save(Nokogiri::XML('<puzzles/>'))
@@ -22,7 +21,7 @@ class TestUpgradedStorage < Test::Unit::TestCase
       SafeStorage.new(VersionedStorage.new(fake, '0.0.5')),
       '0.0.5'
     )
-    assert(!storage.load.xpath('/puzzles').empty?)
+    refute_empty(storage.load.xpath('/puzzles'))
   end
 
   def test_removes_broken_issues
@@ -33,8 +32,8 @@ class TestUpgradedStorage < Test::Unit::TestCase
         <puzzle><id>X2</id><issue/></puzzle><puzzles/>'
       )
     )
-    assert(!storage.load.xpath('//puzzle[id="X1"]/issue').empty?)
-    assert(storage.load.xpath('//puzzle[id="X2"]/issue').empty?)
+    refute_empty(storage.load.xpath('//puzzle[id="X1"]/issue'))
+    assert_empty(storage.load.xpath('//puzzle[id="X2"]/issue'))
   end
 
   def test_removes_broken_href
@@ -45,7 +44,7 @@ class TestUpgradedStorage < Test::Unit::TestCase
         <puzzle><id>X2</id><issue>123</issue></puzzle><puzzles/>'
       )
     )
-    assert(!storage.load.xpath('//puzzle[id="X1"]/issue/@href').empty?)
-    assert(storage.load.xpath('//puzzle[id="X2"]/issue/@href').empty?)
+    refute_empty(storage.load.xpath('//puzzle[id="X1"]/issue/@href'))
+    assert_empty(storage.load.xpath('//puzzle[id="X2"]/issue/@href'))
   end
 end

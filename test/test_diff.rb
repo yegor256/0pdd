@@ -3,14 +3,14 @@
 
 require 'nokogiri'
 require 'ostruct'
-require 'test/unit'
+require_relative 'test__helper'
 require_relative '../objects/diff'
 
 # Diff test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestDiff < Test::Unit::TestCase
+class TestDiff < Minitest::Test
   def test_notification_on_one_new_puzzle
     tickets = Tickets.new
     Diff.new(
@@ -33,12 +33,12 @@ class TestDiff < Test::Unit::TestCase
         </puzzles>'
       )
     ).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Incorrect number of messages: #{tickets.messages.length}"
     )
-    assert(
-      tickets.messages[0] == '5 the puzzle [#6](#) is still not solved.',
+    assert_equal(
+      '5 the puzzle [#6](#) is still not solved.', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -49,12 +49,12 @@ class TestDiff < Test::Unit::TestCase
       Nokogiri::XML(f)
     end
     Diff.new(Nokogiri::XML('<puzzles/>'), xml).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Incorrect number of messages: #{tickets.messages.length}"
     )
-    assert(
-      tickets.messages[0] == '5 the puzzle [#125](//issue/125) is still not solved.',
+    assert_equal(
+      '5 the puzzle [#125](//issue/125) is still not solved.', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -88,13 +88,12 @@ class TestDiff < Test::Unit::TestCase
         </puzzles>'
       )
     ).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Incorrect number of messages: #{tickets.messages.length}"
     )
-    assert(
-      tickets.messages[0] ==
-      '55 2 puzzles [#66](#), [#77](#) are still not solved.',
+    assert_equal(
+      '55 2 puzzles [#66](#), [#77](#) are still not solved.', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -113,13 +112,12 @@ class TestDiff < Test::Unit::TestCase
     after = Nokogiri::XML(before.to_s)
     after.xpath('//puzzle[id="100-ffffff"]')[0]['alive'] = 'false'
     Diff.new(before, after).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Incorrect number of messages: #{tickets.messages.length}"
     )
-    assert(
-      tickets.messages[0] ==
-      '500 the only puzzle [#100]() is solved here.',
+    assert_equal(
+      '500 the only puzzle [#100]() is solved here.', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -150,13 +148,12 @@ class TestDiff < Test::Unit::TestCase
     after = Nokogiri::XML(before.to_s)
     after.xpath('//puzzle[id="100-1"]')[0]['alive'] = 'false'
     Diff.new(before, after).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
     )
-    assert(
-      tickets.messages[0] ==
-      '999 the puzzle [#13]() is still not solved; solved: [#100](), [#101]().',
+    assert_equal(
+      '999 the puzzle [#13]() is still not solved; solved: [#100](), [#101]().', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -181,12 +178,12 @@ class TestDiff < Test::Unit::TestCase
     after = Nokogiri::XML(before.to_s)
     after.xpath('//puzzle[id="5-abcdef"]')[0]['alive'] = 'false'
     Diff.new(before, after).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
     )
-    assert(
-      tickets.messages[0] == '5 the only puzzle [#6](#) is solved here.',
+    assert_equal(
+      '5 the only puzzle [#6](#) is solved here.', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
@@ -211,7 +208,7 @@ class TestDiff < Test::Unit::TestCase
       Nokogiri::XML(xml),
       Nokogiri::XML(xml)
     ).notify(tickets)
-    assert(tickets.messages.empty?)
+    assert_empty(tickets.messages)
   end
 
   class Tickets

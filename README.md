@@ -1,4 +1,4 @@
-<img alt="logo" src="https://avatars2.githubusercontent.com/u/24456188" width="64px" height="64px"/>
+# Puzzle Driven Development (PDD) GitHub Chatbot
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/0pdd)](https://www.rultor.com/p/yegor256/0pdd)
@@ -13,19 +13,21 @@
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/0pdd)](https://hitsofcode.com/view/github/yegor256/0pdd)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d23061346143451db3abedca5ad9cbf2)](https://www.codacy.com/gh/yegor256/0pdd/dashboard)
 
-Read this blog post first: [PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html).
+Read this blog post first:
+[PDD in Action](https://www.yegor256.com/2017/04/05/pdd-in-action.html).
 TL;DR:
 
-  1. Your boss tells you to fix issue `#42`
-  1. You do it, but not completely (you have no time, you are lazy, etc.)
-  1. You put `TODO #42:30min bla-bla-bla` into the code base (in a pull request)
-  1. CI checks that you didn't break the format of the `TODO` (reuse our [`pdd.yml`](https://github.com/yegor256/0pdd/blob/master/.github/workflows/pdd.yml))
-  1. You merge the pull request
-  1. The bot picks up the `TODO` and creates issue `#43` (new one)
-  1. The boss asks your friend to fix `#43`
-  1. The friend fixes it, and merges
-  1. The `TODO` is gone from the code base
-  1. The bot closes the issue `#43`
+1. Your boss tells you to fix issue `#42`
+1. You do it, but not completely (you have no time, you are lazy, etc.)
+1. You put `TODO #42:30min bla-bla-bla` into the code base (in a pull request)
+1. CI checks that you didn't break the format of the `TODO`
+(reuse our [`pdd.yml`][pdd.yml])
+1. You merge the pull request
+1. The bot picks up the `TODO` and creates issue `#43` (new one)
+1. The boss asks your friend to fix `#43`
+1. The friend fixes it, and merges
+1. The `TODO` is gone from the code base
+1. The bot closes the issue `#43`
 
 [0pdd.com](https://www.0pdd.com) is a hosted service that
 finds new "puzzles" in your repository and posts them as GitHub
@@ -35,18 +37,23 @@ just for `push` events with `https://www.0pdd.com/hook/github` payload URL and
 `application/json` content type.
 
 Then, add [@0pdd](https://github.com/0pdd) GitHub user as a
-[collaborator](https://help.github.com/articles/inviting-collaborators-to-a-personal-repository/)
-to your repository, if it's private
-(you don't need this for a public repository). If your invitation is not accepted by [@0pdd](https://github.com/0pdd) in 30mins, please visit this address https://0pdd.com/invitation?repo={REPO_FULL_NAME} - `REPO_FULL_NAME` is the full name of your repo e.g `yegor256/0pdd`
+[collaborator] to your repository, if it's private
+(you don't need this for a public repository).
+
+If your invitation is not accepted by [@0pdd](https://github.com/0pdd)
+within 30 minutes, visit this address:
+`https://0pdd.com/invitation?repo={REPO_FULL_NAME}`, where `REPO_FULL_NAME`
+is the full name of your repo, e.g., `yegor256/0pdd`.
 
 Then, add a `@todo` [puzzle](https://www.yegor256.com/2009/03/04/pdd.html)
 to the source code (format it [right](https://github.com/teamed/pdd)).
 
-Then, `git push` to master branch something and see what happens. You should see a new
+Then, `git push` to master branch something and see what happens.
+You should see a new
 issue created in your repository by [@0pdd](https://github.com/0pdd).
 
 The dependency tree of all puzzles in your repository you can find
-here: https://www.0pdd.com/p?name=yegor256/0pdd (just replace the name
+here: `https://www.0pdd.com/p?name=yegor256/0pdd` (just replace the name
 of the repo in the URL).
 
 Don't forget to add that cute little badge to your `README.md`, just
@@ -61,8 +68,11 @@ of your own repository):
 ## How to configure?
 
 The only way to configure 0pdd is to add `.0pdd.yml` file to the
-root directory of your `master` branch (see [this one](https://github.com/yegor256/0pdd/blob/master/.0pdd.yml) as a live example).
-It has to be a [YAML](https://en.wikipedia.org/wiki/YAML) file with the following
+root directory of your `master` branch (see
+[this one](https://github.com/yegor256/0pdd/blob/master/.0pdd.yml)
+as a live example).
+It has to be a [YAML](https://en.wikipedia.org/wiki/YAML)
+file with the following
 optional parameters inside:
 
 ```yaml
@@ -85,12 +95,16 @@ tags:
   - bug
 ```
 
-The element `threshold` allows you to limit the number of issues created from the puzzles in your code. In the example above, each time the appropriate push event is sent to your webhook up to 10 issues will be created regardless of the number of puzzles found in the code. If this limit is not set, `threshold` is assumed to be equal to 256.
+The element `threshold` allows you to limit the number of issues created
+from the puzzles in your code. In the example above, each time the appropriate
+push event is sent to your webhook up to 10 issues will be created regardless
+of the number of puzzles found in the code. If this limit is not set,
+`threshold` is assumed to be equal to 256.
 
 Section `errors` allows you to specify a list of email addresses which will
 receive notifications when PDD processing fails for your repo. It's
-a very useful feature, since very often programmers make
-mistakes in PDD puzzle formatting. We would recommend you use this feature.
+a very useful feature, since programmers often make
+mistakes in PDD puzzle formatting. We recommend using this feature.
 
 Section `alerts` allows you to specify users that will be notified when
 new PDD puzzles show up. By default we will just submit GitHub tickets
@@ -100,15 +114,16 @@ each puzzle description and GitHub will notify them by email.
 
 Subsection `suppress` lets you make 0pdd more quiet, where it's necessary:
 
-- `on-found-puzzle`: stay quiet when a new puzzle is discovered
+* `on-found-puzzle`: stay quiet when a new puzzle is discovered
 
-- `on-lost-puzzle`: stay quiet when a puzzle is gone
+* `on-lost-puzzle`: stay quiet when a puzzle is gone
 
-- `on-scope`: stay quiet when child puzzles change statuses
+* `on-scope`: stay quiet when child puzzles change statuses
 
-`--model`
-
-The `model` option used by [0pdd](https://github.com/yegor256/0pdd#readme) to opt-in to use ML model which prioritizes puzzles generated by `pdd`. If you would like to opt-in to puzzle prioritization, then add this option to your _.0pdd.yml_ config file at the root of your project.
+The `model` option is used by [0pdd]
+to opt-in to use an ML model which prioritizes puzzles generated by `pdd`.
+If you would like to opt-in to puzzle prioritization, add this option
+to your `.0pdd.yml`.
 
 [pdd](https://github.com/yegor256/pdd) is the tool that parses your source
 code files. You can configure its behavior by adding `.pdd` file to the
@@ -118,19 +133,19 @@ root directory of the repository. Take
 The `format` section helps you instruct 0pdd about GitHub issues formatting.
 These options are supported:
 
-- `short-title`: issue title will not include file name and line numbers
+* `short-title`: issue title will not include file name and line numbers
 
-- `title-length=...`: you may configure the length of the title of GitHub
-  issues we create. Minimim length is 30, maximum is 255. Any other values
-  will be silently ignored. The default length is 60.
+* `title-length=...`: you may configure the length of the title of GitHub
+issues we create. Minimum length is 30, maximum is 255. Any other values
+will be silently ignored. The default length is 60.
 
 The `tags` section lists GitHub labels that will automatically be attached
-to all new issues we create. If you don't have that labels in your GitHub
+to all new issues we create. If you don't have those labels in your GitHub
 repository, they will automatically be created.
 
 To exclude files from analysis, create a `.pdd` file with the following content:
 
-```
+```text
 --exclude=path/to/file.txt
 ```
 
@@ -158,7 +173,7 @@ the necessary puzzle from the source code and let us close the issue.
 
 It is a Ruby project.
 First, install
-[Java SDK 8+](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html),
+[Java] SDK 8+,
 [Maven 3.2+](https://maven.apache.org/),
 [Ruby 2.3+](https://www.ruby-lang.org/en/documentation/installation/),
 [Rubygems](https://rubygems.org/pages/download),
@@ -167,19 +182,20 @@ and
 Then:
 
 ```bash
-$ bundle update
-$ rake
+bundle update
+bundle exec rake
 ```
 
-The build has to be clean. If it's not, [submit an issue](https://github.com/yegor256/0pdd/issues).
+The build has to be clean. If it's not,
+[submit an issue](https://github.com/yegor256/0pdd/issues).
 
 Then, make your changes, make sure the build is still clean,
-and [submit a pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
+and [submit a pull request][guidelines].
 
 To run it locally:
 
-```
-$ rake run
+```bash
+bundle exec rake run
 ```
 
 If you want to run it on your own machine, you will need to add this
@@ -208,11 +224,7 @@ smtp:
   key: AKIAI..........UTSQA
   secret: Z2FbKB..........viCKaYo4H..........vva21
 id_rsa: |
-  -----BEGIN RSА PRIVATE KEY-----
-  MIIJKAIBAAKCAgEAoE94Xy8TGMbnoK5cKJXWccr9qLLDc/liKpMAMlnQEFDCgi0l
-  ...
-  NaaFpowFg8LKSiwc04ERduu72Imv5GJBCkhS8F7laURXFcZiYNqBnWYzY0U=
-  -----END RSА PRIVATE KEY-----
+  ... RSA key goes here, in ASCII format
 ```
 
 We add this file to the repository while deploying to Heroku,
@@ -222,6 +234,11 @@ see how it's done in `.rultor.yml`.
 
 Don't forget this:
 
-```
+```bash
 heroku buildpacks:add --index 1 https://github.com/heroku/heroku-buildpack-apt
 ```
+
+[pdd.yml]: https://github.com/yegor256/0pdd/blob/master/.github/workflows/pdd.yml
+[guidelines]: https://www.yegor256.com/2014/04/15/github-guidelines.html
+[Java]: https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+[collaborator]: https://help.github.com/articles/inviting-collaborators-to-a-personal-repository/

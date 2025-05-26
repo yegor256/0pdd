@@ -3,11 +3,11 @@
 
 require 'nokogiri'
 require 'ostruct'
-require 'test/unit'
+require_relative 'test__helper'
 require_relative '../objects/diff'
 
 # Complicated diff test.
-class TestDiff < Test::Unit::TestCase
+class TestDiff < Minitest::Test
   # @todo #234:15m Add tests for more complicated dynamics, like
   # [here](https://github.com/php-coder/mystamps/issues/695#issuecomment-405372820).
   # Ideally, this tests other cases that can lead to the observed behaviour,
@@ -39,13 +39,12 @@ class TestDiff < Test::Unit::TestCase
     after = Nokogiri::XML(before.to_s)
     after.xpath('//puzzle[id="100-2"]')[0]['alive'] = 'false'
     Diff.new(before, after).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
     )
-    assert(
-      tickets.messages[0] ==
-      '999 2 puzzles [#100](), [#13]() are still not solved; solved: [#101]().',
+    assert_equal(
+      '999 2 puzzles [#100](), [#13]() are still not solved; solved: [#101]().', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end
