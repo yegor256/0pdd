@@ -18,7 +18,7 @@ class TestGitRepo < Test::Unit::TestCase
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
       repo.push
       repo.push
-      assert(File.exist?(File.join(repo.path, '.git')))
+      assert_path_exists(File.join(repo.path, '.git'))
     end
   end
 
@@ -38,7 +38,7 @@ class TestGitRepo < Test::Unit::TestCase
         git commit --quiet -am 'new master'
       ").run
       repo.push
-      assert(File.exist?(File.join(repo.path, 'new.txt')))
+      assert_path_exists(File.join(repo.path, 'new.txt'))
     end
   end
 
@@ -62,7 +62,7 @@ class TestGitRepo < Test::Unit::TestCase
     end
   end
 
-  def test_merge_after_ammend
+  def test_merge_after_amend
     Dir.mktmpdir 'test' do |d|
       path, uri = git(d, 'repo')
       repo = GitRepo.new(name: 'yegor256/pdd', dir: d, uri: uri)
@@ -75,7 +75,7 @@ class TestGitRepo < Test::Unit::TestCase
         git commit --quiet --amend --message 'new fix'
       ").run
       repo.push
-      assert(File.exist?(File.join(repo.path, 'z.txt')))
+      assert_path_exists(File.join(repo.path, 'z.txt'))
     end
   end
 
@@ -95,7 +95,7 @@ class TestGitRepo < Test::Unit::TestCase
         echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
       ").run
       repo.push
-      assert(File.exist?(File.join(repo.path, 'z.txt')))
+      assert_path_exists(File.join(repo.path, 'z.txt'))
     end
   end
 
@@ -115,8 +115,8 @@ class TestGitRepo < Test::Unit::TestCase
         echo 'hello, new!' >> z2.txt && git add z2.txt && git commit -m ddd
       ").run
       repo.push
-      assert(File.exist?(File.join(repo.path, 'z.txt')))
-      assert(File.exist?(File.join(repo.path, 'z2.txt')))
+      assert_path_exists(File.join(repo.path, 'z.txt'))
+      assert_path_exists(File.join(repo.path, 'z2.txt'))
     end
   end
 
@@ -138,8 +138,8 @@ class TestGitRepo < Test::Unit::TestCase
       ").run
       repo.push
       assert_equal(
-        File.read(File.join(repo.path, 'crlf.txt')),
-        "Hello, world!\n\rHow are you?"
+        "Hello, world!\n\rHow are you?",
+        File.read(File.join(repo.path, 'crlf.txt'))
       )
     end
   end
@@ -150,7 +150,7 @@ class TestGitRepo < Test::Unit::TestCase
       repo = GitRepo.new(name: 'teamed/est', dir: d, uri: uri)
       repo.push
       repo.push
-      assert(File.exist?(File.join(repo.path, '.git')))
+      assert_path_exists(File.join(repo.path, '.git'))
     end
   end
 
@@ -159,7 +159,7 @@ class TestGitRepo < Test::Unit::TestCase
       _, uri = git(d)
       repo = GitRepo.new(name: 'yegor256/0pdd', dir: d, uri: uri)
       repo.push
-      assert(!repo.xml.xpath('/puzzles').empty?)
+      refute_empty(repo.xml.xpath('/puzzles'))
     end
   end
 

@@ -133,7 +133,7 @@ format:
       ).xpath('/puzzle')
     )
     assert(vcs.data[:description].start_with?('The puzzle `55-ab536de` from #123 has'))
-    assert(vcs.data[:description].include?('Estimate:'))
+    assert_includes(vcs.data[:description], 'Estimate:')
   end
 
   def test_skips_estimate_if_zero
@@ -170,7 +170,7 @@ format:
       ).xpath('/puzzle')
     )
     assert(vcs.data[:description].start_with?('The puzzle `55-ab536de` from #123 has'))
-    assert(!vcs.data[:description].include?('Estimate:'))
+    refute_includes(vcs.data[:description], 'Estimate:')
   end
 
   def test_closes_tickets

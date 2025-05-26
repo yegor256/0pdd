@@ -35,12 +35,12 @@ class Exec
     err = ''
     begin
       Timeout.timeout(240) do
-        Open3.popen3('bash', '-c', c) do |stdin, stdout, stderr, thr|
+        Open3.popen3('bash', '-c', c) do |stdin, stdout, stderr, thread|
           stdin.close
           out += stdout.read_nonblock(8) until stdout.eof?
           err = stderr.read
-          code = thr.value.exitstatus
-          code = 1 unless thr.value.exited?
+          code = thread.value.exitstatus
+          code = 1 unless thread.value.exited?
           unless code.zero?
             raise Error.new(
               code, "#{c} [#{code}]:\n#{err}\n#{out}"

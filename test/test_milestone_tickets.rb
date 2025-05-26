@@ -97,7 +97,7 @@ alerts:
         </puzzle>'
       ).xpath('/puzzle')
     )
-    assert(!vcs.updated)
+    refute(vcs.updated)
   end
 
   def test_adds_comment

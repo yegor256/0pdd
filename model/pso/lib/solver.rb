@@ -65,12 +65,12 @@ module Pso
       n_iterations = 0
       Array.new(threads).map do
         Thread.new do
-          ((precision / @swarm.size) / threads).times do |_interation_number|
+          ((precision / @swarm.size) / threads).times do |_|
             n_iterations += 1
             (0...@density).each do |index|
               perfect = perfect_particle
               puts @f.f(perfect, **@options) if debug
-              new_vector = normalize(interate(@swarm[index], @swarm_best[index].last, perfect, @swarm_speed[index]))
+              new_vector = normalize(iterate(@swarm[index], @swarm_best[index].last, perfect, @swarm_speed[index]))
               if best?(@swarm_best[index].first, @f.f(new_vector, **@options))
                 @swarm_best[index] = [@f.f(new_vector, **@options), new_vector]
               end
@@ -100,7 +100,7 @@ module Pso
       vector
     end
 
-    def interate(vector, best, perfect, speed)
+    def iterate(vector, best, perfect, speed)
       if vector == perfect
         out = generate_random_noise_particle
         new_vec = vector + ((best - vector).normalize * 0.2) + (out * rand * 0.05) + (speed * 0.05)

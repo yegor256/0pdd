@@ -39,13 +39,12 @@ class TestDiff < Test::Unit::TestCase
     after = Nokogiri::XML(before.to_s)
     after.xpath('//puzzle[id="100-2"]')[0]['alive'] = 'false'
     Diff.new(before, after).notify(tickets)
-    assert(
-      tickets.messages.length == 1,
+    assert_equal(
+      1, tickets.messages.length,
       "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
     )
-    assert(
-      tickets.messages[0] ==
-      '999 2 puzzles [#100](), [#13]() are still not solved; solved: [#101]().',
+    assert_equal(
+      '999 2 puzzles [#100](), [#13]() are still not solved; solved: [#101]().', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
   end

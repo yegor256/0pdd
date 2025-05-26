@@ -25,7 +25,7 @@ class CredentialsTest < Test::Unit::TestCase
         dir: d
       )
       repo.push
-      assert(!repo.xml.xpath('//puzzles').nil?)
+      refute_nil(repo.xml.xpath('//puzzles'))
     end
   end
 
@@ -36,7 +36,7 @@ class CredentialsTest < Test::Unit::TestCase
       access_key_id: cfg['dynamo']['key'],
       secret_access_key: cfg['dynamo']['secret']
     )
-    assert(!Log.new(dynamo, 'yegor256/0pdd').exists('some stupid tag'))
+    refute(Log.new(dynamo, 'yegor256/0pdd').exists('some stupid tag'))
   end
 
   def test_connects_to_github
@@ -76,7 +76,7 @@ class CredentialsTest < Test::Unit::TestCase
       cfg['s3']['key'],
       cfg['s3']['secret']
     )
-    assert(!storage.load.xpath('//puzzles').nil?)
+    refute_nil(storage.load.xpath('//puzzles'))
   end
 
   def test_sends_email_via_smtp

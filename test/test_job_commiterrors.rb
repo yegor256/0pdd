@@ -33,8 +33,8 @@ class TestJobCommitErrors < Test::Unit::TestCase
     begin
       JobCommitErrors.new(vcs, job).proceed
     rescue StandardError => e
-      assert(!e.nil?)
+      refute_nil(e)
     end
-    assert(!vcs.reported.empty?)
+    refute_empty(vcs.reported)
   end
 end

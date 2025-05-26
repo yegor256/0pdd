@@ -43,7 +43,7 @@ alerts:
     tickets.close(nil)
   end
 
-  def test_scope_supressed_repo_should_be_quiet
+  def test_scope_suppressed_repo_should_be_quiet
     config = YAML.safe_load(
       "
 alerts:

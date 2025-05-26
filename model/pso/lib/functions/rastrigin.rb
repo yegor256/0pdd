@@ -11,7 +11,7 @@ module Pso
   class Rastrigin < Pso::Function
     def f(vector, **_options)
       fitness = 10 * vector.size
-      fitness + vector.map { |n| (n**2) - (10 * Math.cos(2 * Math::PI * n)) }.sum
+      fitness + vector.sum { |n| (n**2) - (10 * Math.cos(2 * Math::PI * n)) }
     end
   end
 end

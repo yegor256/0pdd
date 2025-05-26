@@ -47,6 +47,6 @@ class TestGithubInvitation < Test::Unit::TestCase
       end
     )
     GithubInvitations.new(github).accept
-    repositories.map { |repo| assert(github.repositories.include?(repo)) }
+    repositories.map { |repo| assert_includes(github.repositories, repo) }
   end
 end

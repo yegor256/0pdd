@@ -22,7 +22,7 @@ class TestUpgradedStorage < Test::Unit::TestCase
       SafeStorage.new(VersionedStorage.new(fake, '0.0.5')),
       '0.0.5'
     )
-    assert(!storage.load.xpath('/puzzles').empty?)
+    refute_empty(storage.load.xpath('/puzzles'))
   end
 
   def test_removes_broken_issues
@@ -33,8 +33,8 @@ class TestUpgradedStorage < Test::Unit::TestCase
         <puzzle><id>X2</id><issue/></puzzle><puzzles/>'
       )
     )
-    assert(!storage.load.xpath('//puzzle[id="X1"]/issue').empty?)
-    assert(storage.load.xpath('//puzzle[id="X2"]/issue').empty?)
+    refute_empty(storage.load.xpath('//puzzle[id="X1"]/issue'))
+    assert_empty(storage.load.xpath('//puzzle[id="X2"]/issue'))
   end
 
   def test_removes_broken_href
@@ -45,7 +45,7 @@ class TestUpgradedStorage < Test::Unit::TestCase
         <puzzle><id>X2</id><issue>123</issue></puzzle><puzzles/>'
       )
     )
-    assert(!storage.load.xpath('//puzzle[id="X1"]/issue/@href').empty?)
-    assert(storage.load.xpath('//puzzle[id="X2"]/issue/@href').empty?)
+    refute_empty(storage.load.xpath('//puzzle[id="X1"]/issue/@href'))
+    assert_empty(storage.load.xpath('//puzzle[id="X2"]/issue/@href'))
   end
 end
