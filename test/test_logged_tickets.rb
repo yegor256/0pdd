@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'nokogiri'
 require 'yaml'
 require_relative 'test__helper'
@@ -13,7 +12,7 @@ require_relative '../objects/tickets/logged_tickets'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestLoggedTickets < Test::Unit::TestCase
+class TestLoggedTickets < Minitest::Test
   def test_submits_tickets
     log = FakeLog.new
     tickets = LoggedTickets.new('yegor256/0pdd', log, FakeTickets.new)

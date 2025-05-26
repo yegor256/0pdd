@@ -110,8 +110,6 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    mocha (2.7.1)
-      ruby2_keywords (>= 0.0.5)
     multi_json (1.15.0)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
@@ -259,6 +257,7 @@ GEM
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
     uri (1.0.3)
+    veils (0.4.0)
     version_gem (1.1.8)
     webrick (1.9.1)
     xcop (0.8.0)
@@ -288,7 +287,6 @@ DEPENDENCIES
   matrix (~> 0.4)
   minitest (~> 5.25)
   minitest-reporters (~> 1.7)
-  mocha (~> 2.7)
   net-smtp (~> 0.5)
   nokogiri (~> 1.18)
   octokit (~> 9.2)
@@ -309,6 +307,7 @@ DEPENDENCIES
   sinatra-contrib (~> 4.0)
   sprockets (~> 4.2)
   test-unit (~> 3.6)
+  veils (> 0)
   webrick (~> 1.9)
   xcop (~> 0.7)
 

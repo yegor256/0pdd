@@ -3,7 +3,6 @@
 
 require 'nokogiri'
 require 'ostruct'
-require 'test/unit'
 require 'tmpdir'
 require_relative 'test__helper'
 require_relative 'fake_storage'
@@ -18,7 +17,7 @@ require_relative '../objects/storage/versioned_storage'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestPuzzles < Test::Unit::TestCase
+class TestPuzzles < Minitest::Test
   def test_all_xml
     Dir.mktmpdir 'test' do |d|
       test_xml(d, 'simple.xml')

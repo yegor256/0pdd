@@ -19,10 +19,10 @@ class TaggedTickets
     issue_id = issue[:number]
     yaml = @vcs.repo.config
     if yaml['tags'].is_a?(Array)
-      tags = yaml['tags'].map(&:strip).map(&:downcase)
+      tags = yaml['tags'].map { |x| x.strip.downcase }
       labels = @vcs.labels
         .map { |json| json[:name] }
-        .map(&:strip).map(&:downcase)
+        .map { |x| x.strip.downcase }
       needed = tags - labels
       begin
         needed.each { |t| @vcs.add_label(t, 'F74219') }

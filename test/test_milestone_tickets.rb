@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'nokogiri'
 require 'yaml'
 require 'fake_github'
@@ -12,7 +11,7 @@ require_relative '../objects/tickets/milestone_tickets'
 # Author:: George Aristy (george.aristy@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestGithubTickets < Test::Unit::TestCase
+class TestGithubTickets < Minitest::Test
   def test_sets_milestone
     milestone = 123
     config = YAML.safe_load(

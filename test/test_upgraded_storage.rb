@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'nokogiri'
 require_relative 'test__helper'
 require_relative 'fake_storage'
@@ -14,7 +13,7 @@ require_relative '../objects/storage/versioned_storage'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestUpgradedStorage < Test::Unit::TestCase
+class TestUpgradedStorage < Minitest::Test
   def test_safety_preserved
     fake = FakeStorage.new
     fake.save(Nokogiri::XML('<puzzles/>'))

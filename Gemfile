@@ -16,7 +16,6 @@ gem 'mail', '~>2.8'
 gem 'matrix', '~>0.4'
 gem 'minitest', '~>5.25', require: false
 gem 'minitest-reporters', '~>1.7', require: false
-gem 'mocha', '~>2.7', require: false
 gem 'net-smtp', '~>0.5'
 gem 'nokogiri', '~>1.18'
 gem 'octokit', '~>9.2'
@@ -29,7 +28,6 @@ gem 'rubocop', '~>1.69', require: false
 gem 'rubocop-minitest', '>0', require: false
 gem 'rubocop-performance', '>0', require: false
 gem 'rubocop-rake', '>0', require: false
-# gem 'ruby-fann', '~>2.0'
 gem 'sass', '~>3.7'
 gem 'sentry-raven', '~>3.1'
 gem 'simplecov', '~>0.22'
@@ -37,6 +35,6 @@ gem 'simplecov-cobertura', '~> 2.1'
 gem 'sinatra', '~>4.0'
 gem 'sinatra-contrib', '~>4.0'
 gem 'sprockets', '~>4.2'
-gem 'test-unit', '~>3.6', require: false
+gem 'veils', '>0'
 gem 'webrick', '~>1.9'
 gem 'xcop', '~>0.7'

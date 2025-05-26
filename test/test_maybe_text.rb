@@ -1,12 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require_relative 'test__helper'
 require_relative '../objects/maybe_text'
 
 # Truncated test.
-class TestMaybeText < Test::Unit::TestCase
+class TestMaybeText < Minitest::Test
   def test_nil_input_then_blank
     assert_equal('', MaybeText.new('output', nil).to_s)
   end

@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
-require 'mocha/test_unit'
 require_relative 'test__helper'
 require_relative '../objects/jobs/job_commiterrors'
 
@@ -10,7 +8,7 @@ require_relative '../objects/jobs/job_commiterrors'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestJobCommitErrors < Test::Unit::TestCase
+class TestJobCommitErrors < Minitest::Test
   class Stub
     attr_reader :name, :reported, :repo
 

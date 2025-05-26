@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require_relative 'test__helper'
 require_relative '../objects/exec'
 require_relative '../objects/user_error'
@@ -10,7 +9,7 @@ require_relative '../objects/user_error'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestExec < Test::Unit::TestCase
+class TestExec < Minitest::Test
   def test_simple_bash_call
     assert(Exec.new('echo 123').run.start_with?("123\n"))
   end

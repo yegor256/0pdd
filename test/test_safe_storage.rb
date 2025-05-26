@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'nokogiri'
 require_relative 'test__helper'
 require_relative 'fake_storage'
@@ -12,7 +11,7 @@ require_relative '../objects/storage/safe_storage'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestSafeStorage < Test::Unit::TestCase
+class TestSafeStorage < Minitest::Test
   def test_accepts_valid_xml
     storage = SafeStorage.new(FakeStorage.new)
     storage.save(
@@ -42,7 +41,7 @@ class TestSafeStorage < Test::Unit::TestCase
 
   def test_rejects_invalid_xml
     storage = SafeStorage.new(FakeStorage.new)
-    assert_raise RuntimeError do
+    assert_raises(RuntimeError) do
       storage.save(Nokogiri::XML('<test>hello</test>'))
     end
   end

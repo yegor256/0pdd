@@ -1,13 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
-require 'mocha/test_unit'
 require 'rack/test'
 require_relative 'test__helper'
 require_relative '../0pdd'
 
-class AppTest < Test::Unit::TestCase
+class AppTest < Minitest::Test
   include Rack::Test::Methods
 
   def app
@@ -242,9 +240,7 @@ class AppTest < Test::Unit::TestCase
   end
 
   def test_snapshots_unavailable_repo
-    assert_nothing_raised(Exec::Error) do
-      get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
-    end
+    get('/snapshot?name=yegor256/0pdd_foobar_unavailable')
     assert_equal(400, last_response.status)
   end
 

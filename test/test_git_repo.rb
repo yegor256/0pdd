@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require 'tmpdir'
 require_relative 'test__helper'
 require_relative '../objects/git_repo'
@@ -11,7 +10,7 @@ require_relative '../objects/user_error'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestGitRepo < Test::Unit::TestCase
+class TestGitRepo < Minitest::Test
   def test_clone_and_pull
     Dir.mktmpdir 'test' do |d|
       _, uri = git(d)
@@ -35,7 +34,7 @@ class TestGitRepo < Test::Unit::TestCase
         git checkout --orphan master
         echo 'hello, dude!' > new.txt
         git add new.txt
-        git commit --quiet -am 'new master'
+        git commit --no-verify --quiet -am 'new master'
       ").run
       repo.push
       assert_path_exists(File.join(repo.path, 'new.txt'))
@@ -53,7 +52,7 @@ class TestGitRepo < Test::Unit::TestCase
         echo '...\x40todoBad puzzle' > z1.txt
         echo '\x40todo #1 Good puzzle' > z2.txt
         git add z1.txt z2.txt
-        git commit --quiet --amend --message 'zz'
+        git commit --no-verify --quiet --amend --message 'zz'
       ").run
       repo.push
       assert_raises UserError do
@@ -72,7 +71,7 @@ class TestGitRepo < Test::Unit::TestCase
         cd '#{path}'
         echo 'hello, dude!' > z.txt
         git add z.txt
-        git commit --quiet --amend --message 'new fix'
+        git commit --no-verify --quiet --amend --message 'new fix'
       ").run
       repo.push
       assert_path_exists(File.join(repo.path, 'z.txt'))
@@ -90,9 +89,9 @@ class TestGitRepo < Test::Unit::TestCase
         git reset HEAD~2
         git reset --hard
         git clean -fd
-        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, dude!' >> z.txt && git add z.txt && git commit -m ddd
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, dude!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
       ").run
       repo.push
       assert_path_exists(File.join(repo.path, 'z.txt'))
@@ -110,9 +109,9 @@ class TestGitRepo < Test::Unit::TestCase
         git checkout -b temp
         git branch -D master
         git checkout --orphan master
-        echo 'hello, new!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, new!' >> z.txt && git add z.txt && git commit -m ddd
-        echo 'hello, new!' >> z2.txt && git add z2.txt && git commit -m ddd
+        echo 'hello, new!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, new!' >> z.txt && git add z.txt && git commit --no-verify -m ddd
+        echo 'hello, new!' >> z2.txt && git add z2.txt && git commit --no-verify -m ddd
       ").run
       repo.push
       assert_path_exists(File.join(repo.path, 'z.txt'))
@@ -121,7 +120,7 @@ class TestGitRepo < Test::Unit::TestCase
   end
 
   def test_doesnt_touch_crlf
-    omit
+    skip('...')
     # I can't reproduce the problem of #125. The code works as it should
     # be, however in production it fails due to some issues with CRLF
     # in binary files.
@@ -134,7 +133,7 @@ class TestGitRepo < Test::Unit::TestCase
         cd '#{path}'
         git config --local core.autocrlf false
         echo -n -e 'Hello, world!\r\nHow are you?' >> crlf.txt \
-          && git add . && git commit -am crlf.txt
+          && git add . && git commit --no-verify -am crlf.txt
       ").run
       repo.push
       assert_equal(
@@ -190,12 +189,12 @@ class TestGitRepo < Test::Unit::TestCase
       git config user.name 0pdd
       echo 'foo: hello' > .0pdd.yml
       git add .0pdd.yml
-      git commit --quiet -am 'add line'
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
-      echo 'hello, world!' >> z.txt && git add z.txt && git commit -am z
+      git commit --no-verify --quiet -am 'add line'
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
+      echo 'hello, world!' >> z.txt && git add z.txt && git commit --no-verify -am z
     ").run
     path = File.join(dir, subdir)
     [path, "file://#{path}"]

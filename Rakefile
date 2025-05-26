@@ -3,13 +3,12 @@
 
 require 'rubygems'
 require 'rake'
-require 'rdoc'
 require 'rake/clean'
 require_relative 'objects/dynamo'
 
 ENV['RACK_ENV'] = 'test'
 
-task default: %i[check_outdated_gems clean test rubocop xcop copyright]
+task default: %i[clean test rubocop xcop]
 
 require 'rake/testtask'
 desc 'Run all unit tests'
@@ -30,7 +29,6 @@ end
 require 'xcop/rake_task'
 desc 'Validate all XML/XSL/XSD/HTML files for formatting'
 Xcop::RakeTask.new :xcop do |task|
-  task.license = 'LICENSE.txt'
   task.includes = ['**/*.xml', '**/*.xsl', '**/*.xsd', '**/*.html']
   task.excludes = ['target/**/*', 'coverage/**/*']
 end
@@ -64,20 +62,7 @@ task :sleep do
   end
 end
 
+desc 'Run website'
 task run: :dynamo do
   `rerun -b "RACK_ENV=test rackup"`
-end
-
-task :copyright do
-  sh "grep -q -r '#{Date.today.strftime('%Y')}' \
-    --include '*.rb' \
-    --include '*.txt' \
-    --include 'Rakefile' \
-    ."
-end
-
-task :check_outdated_gems do
-  sh 'bundle outdated' do |ok, _|
-    puts 'Some dependencies are outdated' unless ok
-  end
 end

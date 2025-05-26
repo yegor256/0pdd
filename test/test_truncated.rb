@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'test/unit'
 require_relative 'test__helper'
 require_relative '../objects/truncated'
 
@@ -9,7 +8,7 @@ require_relative '../objects/truncated'
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
 # License:: MIT
-class TestTruncated < Test::Unit::TestCase
+class TestTruncated < Minitest::Test
   def test_simple_formatting
     assert_equal('How...', Truncated.new('How are you?', 7).to_s)
   end

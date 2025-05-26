@@ -3,11 +3,10 @@
 
 require 'nokogiri'
 require 'ostruct'
-require 'test/unit'
 require_relative '../objects/diff'
 
 # Complicated diff test.
-class TestDiff < Test::Unit::TestCase
+class TestDiff < Minitest::Test
   # @todo #234:15m Add tests for more complicated dynamics, like
   # [here](https://github.com/php-coder/mystamps/issues/695#issuecomment-405372820).
   # Ideally, this tests other cases that can lead to the observed behaviour,
