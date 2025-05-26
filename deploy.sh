@@ -3,11 +3,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-set -e
+set -e -o pipefail
 
 cd "$(dirname "$0")"
 bundle update
-# rake
 sed -i -s 's|Gemfile.lock||g' .gitignore
 cp /code/home/assets/0pdd/config.yml .
 git add config.yml

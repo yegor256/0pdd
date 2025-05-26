@@ -3,20 +3,21 @@
 
 $stdout.sync = true
 
-require 'mail'
+require 'glogin'
 require 'haml'
 require 'json'
+require 'mail'
+require 'net/http'
+require 'octokit'
 require 'ostruct'
-require 'sinatra'
-require 'sinatra/cookies'
-require 'sass'
+require 'qbash'
 require 'rack'
 require 'raven'
-require 'octokit'
+require 'sass'
+require 'sinatra'
+require 'sinatra/cookies'
 require 'tmpdir'
-require 'glogin'
 require 'uri'
-require 'net/http'
 
 require_relative 'version'
 require_relative 'objects/log'
@@ -115,8 +116,8 @@ configure do
     config['github']['client_secret'],
     'https://www.0pdd.com/github-callback'
   )
-  set :ruby_version, Exec.new('ruby -e "print RUBY_VERSION"').run
-  set :git_version, Exec.new('git --version | cut -d" " -f 3').run
+  set :ruby_version, qbash('ruby -e "print RUBY_VERSION"')
+  set :git_version, qbash('git --version | cut -d" " -f 3')
   set :temp_dir, Dir.mktmpdir('0pdd')
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
@@ -169,10 +170,10 @@ get '/logout' do
 end
 
 get '/' do
-  projects = Exec.new(
+  projects = qbash(
     "(sort /tmp/0pdd-done.txt 2>/dev/null || echo '')\
     | uniq"
-  ).run.split("\n").reject(&:empty?)
+  ).split("\n").reject(&:empty?)
   haml :index, layout: :layout, locals: merged(
     title: '0pdd',
     ruby_version: settings.ruby_version,
@@ -250,7 +251,7 @@ get '/snapshot' do
     xml = repo.xml
     xml.xpath('//processing-instruction("xml-stylesheet")').remove
     xml.to_s
-  rescue Exec::Error => e
+  rescue StandardError => e
     error 400, "Could not get snapshot for #{name}: #{e.message}"
   end
 end

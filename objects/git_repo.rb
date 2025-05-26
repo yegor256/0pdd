@@ -1,14 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-require 'pdd'
-require 'yaml'
 require 'base64'
-require 'tmpdir'
-require 'tempfile'
 require 'fileutils'
+require 'pdd'
+require 'qbash'
 require 'shellwords'
-require_relative 'exec'
+require 'tempfile'
+require 'tmpdir'
+require 'yaml'
 require_relative 'user_error'
 
 #
@@ -52,10 +52,9 @@ class GitRepo
     raise "Path is absent: #{@path}" unless File.exist?(@path)
     Tempfile.open do |f|
       begin
-        Exec.new("cd #{@path} && pdd -v -f #{f.path}").run
-      rescue Exec::Error => e
-        raise UserError, e.message if e.code == 1
-        raise e
+        qbash("cd #{Shellwords.escape(@path)} && pdd -v -f #{Shellwords.escape(f.path)}")
+      rescue StandardError => e
+        raise UserError, e.message
       end
       Nokogiri::XML(File.read(f))
     end
@@ -78,15 +77,15 @@ class GitRepo
   def clone
     prepare_key
     prepare_git
-    Exec.new('git clone', '--depth=1', '--quiet', @uri, @path).run
+    qbash(['git clone', '--depth=1', '--quiet', Shellwords.escape(@uri), Shellwords.escape(@path)])
   end
 
   def pull
     prepare_key
     prepare_git
-    Exec.new(
+    qbash(
       [
-        "cd #{@path}",
+        "cd #{Shellwords.escape(@path)}",
         "master=#{Shellwords.escape(@master)}",
         'git config --local core.autocrlf false',
         'git reset origin/${master} --hard --quiet',
@@ -96,7 +95,7 @@ class GitRepo
         'git rebase --abort || true',
         'git rebase --autostash --strategy-option=theirs origin/${master}'
       ].join(' && ')
-    ).run
+    )
   end
 
   def prepare_key
@@ -104,18 +103,18 @@ class GitRepo
     return if File.exist?(dir)
     FileUtils.mkdir_p(dir)
     File.write("#{dir}/id_rsa", @id_rsa) unless @id_rsa.empty?
-    Exec.new(
+    qbash(
       [
         'echo "Host *" > ~/.ssh/config',
         'echo "  StrictHostKeyChecking no" >> ~/.ssh/config',
         'echo "  UserKnownHostsFile=~/.ssh/known_hosts" >> ~/.ssh/config',
         'chmod -R 600 ~/.ssh/*'
       ].join(';')
-    ).run
+    )
   end
 
   def prepare_git
-    Exec.new(
+    qbash(
       [
         'GIT=$(git --version)',
         'if [[ "${GIT}" != "git version 2."* ]]',
@@ -123,9 +122,9 @@ class GitRepo
         'exit -1',
         'fi'
       ].join(';')
-    ).run
+    )
     return if ENV['RACK_ENV'] == 'test'
-    Exec.new(
+    qbash(
       [
         'if ! git config --get --global user.email',
         'then git config --global user.email "server@0pdd.com"',
@@ -134,6 +133,6 @@ class GitRepo
         'then git config --global user.name "0pdd.com"',
         'fi'
       ].join(';')
-    ).run
+    )
   end
 end
