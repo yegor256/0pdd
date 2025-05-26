@@ -309,17 +309,19 @@ get '/ping-github' do
           gh.add_comment(
             repo,
             issue,
-            "> #{body.gsub(/\s+/, ' ').gsub(/^(.{100,}?).*$/m, '\1...')}\n\n\
-  I see you're talking to me, but I can't reply since I'm not a chat bot."
+            "> #{body.gsub(/\s+/, ' ').gsub(/^(.{100,}?).*$/m, '\1...')}\n\n" \
+            "I see you're talking to me, but I can't reply since I'm not a chat bot."
           )
           puts "Replied to #{repo}##{issue}"
         end
-      rescue Octokit::NotFound
+      rescue Octokit::NotFound => e
+        puts "Failed: #{e.message}"
         next
       end
     end
-    gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
     "#{repo}: #{reason}"
+  ensure
+    gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
   end
   "#{msgs.join("\n")}\n"
 end
