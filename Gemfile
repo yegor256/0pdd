@@ -19,7 +19,7 @@ gem 'minitest', '~>5.25', require: false
 gem 'minitest-reporters', '~>1.7', require: false
 gem 'net-smtp', '~>0.5'
 gem 'nokogiri', '~>1.18'
-gem 'octokit', '~>9.2'
+gem 'octokit', '~>10.0'
 gem 'pdd', '~>0.24'
 gem 'qbash', '>0'
 gem 'rack', '~>3.1'
