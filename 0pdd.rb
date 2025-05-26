@@ -320,9 +320,8 @@ get '/ping-github' do
       end
     end
     "#{repo}: #{reason}"
-  ensure
-    gh.mark_notifications_as_read(last_read_at: n['last_read_at'])
   end
+  gh.mark_notifications_as_read(last_read_at: Time.now)
   "#{msgs.join("\n")}\n"
 end
 
