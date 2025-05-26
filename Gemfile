@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 source 'https://rubygems.org'
+ruby '~>3.2'
 
 gem 'atlassian-jwt', '~> 0.2.1'
 gem 'aws-sdk-dynamodb', '~>1.111'
