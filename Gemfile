@@ -14,6 +14,8 @@ gem 'haml', '~>5.2'
 gem 'jira-ruby', '~>2.3'
 gem 'mail', '~>2.8'
 gem 'matrix', '~>0.4'
+gem 'minitest', '~>5.25', require: false
+gem 'minitest-reporters', '~>1.7', require: false
 gem 'mocha', '~>2.7', require: false
 gem 'net-smtp', '~>0.5'
 gem 'nokogiri', '~>1.18'
@@ -27,8 +29,7 @@ gem 'rubocop', '~>1.69', require: false
 gem 'rubocop-minitest', '>0', require: false
 gem 'rubocop-performance', '>0', require: false
 gem 'rubocop-rake', '>0', require: false
-gem 'rubocop-rspec', '~>3.3', require: false
-gem 'ruby-fann', '~>2.0'
+# gem 'ruby-fann', '~>2.0'
 gem 'sass', '~>3.7'
 gem 'sentry-raven', '~>3.1'
 gem 'simplecov', '~>0.22'

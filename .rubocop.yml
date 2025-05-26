@@ -10,6 +10,10 @@ AllCops:
   TargetRubyVersion: 2.6.0
   NewCops: enable
   SuggestExtensions: false
+plugins:
+  - rubocop-rake
+  - rubocop-minitest
+  - rubocop-performance
 Layout/MultilineOperationIndentation:
   Enabled: false
 Layout/EmptyLineAfterGuardClause:
@@ -21,6 +25,8 @@ Style/CommandLiteral:
 Style/FrozenStringLiteralComment:
   Enabled: false
 Layout/IndentationWidth:
+  Enabled: false
+Minitest/EmptyLineBeforeAssertionMethods:
   Enabled: false
 Layout/ElseAlignment:
   Enabled: false
@@ -50,7 +56,3 @@ Style/OpenStructUse:
   Enabled: false
 Style/ComparableClamp:
   Enabled: false
-require:
-  - rubocop-rake
-  - rubocop-minitest
-  - rubocop-performance
