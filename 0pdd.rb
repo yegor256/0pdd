@@ -12,7 +12,7 @@ require 'octokit'
 require 'ostruct'
 require 'qbash'
 require 'rack'
-require 'raven'
+require 'sentry-ruby'
 require 'sass'
 require 'sinatra'
 require 'sinatra/cookies'
@@ -88,7 +88,7 @@ configure do
     config
   end
   if ENV['RACK_ENV'] != 'test'
-    Raven.configure do |c|
+    Sentry.init do |c|
       c.dsn = config['sentry']
       c.release = VERSION
     end
@@ -430,7 +430,7 @@ end
 error do
   status 503
   e = env['sinatra.error']
-  Raven.capture_exception(e) unless e.is_a?(UserError)
+  Sentry.capture_exception(e) unless e.is_a?(UserError)
   haml(
     :error,
     layout: :layout,

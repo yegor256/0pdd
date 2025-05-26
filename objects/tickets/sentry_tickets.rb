@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 require 'mail'
-require 'raven'
+require 'sentry-ruby'
 require_relative '../user_error'
 require_relative '../truncated'
 
@@ -19,7 +19,7 @@ class SentryTickets
   rescue UserError => e
     puts e.message
   rescue Exception => e
-    Raven.capture_exception(e)
+    Sentry.capture_exception(e)
     email(e)
     raise e
   end
@@ -30,7 +30,7 @@ class SentryTickets
     puts e.message
     nil
   rescue Exception => e
-    Raven.capture_exception(e)
+    Sentry.capture_exception(e)
     email(e)
     raise e
   end
@@ -41,7 +41,7 @@ class SentryTickets
     puts e.message
     true
   rescue Exception => e
-    Raven.capture_exception(e)
+    Sentry.capture_exception(e)
     email(e)
     raise e
   end
