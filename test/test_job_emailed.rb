@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: MIT
 
 require 'veil'
-require_relative 'test__helper'
-require_relative 'fake_repo'
-require_relative 'fake_github'
 require_relative '../objects/jobs/job_emailed'
+require_relative 'fake_github'
+require_relative 'fake_repo'
+require_relative 'test__helper'
 
 # JobEmailed test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

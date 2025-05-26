@@ -3,6 +3,7 @@
 
 require 'nokogiri'
 require 'ostruct'
+require_relative 'test__helper'
 require_relative '../objects/diff'
 
 # Diff test.
