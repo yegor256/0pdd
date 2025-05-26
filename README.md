@@ -39,9 +39,10 @@ just for `push` events with `https://www.0pdd.com/hook/github` payload URL and
 Then, add [@0pdd](https://github.com/0pdd) GitHub user as a
 [collaborator] to your repository, if it's private
 (you don't need this for a public repository).
+
 If your invitation is not accepted by [@0pdd](https://github.com/0pdd)
-in 30mins, please visit this address
-https://0pdd.com/invitation?repo={REPO_FULL_NAME} - `REPO_FULL_NAME`
+in 30mins, visit this address:
+`https://0pdd.com/invitation?repo={REPO_FULL_NAME}`, where `REPO_FULL_NAME`
 is the full name of your repo, e.g., `yegor256/0pdd`.
 
 Then, add a `@todo` [puzzle](https://www.yegor256.com/2009/03/04/pdd.html)
@@ -52,7 +53,7 @@ You should see a new
 issue created in your repository by [@0pdd](https://github.com/0pdd).
 
 The dependency tree of all puzzles in your repository you can find
-here: https://www.0pdd.com/p?name=yegor256/0pdd (just replace the name
+here: `https://www.0pdd.com/p?name=yegor256/0pdd` (just replace the name
 of the repo in the URL).
 
 Don't forget to add that cute little badge to your `README.md`, just
@@ -181,8 +182,8 @@ and
 Then:
 
 ```bash
-$ bundle update
-$ rake
+bundle update
+bundle exec rake
 ```
 
 The build has to be clean. If it's not,
@@ -193,8 +194,8 @@ and [submit a pull request][guidelines].
 
 To run it locally:
 
-```
-$ rake run
+```bash
+bundle exec rake run
 ```
 
 If you want to run it on your own machine, you will need to add this
