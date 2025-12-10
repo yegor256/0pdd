@@ -1,10 +1,11 @@
+*.gem
+*.iml
 .bundle/
+.claude/
 .DS_Store
 .idea/
 .sass-cache/
 .yardoc/
-*.gem
-*.iml
 coverage/
 doc/
 node_modules/
