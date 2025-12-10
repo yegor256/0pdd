@@ -28,6 +28,7 @@ require 'minitest/autorun'
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
 
+require 'ostruct'
 def object(hash)
   json = hash.to_json
   JSON.parse(json, object_class: OpenStruct)
