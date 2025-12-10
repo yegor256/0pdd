@@ -53,7 +53,7 @@ GEM
       bigdecimal
       rexml
     csv (3.3.5)
-    date (3.5.0)
+    date (3.5.1)
     differ (0.1.2)
     docile (1.4.1)
     drb (2.2.3)
@@ -232,7 +232,7 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-cobertura (2.1.0)
+    simplecov-cobertura (3.1.0)
       rexml
       simplecov (~> 0.19)
     simplecov-html (0.13.2)
@@ -317,7 +317,7 @@ DEPENDENCIES
   sass (~> 3.7)
   sentry-ruby (~> 6.2)
   simplecov (~> 0.22)
-  simplecov-cobertura (~> 2.1)
+  simplecov-cobertura (~> 3.1)
   sinatra (~> 4.0)
   sinatra-contrib (~> 4.0)
   sprockets (~> 4.2)
