@@ -134,7 +134,7 @@ class LinearModel
   end
 
   def naive_rank(puzzles)
-    estimates = puzzles.map { |puzzle| puzzle['estimate'].to_i || Infinity }
+    estimates = puzzles.map { |puzzle| puzzle['estimate'].to_i }
     estimates.map.with_index.sort.map(&:last)
   end
 end

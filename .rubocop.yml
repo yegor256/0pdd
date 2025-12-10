@@ -30,6 +30,8 @@ Minitest/EmptyLineBeforeAssertionMethods:
   Enabled: false
 Layout/ElseAlignment:
   Enabled: false
+Naming/PredicateMethod:
+  Enabled: false
 Layout/EndAlignment:
   Enabled: false
 Lint/RescueException:

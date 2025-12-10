@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 source 'https://rubygems.org'
-ruby '~>3.3'
 
 gem 'atlassian-jwt', '~> 0.2.1'
 gem 'aws-sdk-dynamodb', '~>1.111'
@@ -20,6 +19,7 @@ gem 'minitest-reporters', '~>1.7', require: false
 gem 'net-smtp', '~>0.5'
 gem 'nokogiri', '~>1.18'
 gem 'octokit', '~>10.0'
+gem 'ostruct', '~>0.6'
 gem 'pdd', '~>0.24'
 gem 'qbash', '>0'
 gem 'rack', '~>3.1'
