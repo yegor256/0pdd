@@ -11,7 +11,7 @@ gem 'faraday', '~>2.14'
 gem 'gitlab', '~>5.1'
 gem 'glogin', '~>0.16'
 gem 'haml', '~>5.2'
-gem 'jira-ruby', '~>2.3'
+gem 'jira-ruby', '~>3.0'
 gem 'mail', '~>2.8'
 gem 'matrix', '~>0.4'
 gem 'minitest', '~>5.25', require: false
