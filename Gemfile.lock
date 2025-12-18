@@ -111,7 +111,8 @@ GEM
     matrix (0.4.3)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (5.27.0)
+    minitest (6.0.0)
+      prism (~> 1.5)
     minitest-reporters (1.7.1)
       ansi
       builder
@@ -302,7 +303,7 @@ DEPENDENCIES
   jira-ruby (~> 3.0)
   mail (~> 2.8)
   matrix (~> 0.4)
-  minitest (~> 5.25)
+  minitest (~> 6.0)
   minitest-reporters (~> 1.7)
   net-smtp (~> 0.5)
   nokogiri (~> 1.18)

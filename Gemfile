@@ -14,7 +14,7 @@ gem 'haml', '~>5.2'
 gem 'jira-ruby', '~>3.0'
 gem 'mail', '~>2.8'
 gem 'matrix', '~>0.4'
-gem 'minitest', '~>5.25', require: false
+gem 'minitest', '~>6.0', require: false
 gem 'minitest-reporters', '~>1.7', require: false
 gem 'net-smtp', '~>0.5'
 gem 'nokogiri', '~>1.18'
