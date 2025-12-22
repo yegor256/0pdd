@@ -74,7 +74,7 @@ GEM
       base64
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    glogin (0.17.0)
+    glogin (0.17.1)
       base58 (>= 0.2)
       base64 (>= 0.2)
       openssl (>= 2.0)
