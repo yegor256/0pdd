@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'nokogiri'
@@ -13,7 +13,7 @@ require_relative '../objects/storage/safe_storage'
 
 # Job test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2016-2026 Yegor Bugayenko
 # License:: MIT
 class TestJob < Minitest::Test
   def test_simple_scenario

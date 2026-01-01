@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'tmpdir'
@@ -8,7 +8,7 @@ require_relative '../objects/user_error'
 
 # GitRepo test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2016-2026 Yegor Bugayenko
 # License:: MIT
 class TestGitRepo < Minitest::Test
   def test_clone_and_pull

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'veil'
@@ -9,7 +9,7 @@ require_relative 'test__helper'
 
 # JobEmailed test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2016-2026 Yegor Bugayenko
 # License:: MIT
 class TestJobEmailed < Minitest::Test
   def fake_job

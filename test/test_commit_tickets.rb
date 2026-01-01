@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'yaml'
@@ -7,7 +7,7 @@ require_relative '../objects/tickets/commit_tickets'
 
 # CommitTickets test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2016-2026 Yegor Bugayenko
 # License:: MIT
 class TestCommitTickets < Minitest::Test
   def test_submits_tickets

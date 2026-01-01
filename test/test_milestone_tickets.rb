@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Yegor Bugayenko
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
 require 'nokogiri'
@@ -9,7 +9,7 @@ require_relative '../objects/tickets/milestone_tickets'
 
 # MilestoneTickets test.
 # Author:: George Aristy (george.aristy@gmail.com)
-# Copyright:: Copyright (c) 2016-2025 Yegor Bugayenko
+# Copyright:: Copyright (c) 2016-2026 Yegor Bugayenko
 # License:: MIT
 class TestGithubTickets < Minitest::Test
   def test_sets_milestone
