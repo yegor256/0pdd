@@ -19,7 +19,7 @@ jobs:
       - run: sudo apt-get install --yes libmagic-dev
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4.8
+          ruby-version: 4.0.1
           bundler-cache: true
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: bundle install --no-color
