@@ -21,7 +21,7 @@ GEM
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1206.0)
+    aws-partitions (1.1209.0)
     aws-sdk-core (3.241.4)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -30,7 +30,7 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-dynamodb (1.160.0)
+    aws-sdk-dynamodb (1.161.0)
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sigv4 (~> 1.5)
     aws-sdk-kms (1.118.0)
