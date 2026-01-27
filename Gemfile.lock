@@ -60,6 +60,7 @@ GEM
     elapsed (0.2.2)
       loog (~> 0.6)
       tago (~> 0.1)
+    ellipsized (0.3.0)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -100,7 +101,8 @@ GEM
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
-    loog (0.6.1)
+    loog (0.7.2)
+      ellipsized
       logger (~> 1.0)
     mail (2.9.0)
       logger
@@ -168,7 +170,7 @@ GEM
       slop (~> 4.6)
     prism (1.6.0)
     public_suffix (7.0.0)
-    qbash (0.6.0)
+    qbash (0.7.1)
       backtrace (> 0)
       elapsed (> 0)
       loog (> 0)
@@ -263,7 +265,7 @@ GEM
       concurrent-ruby (~> 1.0)
       logger
       rack (>= 2.2.4, < 4)
-    tago (0.6.0)
+    tago (0.7.0)
     temple (0.10.4)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
