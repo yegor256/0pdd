@@ -170,7 +170,7 @@ GEM
       slop (~> 4.6)
     prism (1.8.0)
     public_suffix (7.0.0)
-    qbash (0.7.1)
+    qbash (0.7.2)
       backtrace (> 0)
       elapsed (> 0)
       loog (> 0)
