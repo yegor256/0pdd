@@ -162,7 +162,7 @@ GEM
     parser (3.3.10.1)
       ast (~> 2.4.1)
       racc
-    pdd (0.24.1)
+    pdd (0.24.2)
       backtrace (~> 0.1)
       nokogiri (~> 1.10)
       rainbow (~> 3.0)
