@@ -221,8 +221,8 @@ github:
 smtp:
   host: email-smtp.us-east-1.amazonaws.com
   port: 587
-  key: AKIAI..........UTSQA
-  secret: Z2FbKB..........viCKaYo4H..........vva21
+  user: smtp_user
+  password: smtp_password
 id_rsa: |
   ... RSA key goes here, in ASCII format
 ```
