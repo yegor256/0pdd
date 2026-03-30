@@ -24,7 +24,7 @@ jobs:
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: bundle install --no-color
       - run: bundle exec rake
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
