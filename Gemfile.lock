@@ -16,7 +16,7 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
-    ansi (1.5.0)
+    ansi (1.6.0)
     ast (2.4.3)
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
@@ -119,10 +119,10 @@ GEM
     minitest (6.0.3)
       drb (~> 2.0)
       prism (~> 1.5)
-    minitest-reporters (1.7.1)
+    minitest-reporters (1.8.0)
       ansi
       builder
-      minitest (>= 5.0)
+      minitest (>= 5.0, < 7)
       ruby-progressbar
     multi_json (1.18.0)
     multi_xml (0.7.2)
