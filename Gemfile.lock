@@ -284,9 +284,9 @@ GEM
     veils (0.4.0)
     version_gem (1.1.9)
     webrick (1.9.2)
-    xcop (0.8.0)
+    xcop (0.9.0)
       differ (~> 0.1.2)
-      nokogiri (~> 1.10)
+      nokogiri (~> 1.8)
       rainbow (~> 3.0)
       slop (~> 4.4)
 
