@@ -217,12 +217,12 @@ github:
   client_secret: be61c471154e2..........66f434d33e0f63a5f
   encryption_secret: some-random-text
   login: 0pdd
-  pwd: GitHub-Password
+  token: GitHub-Password
 smtp:
   host: email-smtp.us-east-1.amazonaws.com
   port: 587
-  key: AKIAI..........UTSQA
-  secret: Z2FbKB..........viCKaYo4H..........vva21
+  user: smtp_user
+  password: smtp_password
 id_rsa: |
   ... RSA key goes here, in ASCII format
 ```
