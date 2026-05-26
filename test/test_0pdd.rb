@@ -92,6 +92,27 @@ class AppTest < Minitest::Test
     assert_includes(last_response.body, 'Thanks')
   end
 
+  def test_it_understands_form_push_from_github
+    headers = {
+      'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+      'HTTP_USER_AGENT' => 'GitHub-Hookshot',
+      'HTTP_X_GITHUB_EVENT' => 'push'
+    }
+    payload = [
+      '{"head_commit":{"id":"-"},',
+      '"repository":{"url":"localhost",',
+      '"full_name":"yegor256-one/com.github.0pdd-test"},',
+      '"ref":"refs/heads/master"}'
+    ].join
+    post(
+      '/hook/github',
+      Rack::Utils.build_query(payload: payload),
+      headers
+    )
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
+  end
+
   def test_it_ignores_push_from_github_to_not_master
     headers = {
       'CONTENT_TYPE' => 'application/json',
@@ -163,6 +184,27 @@ class AppTest < Minitest::Test
        '"project":{"url":"localhost",',
        '"path_with_namespace":"yegor256-one/com.github.0pdd-test"},',
        '"ref":"refs/heads/master"}'].join,
+      headers
+    )
+    assert_predicate(last_response, :ok?)
+    assert_includes(last_response.body, 'Thanks')
+  end
+
+  def test_it_understands_form_push_from_gitlab
+    headers = {
+      'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+      'HTTP_USER_AGENT' => 'GitLab 16.6',
+      'HTTP_X_GITLAB_EVENT' => 'Push Hook'
+    }
+    payload = [
+      '{"checkout_sha": "da1560886d4",',
+      '"project":{"url":"localhost",',
+      '"path_with_namespace":"yegor256-one/com.github.0pdd-test"},',
+      '"ref":"refs/heads/master"}'
+    ].join
+    post(
+      '/hook/gitlab',
+      Rack::Utils.build_query(payload: payload),
       headers
     )
     assert_predicate(last_response, :ok?)
