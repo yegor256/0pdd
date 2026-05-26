@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 require 'gitlab'
+require 'faraday'
 require 'net/http'
 require_relative '../git_repo'
 require_relative '../clients/gitlab'
@@ -13,8 +14,11 @@ require_relative '../clients/gitlab'
 class GitlabRepo
   ERRORS = [
     Gitlab::Error::Error,
+    Faraday::Error,
     Net::OpenTimeout,
-    Errno::ECONNREFUSED
+    Net::ReadTimeout,
+    Errno::ECONNREFUSED,
+    SocketError
   ].freeze
 
   attr_reader :repo, :name
@@ -89,7 +93,7 @@ class GitlabRepo
   def add_comment(issue_id, comment)
     @client.create_issue_note(@repo.name, issue_id, comment)
   rescue *ERRORS => e
-    raise "Can't comment GitLab issue #{issue_id}: #{e.message}"
+    raise "Can't comment on GitLab issue #{issue_id}: #{e.message}"
   end
 
   def create_commit_comment(sha, comment)

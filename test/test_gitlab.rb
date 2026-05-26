@@ -37,7 +37,14 @@ class TestGitlab < Minitest::Test
     error = assert_raises(RuntimeError) do
       gitlab_repo(client_raising(:create_issue_note, Net::OpenTimeout)).add_comment(42, 'hello')
     end
-    assert_equal("Can't comment GitLab issue 42: denied", error.message)
+    assert_equal("Can't comment on GitLab issue 42: denied", error.message)
+  end
+
+  def test_wraps_comment_transport_errors
+    error = assert_raises(RuntimeError) do
+      gitlab_repo(client_raising(:create_issue_note, Faraday::ConnectionFailed)).add_comment(42, 'hello')
+    end
+    assert_equal("Can't comment on GitLab issue 42: denied", error.message)
   end
 
   private
