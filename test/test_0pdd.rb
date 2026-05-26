@@ -265,6 +265,24 @@ class AppTest < Minitest::Test
     )
   end
 
+  def test_ping_github_continues_after_comment_error
+    github = FakeGithub.new(errors: { issue_comment: Octokit::Error.new })
+    Sinatra::Application.set(:github, github)
+    get('/ping-github')
+    assert_predicate(last_response, :ok?, last_response.body)
+    assert_includes(last_response.body, 'yegor256/0pdd: mention')
+    refute_nil(github.notifications_read)
+  end
+
+  def test_ping_github_survives_notification_error
+    github = FakeGithub.new(errors: { notifications: Octokit::Error.new })
+    Sinatra::Application.set(:github, github)
+    get('/ping-github')
+    assert_predicate(last_response, :ok?, last_response.body)
+    assert_includes(last_response.body, 'Failed: Octokit::Error')
+    assert_nil(github.notifications_read)
+  end
+
   def test_rejects_invalid_repo_name
     get('/svg?name=yego256/pdd+a')
     refute_predicate(last_response, :ok?)
