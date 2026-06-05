@@ -23,7 +23,7 @@ GEM
     auth-sanitizer (0.1.3)
       version_gem (~> 1.1, >= 1.1.9)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1256.0)
+    aws-partitions (1.1258.0)
     aws-sdk-core (3.251.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -32,7 +32,7 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-dynamodb (1.168.0)
+    aws-sdk-dynamodb (1.169.0)
       aws-sdk-core (~> 3, >= 3.248.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-kms (1.129.0)
