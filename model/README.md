@@ -1,6 +1,6 @@
-Puzzle Ranking (Linear ML Model)
+# Puzzle Ranking (Linear ML Model)
 
-### Internals
+## Internals
 
 The ML model is a linear model with PSO optimizer.
 The optimizer is used to train the model on puzzle data,
@@ -26,7 +26,7 @@ rank = LinearModel.new(repo_name, storage).predict(puzzles)
 # rank -> array of positional index of ranked puzzles
 ```
 
-### Integration
+## Integration
 
 This diagram shows how this model can be integrated into 0pdd workflow:
 ![integration.svg](../doc/integration.svg)
