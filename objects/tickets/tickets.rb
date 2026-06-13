@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: MIT
 
 require 'haml'
+require 'jira-ruby'
+require 'gitlab'
+require 'octokit'
 require_relative '../truncated'
 require_relative '../maybe_text'
 
@@ -18,7 +21,7 @@ class Tickets
       issue,
       "@#{@vcs.issue(issue)[:author][:username]} #{message}"
     )
-  rescue Octokit::NotFound, Gitlab::NotFound, JIRA::NotFound => e
+  rescue JIRA::HTTPError, Octokit::NotFound, Gitlab::Error::NotFound => e
     puts "The issue most probably is not found, can't comment: #{e.message}"
   end
 

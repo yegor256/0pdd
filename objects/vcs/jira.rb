@@ -19,7 +19,14 @@ class JiraRepo
   end
 
   def issue(issue_id)
-    @client.Issue.find(issue_id)
+    found = @client.Issue.find(issue_id)
+    {
+      state: issue_state(found),
+      author: issue_author(found),
+      milestone: nil
+    }
+  rescue JIRA::HTTPError => e
+    raise "Can't read JIRA issue #{issue_id}: #{e.message}"
   end
 
   def close_issue(issue_id)
@@ -72,6 +79,26 @@ class JiraRepo
   end
 
   private
+
+  def issue_state(issue)
+    status = issue_field(issue, 'status', 'statusCategory', 'key')
+    status == 'done' ? 'closed' : 'open'
+  end
+
+  def issue_author(issue)
+    reporter = issue_field(issue, 'reporter') || {}
+    {
+      id: reporter['accountId'] || reporter[:accountId],
+      username: reporter['name'] || reporter[:name] || reporter['displayName'] || reporter[:displayName]
+    }
+  end
+
+  def issue_field(issue, *keys)
+    keys.reduce(issue.fields) do |data, key|
+      break if data.nil?
+      data[key] || data[key.to_sym]
+    end
+  end
 
   def git_repo(json, config)
     uri = json['repository']['ssh_url'] || json['repository']['url']
