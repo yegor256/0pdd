@@ -10,10 +10,6 @@ require_relative 'fake_weights_storage'
 
 #
 # Linear Model
-# @todo #532:60min Add unit-tests.
-#  We should add unit-tests for this class that checks puzzle ranking.
-#  For now its untested, don't forget to remove this puzzle.
-#
 class LinearModel
   def initialize(repo, storage)
     @repo = repo
