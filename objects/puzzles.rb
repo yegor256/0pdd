@@ -78,6 +78,7 @@ class Puzzles
       )
       break if puzzles.empty?
       puzzle = puzzles[0]
+      seen << puzzle.xpath('id')[0].text
       puzzle.search('issue')[0]['closed'] = Time.now.iso8601 if tickets.close(puzzle)
       save(xml)
     end
