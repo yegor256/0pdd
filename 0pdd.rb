@@ -312,15 +312,17 @@ get '/ping-github' do
           )
           puts "Replied to #{repo}##{issue}"
         end
-      rescue Octokit::NotFound => e
+      rescue Octokit::Error => e
         puts "Failed: #{e.message}"
-        next
       end
     end
     "#{repo}: #{reason}"
   end
   gh.mark_notifications_as_read(last_read_at: Time.now)
   "#{msgs.join("\n")}\n"
+rescue Octokit::Error => e
+  puts "Failed to ping GitHub: #{e.message}"
+  "Failed: #{e.message}\n"
 end
 
 get '/hook/github' do
