@@ -133,8 +133,6 @@ configure do
   end
 end
 use Rack::Deflater
-# @todo #572:1h rewind is removed from rack 3.0, so it is moved to
-#  rewindableInput for now, but it is better to check another solutions
 use Rack::RewindableInput::Middleware
 
 before '/*' do
@@ -339,8 +337,7 @@ post '/hook/github' do
       'Please, only register push events from GitHub webhook'
     ]
   end
-  request.env['rack.input'].rewind if request.env['rack.input'].respond_to?(:rewind)
-  request.body.rewind unless request.env['rack.input'].respond_to?(:rewind)
+  request.body.rewind
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
@@ -384,8 +381,7 @@ post '/hook/gitlab' do
       'Please, only register push events from Gitlab webhook'
     ]
   end
-  request.env['rack.input'].rewind if request.env['rack.input'].respond_to?(:rewind)
-  request.body.rewind unless request.env['rack.input'].respond_to?(:rewind)
+  request.body.rewind
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
