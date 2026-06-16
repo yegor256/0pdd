@@ -64,11 +64,11 @@ GEM
       loog (~> 0.6)
       tago (~> 0.1)
     ellipsized (0.3.0)
-    faraday (2.14.2)
+    faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.4.4)
       net-http (~> 0.5)
     ffi (1.17.2)
     ffi (1.17.2-arm64-darwin)
@@ -100,7 +100,7 @@ GEM
       multipart-post
       oauth (~> 1.0)
     jmespath (1.6.2)
-    json (2.19.5)
+    json (2.19.9)
     jwt (2.10.2)
       base64
     language_server-protocol (3.17.0.5)
