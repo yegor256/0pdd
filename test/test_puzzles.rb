@@ -49,6 +49,40 @@ class TestPuzzles < Minitest::Test
     end
   end
 
+  def test_keeps_closing_after_failed_close
+    closed = []
+    tickets = Object.new
+    tickets.define_singleton_method(:close) do |puzzle|
+      id = puzzle.xpath('id')[0].text
+      if id == 'first'
+        false
+      else
+        closed << id
+        true
+      end
+    end
+    Dir.mktmpdir 'test' do |dir|
+      storage = FakeStorage.new(
+        dir,
+        Nokogiri.XML(
+          '<puzzles>
+            <puzzle alive="false"><id>first</id><issue>1</issue></puzzle>
+            <puzzle alive="false"><id>second</id><issue>2</issue></puzzle>
+          </puzzles>'
+        )
+      )
+      Puzzles.new(OpenStruct.new(config: {}), storage).send(
+        :expose,
+        storage.load,
+        tickets
+      )
+      after = storage.load
+      assert_equal(['second'], closed)
+      assert_empty(after.xpath("//puzzle[id='first']/issue/@closed"))
+      refute_empty(after.xpath("//puzzle[id='second']/issue/@closed"))
+    end
+  end
+
   private
 
   def test_xml(dir, name, ordered: false)
