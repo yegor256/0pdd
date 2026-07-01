@@ -109,7 +109,7 @@ GEM
     loog (0.8.0)
       ellipsized
       logger (~> 1.0)
-    mail (2.9.0)
+    mail (2.9.1)
       logger
       mini_mime (>= 0.1.1)
       net-imap
@@ -134,7 +134,7 @@ GEM
       ruby2_keywords (~> 0.0.1)
     net-http (0.8.0)
       uri (>= 0.11.1)
-    net-imap (0.5.12)
+    net-imap (0.5.15)
       date
       net-protocol
     net-pop (0.1.2)
