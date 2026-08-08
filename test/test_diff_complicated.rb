@@ -8,11 +8,6 @@ require_relative '../objects/diff'
 
 # Complicated diff test.
 class TestDiff < Minitest::Test
-  # @todo #234:15m Add tests for more complicated dynamics, like
-  # [here](https://github.com/php-coder/mystamps/issues/695#issuecomment-405372820).
-  # Ideally, this tests other cases that can lead to the observed behaviour,
-  # but not covered by the test suite.
-
   def test_notification_on_parent_solved_with_others_unsolved
     tickets = Tickets.new
     before = Nokogiri::XML(
@@ -47,6 +42,51 @@ class TestDiff < Minitest::Test
       '999 2 puzzles [#100](), [#13]() are still not solved; solved: [#101]().', tickets.messages[0],
       "Text is wrong: #{tickets.messages[0]}"
     )
+  end
+
+  def test_notification_on_added_unknown_child_with_solved_siblings
+    tickets = Tickets.new
+    before = Nokogiri::XML(puzzles_xml)
+    after = Nokogiri::XML(puzzles_xml(puzzle_xml('867', 'unknown', true)))
+    Diff.new(before, after).notify(tickets)
+    assert_equal(
+      1, tickets.messages.length,
+      "Wrong about of msgs (#{tickets.messages.length}): #{tickets.messages}"
+    )
+    assert_equal(
+      [
+        '695 2 puzzles [#839](//issue/839), [#867](//issue/867) are still not solved',
+        'solved: [#833](//issue/833).'
+      ].join('; '),
+      tickets.messages[0],
+      "Text is wrong: #{tickets.messages[0]}"
+    )
+  end
+
+  def puzzles_xml(extra = '')
+    <<~XML
+      <puzzles>
+        <puzzle alive="true">
+          <id>695-parent</id>
+          <issue>695</issue>
+          <children>
+            #{puzzle_xml('833', '833', false)}
+            #{puzzle_xml('839', '839', true)}
+            #{extra}
+          </children>
+        </puzzle>
+      </puzzles>
+    XML
+  end
+
+  def puzzle_xml(id, issue, alive)
+    <<~XML
+      <puzzle alive="#{alive}">
+        <id>695-#{id}</id>
+        <issue href="//issue/#{id}">#{issue}</issue>
+        <ticket>695</ticket>
+      </puzzle>
+    XML
   end
 
   class Tickets
