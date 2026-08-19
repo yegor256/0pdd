@@ -95,7 +95,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    jira-ruby (3.2.1)
+    jira-ruby (3.2.2)
       activesupport
       cgi
       jwt (>= 2.1)
