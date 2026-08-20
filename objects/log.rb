@@ -11,14 +11,18 @@ require_relative '../version'
 # Log.
 #
 class Log
+  SUPPORTED_VCS = %w[github gitlab].freeze
+
   def initialize(dynamo, repo, vcs = 'github')
     @dynamo = dynamo
-    # @todo #312:30min Be sure to handle the use case where projects from
-    #  different vcs have the same <user/repo_name>. This will cause a conflict.
-    @vcs = (vcs || 'github').downcase
-    @repo = @vcs == 'github' ? repo : Base64.encode64(repo + @vcs).gsub(%r{[\s=/]+}, '')
+    @vcs = (vcs || 'github').strip.downcase
+    raise 'You need to specify your cloud VCS' unless SUPPORTED_VCS.include?(@vcs)
 
-    raise 'You need to specify your cloud VCS' unless ['github'].include?(@vcs)
+    @repo = if @vcs == 'github'
+              repo
+            else
+              Base64.strict_encode64("#{@vcs}:#{repo}").delete('=')
+            end
   end
 
   def put(tag, text)
