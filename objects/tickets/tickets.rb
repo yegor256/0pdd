@@ -37,8 +37,8 @@ class Tickets
   def close(puzzle)
     issue = puzzle.xpath('issue')[0].text
     return true if @vcs.issue(issue)[:state] == 'closed'
-    @vcs.close_issue(issue)
-    @vcs.add_comment(
+    return false unless @vcs.close_issue(issue)
+    return false unless @vcs.add_comment(
       issue,
       [
         "The puzzle `#{puzzle.xpath('id')[0].text}` has disappeared",

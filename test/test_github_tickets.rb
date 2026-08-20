@@ -188,4 +188,29 @@ format:
       ).xpath('/puzzle')
     )
   end
+
+  def test_does_not_comment_when_close_fails
+    repo = object(
+      name: 'github',
+      config: {},
+      head_commit_hash: '123',
+      master: 'master'
+    )
+    require_relative 'fake_github'
+    vcs = FakeGithub.new(repo: repo)
+    def vcs.close_issue(_)
+      false
+    end
+
+    def vcs.add_comment(_, _)
+      raise 'should not comment'
+    end
+    refute(
+      Tickets.new(vcs).close(
+        Nokogiri::XML(
+          '<puzzle><id>xx</id><issue>1</issue></puzzle>'
+        ).xpath('/puzzle')
+      )
+    )
+  end
 end

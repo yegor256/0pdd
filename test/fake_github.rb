@@ -89,7 +89,9 @@ class FakeGithub
     }
   end
 
-  def close_issue(_); end
+  def close_issue(_)
+    true
+  end
 
   def create_issue(_)
     {
@@ -114,7 +116,9 @@ class FakeGithub
 
   def add_labels_to_an_issue(_, _); end
 
-  def add_comment(_, _); end
+  def add_comment(_, _)
+    true
+  end
 
   def create_commit_comment(_, _, _)
     {
