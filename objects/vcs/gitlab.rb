@@ -13,7 +13,7 @@ class GitlabRepo
   attr_reader :repo, :name
 
   def initialize(client, json, config = {})
-    @name = 'github'
+    @name = 'gitlab'
     @client = client
     @config = config
     @json = json
