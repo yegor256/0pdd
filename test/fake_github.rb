@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 class FakeGithub
-  attr_reader :name, :repo
+  attr_reader :comments, :name, :notifications_read, :repo
 
   def initialize(options = {})
     @name = 'GITHUB'
@@ -33,10 +33,29 @@ class FakeGithub
       }
     ]
     @repositories = options[:repositories] || []
+    @comments = []
+    @notifications = options[:notifications] || [
+      {
+        'reason' => 'mention',
+        'repository' => {
+          'full_name' => 'yegor256/0pdd'
+        },
+        'subject' => {
+          'type' => 'Issue',
+          'url' => 'https://api.github.com/repos/yegor256/0pdd/issues/852',
+          'latest_comment_url' => 'https://api.github.com/repos/yegor256/0pdd/issues/comments/123'
+        },
+        'updated_at' => '2026-05-26T00:00:00Z'
+      }
+    ]
+    @errors = options[:errors] || {}
+    @notifications_read = nil
     @repo = options[:repo]
   end
 
   def rate_limit
+    raise @errors[:rate_limit] if @errors[:rate_limit]
+
     limit = Object.new
 
     def limit.remaining
@@ -58,6 +77,27 @@ class FakeGithub
     else
       @memberships
     end
+  end
+
+  def notifications
+    raise @errors[:notifications] if @errors[:notifications]
+
+    @notifications
+  end
+
+  def issue_comment(_repo, _comment)
+    raise @errors[:issue_comment] if @errors[:issue_comment]
+
+    {
+      'body' => '@0pdd please help',
+      'user' => {
+        'login' => 'yegor256'
+      }
+    }
+  end
+
+  def login
+    '0pdd'
   end
 
   def user_repository_invitations(_options = {})
@@ -114,7 +154,24 @@ class FakeGithub
 
   def add_labels_to_an_issue(_, _); end
 
-  def add_comment(_, _); end
+  def add_comment(*args)
+    repo, issue, body = if args.length == 3
+      args
+    else
+      [@repo&.name, args[0], args[1]]
+    end
+    @comments << {
+      repo: repo,
+      issue: issue,
+      body: body
+    }
+  end
+
+  def mark_notifications_as_read(options = {})
+    raise @errors[:mark_notifications_as_read] if @errors[:mark_notifications_as_read]
+
+    @notifications_read = options
+  end
 
   def create_commit_comment(_, _, _)
     {
