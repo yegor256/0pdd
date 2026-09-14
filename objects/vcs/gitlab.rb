@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 require 'gitlab'
+require 'faraday'
+require 'net/http'
 require_relative '../git_repo'
 require_relative '../clients/gitlab'
 
@@ -10,6 +12,15 @@ require_relative '../clients/gitlab'
 # API: https://github.com/NARKOZ/gitlab
 #
 class GitlabRepo
+  ERRORS = [
+    Gitlab::Error::Error,
+    Faraday::Error,
+    Net::OpenTimeout,
+    Net::ReadTimeout,
+    Errno::ECONNREFUSED,
+    SocketError
+  ].freeze
+
   attr_reader :repo, :name
 
   def initialize(client, json, config = {})
@@ -34,14 +45,14 @@ class GitlabRepo
         title: title
       }
     }
-  rescue Gitlab::Error::NotFound => e
-    raise "The issue most probably is not found, can' comment: #{e.message}"
+  rescue *ERRORS => e
+    raise "Can't read GitLab issue #{issue_id}: #{e.message}"
   end
 
   def close_issue(issue_id)
     @client.close_issue(@repo.name, issue_id)
-  rescue Gitlab::Error::NotFound => e
-    raise "The issue most probably is not found, can't close: #{e.message}"
+  rescue *ERRORS => e
+    raise "Can't close GitLab issue #{issue_id}: #{e.message}"
   end
 
   def create_issue(data)
@@ -81,8 +92,8 @@ class GitlabRepo
 
   def add_comment(issue_id, comment)
     @client.create_issue_note(@repo.name, issue_id, comment)
-  rescue Gitlab::Error::NotFound => e
-    raise "The issue most probably is not found, can't comment: #{e.message}"
+  rescue *ERRORS => e
+    raise "Can't comment on GitLab issue #{issue_id}: #{e.message}"
   end
 
   def create_commit_comment(sha, comment)
