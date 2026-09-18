@@ -13,7 +13,7 @@ name: codecov
 jobs:
   codecov:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
       - run: sudo apt-get install --yes libmagic-dev
