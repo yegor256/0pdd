@@ -95,10 +95,10 @@ The existing storage and mail configuration is still required.
 
 In the repository's **Settings → Webhooks**, add a **Forgejo** webhook:
 
-- Target URL: `https://YOUR-0PDD-HOST/hook/forgejo/codeberg.org/alice/project`
-- Method: `POST`; content type: `application/json`
-- Secret: the matching server-side value under `repositories`
-- Trigger: **Push events**; active: enabled
+* Target URL: `https://YOUR-0PDD-HOST/hook/forgejo/codeberg.org/alice/project`
+* Method: `POST`; content type: `application/json`
+* Secret: the matching server-side value under `repositories`
+* Trigger: **Push events**; active: enabled
 
 Use the corresponding hostname and repository in the target URL for other
 projects. Generate a different secret for every repository; unlisted repositories
