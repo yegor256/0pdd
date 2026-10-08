@@ -65,6 +65,86 @@ of your own repository):
 [![PDD status](https://www.0pdd.com/svg?name=yegor256/0pdd)](https://www.0pdd.com/p?name=yegor256/0pdd)
 ```
 
+## Codeberg and Forgejo
+
+Self-hosted 0pdd deployments can process **public** repositories on Codeberg
+and other explicitly configured Forgejo HTTPS hosts. This does not enable
+Forgejo on the public `0pdd.com` deployment automatically; its operator must
+configure a bot account and credentials first.
+
+Add a server-side `forgejo` section to `config.yml` (not `.0pdd.yml`):
+
+```yaml
+forgejo:
+  codeberg.org:
+    token: YOUR_BOT_APPLICATION_TOKEN
+    repositories:
+      alice/project: YOUR_LONG_RANDOM_WEBHOOK_SECRET
+  git.example.org:
+    token: ANOTHER_BOT_APPLICATION_TOKEN
+    repositories:
+      alice/other-project: ANOTHER_RANDOM_SECRET
+```
+
+Use a dedicated bot account with access to the intended repositories and token
+permissions for reading repositories/users and managing issues, comments,
+labels and milestones. Restrict the token to the intended repositories where
+supported. Keep tokens and secrets out of Git. Hostnames must be lowercase DNS
+names; this initial integration uses HTTPS on port 443, without a URL subpath.
+The existing storage and mail configuration is still required.
+
+In the repository's **Settings → Webhooks**, add a **Forgejo** webhook:
+
+- Target URL: `https://YOUR-0PDD-HOST/hook/forgejo/codeberg.org/alice/project`
+- Method: `POST`; content type: `application/json`
+- Secret: the matching server-side value under `repositories`
+- Trigger: **Push events**; active: enabled
+
+Use the corresponding hostname and repository in the target URL for other
+projects. Generate a different secret for every repository; unlisted repositories
+are rejected, and a delivery cannot target a different repository than its URL.
+Only signed updates to the payload's default branch are processed; tags,
+other branches and deletions are ignored. API and clone destinations are
+constructed from the configured host, never from URLs in the webhook payload.
+The API token is not passed to Git; private repositories are rejected.
+
+Puzzles use the existing `.pdd` and `.0pdd.yml` configuration. For notifications:
+
+```yaml
+alerts:
+  forgejo:
+    - your-codeberg-username
+tags:
+  - pdd
+```
+
+Issue bodies link to the Forgejo source and commits. Forgejo does not provide a
+commit-comment endpoint, so commit notifications and diagnostics are written
+to the server log instead. Automatic repository starring is not performed.
+
+State and logs are isolated by both host and repository. For puzzle pages,
+badges, XML, snapshots and logs, include `vcs=forgejo-codeberg.org`, for example:
+
+```text
+https://YOUR-0PDD-HOST/p?name=alice/project&vcs=forgejo-codeberg.org
+https://YOUR-0PDD-HOST/svg?name=alice/project&vcs=forgejo-codeberg.org
+```
+
+### Migrating existing puzzle issues
+
+Git push mirrors do not synchronize issues. Disable the old GitHub 0pdd webhook
+if Codeberg will become the sole puzzle tracker. Existing imported issues are
+**not automatically adopted**: a new Forgejo namespace starts with no puzzle
+associations and may create new issues for those puzzles. Before enabling the
+webhook, either retire the old puzzle issues or have the operator explicitly
+migrate and verify the puzzle XML's issue numbers/URLs into the new namespace.
+Do not assume matching issue numbers mean matching issues. Keep the old state
+as a backup; never point a Forgejo repository at the GitHub state namespace.
+
+The API mapping follows the [Forgejo API](https://codeberg.org/api/swagger),
+and signature verification follows the
+[Forgejo webhook documentation](https://forgejo.org/docs/latest/user/webhooks/).
+
 ## How to configure?
 
 The only way to configure 0pdd is to add `.0pdd.yml` file to the
