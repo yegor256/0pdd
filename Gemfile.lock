@@ -67,7 +67,7 @@ GEM
       loog (~> 0.6)
       tago (~> 0.1)
     ellipsized (0.3.0)
-    faraday (2.15.0)
+    faraday (2.15.1)
       faraday-net_http (>= 2.0, < 3.6)
       json
       logger
