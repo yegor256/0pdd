@@ -32,8 +32,8 @@ gem 'rubocop-performance', '~>1.26', require: false
 gem 'rubocop-rake', '~>0.7', require: false
 gem 'sass', '~>3.7'
 gem 'sentry-ruby', '~>7.0'
-gem 'simplecov', '~>0.22'
-gem 'simplecov-cobertura', '~>3.1'
+gem 'simplecov', '~>1.0'
+gem 'simplecov-cobertura', '~>4.0'
 gem 'sinatra', '~>4.0'
 gem 'sinatra-contrib', '~>4.0'
 gem 'sprockets', '~>4.2'
