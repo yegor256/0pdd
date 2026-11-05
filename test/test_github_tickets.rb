@@ -213,4 +213,52 @@ format:
       )
     )
   end
+
+  def test_skips_comment_when_issue_is_not_found
+    repo = object(
+      name: 'github',
+      config: {},
+      head_commit_hash: '123',
+      master: 'master'
+    )
+    require_relative 'fake_github'
+    vcs = FakeGithub.new(repo: repo)
+    def vcs.issue(_)
+      nil
+    end
+
+    def vcs.add_comment(_, _)
+      raise 'should not comment'
+    end
+    assert_nil(Tickets.new(vcs).notify(1, 'hello'))
+  end
+
+  def test_skips_closing_when_issue_is_not_found
+    repo = object(
+      name: 'github',
+      config: {},
+      head_commit_hash: '123',
+      master: 'master'
+    )
+    require_relative 'fake_github'
+    vcs = FakeGithub.new(repo: repo)
+    def vcs.issue(_)
+      nil
+    end
+
+    def vcs.close_issue(_)
+      raise 'should not close'
+    end
+
+    def vcs.add_comment(_, _)
+      raise 'should not comment'
+    end
+    assert(
+      Tickets.new(vcs).close(
+        Nokogiri::XML(
+          '<puzzle><id>xx</id><issue>1</issue></puzzle>'
+        ).xpath('/puzzle')
+      )
+    )
+  end
 end
