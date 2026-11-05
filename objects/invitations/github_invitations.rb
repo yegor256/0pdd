@@ -12,7 +12,11 @@ class GithubInvitations
   def accept
     @github.user_repository_invitations.each do |i|
       break if @github.rate_limit.remaining < 1000
-      puts "Repository invitation #{i['id']} accepted" if @github.accept_repository_invitation(i['id'])
+      begin
+        puts "Repository invitation #{i['id']} accepted" if @github.accept_repository_invitation(i['id'])
+      rescue Faraday::TimeoutError, Net::ReadTimeout => e
+        puts "Failed to accept repository invitation #{i['id']}: #{e.message}"
+      end
     end
   end
 
@@ -20,7 +24,11 @@ class GithubInvitations
     invitations = @github.user_repository_invitations(repo: repo)
     invitations.map do |i|
       break if @github.rate_limit.remaining < 1000
-      "Repository invitation #{repo} accepted" if @github.accept_repository_invitation(i['id'])
+      begin
+        "Repository invitation #{repo} accepted" if @github.accept_repository_invitation(i['id'])
+      rescue Faraday::TimeoutError, Net::ReadTimeout => e
+        puts "Failed to accept repository invitation for #{repo}: #{e.message}"
+      end
     end
   end
 
@@ -35,6 +43,8 @@ class GithubInvitations
         # puts "Failed to join @#{org} organization: #{e.message}"
         @github.remove_organization_membership(org)
         # puts "Membership in @#{org} organization removed"
+      rescue Faraday::TimeoutError, Net::ReadTimeout => e
+        puts "Failed to join @#{org} organization: #{e.message}"
       end
     end
   end

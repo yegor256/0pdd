@@ -33,6 +33,8 @@ class FakeGithub
       }
     ]
     @repositories = options[:repositories] || []
+    @timeout_orgs = options[:timeout_orgs] || []
+    @timeout_repos = options[:timeout_repos] || []
     @repo = options[:repo]
   end
 
@@ -47,6 +49,7 @@ class FakeGithub
 
   def update_organization_membership(org, options = {})
     return unless options['state']
+    raise Net::ReadTimeout if @timeout_orgs.include?(org)
     @memberships.find do |m|
       m['organization']['login'] == org
     end['state'] = options['state']
@@ -67,6 +70,7 @@ class FakeGithub
   def accept_repository_invitation(id, _options = {})
     invitation = @invitations.find { |i| i['id'] == id }
     return false if invitation.nil?
+    raise Net::ReadTimeout if @timeout_repos.include?(invitation['repository']['name'])
     @repositories.push(invitation['repository']['name'])
     true
   end
