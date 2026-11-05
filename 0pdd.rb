@@ -363,15 +363,20 @@ post '/hook/github' do
       raise "Invalid content-type: \"#{request.content_type}\""
     end
   )
-  github = GithubRepo.new(settings.github, json, settings.config)
-  return [400, "No access to #{github.repo.name}"] unless github.exists?
-  unless ENV['RACK_ENV'] == 'test'
-    process_request(github) if github.repo.change_in_master?
-    puts "GitHub hook from #{github.repo.name} to branch #{github.repo.target}"
+  begin
+    github = GithubRepo.new(settings.github, json, settings.config)
+    return [400, "No access to #{github.repo.name}"] unless github.exists?
+    unless ENV['RACK_ENV'] == 'test'
+      process_request(github) if github.repo.change_in_master?
+      puts "GitHub hook from #{github.repo.name} to branch #{github.repo.target}"
+    end
+    ignore = ''
+    ignore = 'Push is not to master branch, nothing is done. ' unless github.repo.change_in_master?
+    "#{ignore}Thanks #{github.repo.name}"
+  rescue Octokit::TooManyRequests, Octokit::Forbidden => e
+    puts "Can't process GitHub hook from #{json.dig('repository', 'full_name')}: #{e.class}: #{e.message}"
+    [429, 'GitHub API rate limit exceeded, the push will be delivered again later']
   end
-  ignore = ''
-  ignore = 'Push is not to master branch, nothing is done. ' unless github.repo.change_in_master?
-  "#{ignore}Thanks #{github.repo.name}"
 end
 
 get '/hook/gitlab' do
