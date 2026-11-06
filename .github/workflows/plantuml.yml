@@ -14,7 +14,7 @@ permissions:
 jobs:
   plantuml:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout Source
         uses: actions/checkout@v6
@@ -23,7 +23,7 @@ jobs:
         with:
           args: -v -tsvg doc/*.puml
       - name: Commit changes
-        uses: EndBug/add-and-commit@v10
+        uses: EndBug/add-and-commit@v11
         with:
           author_name: ${{ github.actor }}
           author_email: ${{ github.event.pusher.email }}

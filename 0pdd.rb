@@ -289,11 +289,17 @@ end
 get '/ping-github' do
   content_type 'text/plain'
   gh = settings.github
-  return if gh.rate_limit.remaining < 1000
+  begin
+    return if gh.rate_limit.remaining < 1000
+    notifications = gh.notifications
+  rescue Octokit::Unauthorized, Octokit::Forbidden, Octokit::TooManyRequests => e
+    puts "Can't read GitHub notifications: #{e.class}: #{e.message}"
+    return "#{e.class}: #{e.message}\n"
+  end
   invitations = GithubInvitations.new(gh)
   invitations.accept
   invitations.accept_orgs
-  msgs = gh.notifications.map do |n|
+  msgs = notifications.map do |n|
     reason = n['reason']
     repo = n['repository']['full_name']
     puts "GitHub notification in #{repo}: #{reason} #{n['updated_at']} #{n['subject']['type']}"
@@ -312,8 +318,9 @@ get '/ping-github' do
           )
           puts "Replied to #{repo}##{issue}"
         end
-      rescue Octokit::NotFound => e
-        puts "Failed: #{e.message}"
+      rescue Octokit::NotFound, Octokit::Unauthorized,
+             Octokit::Forbidden, Octokit::TooManyRequests => e
+        puts "Failed for notification in #{repo}: #{e.class}: #{e.message}"
         next
       end
     end

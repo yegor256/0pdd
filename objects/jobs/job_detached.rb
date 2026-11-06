@@ -25,12 +25,12 @@ class JobDetached
   def exclusive
     lock = @vcs.repo.lock
     FileUtils.mkdir_p(File.dirname(lock))
-    f = File.open(lock, File::RDWR | File::CREAT, 0o644)
-    f.flock(File::LOCK_EX)
     begin
-      @job.proceed
+      File.open(lock, File::RDWR | File::CREAT, 0o644) do |f|
+        f.flock(File::LOCK_EX)
+        @job.proceed
+      end
     ensure
-      f.close
       begin
         File.delete(lock)
       rescue Errno::EACCES
