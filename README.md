@@ -230,6 +230,45 @@ id_rsa: |
 We add this file to the repository while deploying to Heroku,
 see how it's done in `.rultor.yml`.
 
+## How to run tests in Docker?
+
+On Windows, `ruby-filemagic` (one of our dependencies) can't be built
+natively, which makes it hard to run the test suite locally. The easiest
+way is to run it inside [Docker](https://www.docker.com/), using the same
+[`yegor256/rultor-image`](https://hub.docker.com/r/yegor256/rultor-image)
+image that this repository uses in
+[`.rultor.yml`](https://github.com/yegor256/0pdd/blob/master/.rultor.yml).
+The image already contains Java and Maven, which are necessary to start
+DynamoDB Local during the build (see the `Rakefile`).
+
+In Git Bash on Windows (the `MSYS_NO_PATHCONV=1` prefix prevents Git Bash
+from rewriting container paths):
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm \
+  -v "$(pwd -W):/0pdd" -w /0pdd \
+  yegor256/rultor-image:1.24.0 \
+  'bundle install --no-color && bundle exec rake'
+```
+
+In PowerShell on Windows:
+
+```powershell
+docker run --rm -v "${PWD}:/0pdd" -w /0pdd `
+  yegor256/rultor-image:1.24.0 `
+  'bundle install --no-color && bundle exec rake'
+```
+
+On Linux, macOS, or WSL, the same command works without the
+`MSYS_NO_PATHCONV=1` prefix, with `-v "$(pwd):/0pdd"` instead.
+
+The first run may take some time, because `bundle install` downloads all
+necessary gems and Maven downloads DynamoDB Local dependencies, and it may
+also update `Gemfile.lock` in your checkout. There is no need for
+`bash -c`: the entrypoint of the image is already `/bin/bash --login -c`,
+so pass the whole command as a single quoted argument. Make sure you run
+it from the root directory of the repository.
+
 ## How to install in Heroku
 
 Don't forget this:
