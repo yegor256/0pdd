@@ -373,9 +373,11 @@ post '/hook/github' do
     ignore = ''
     ignore = 'Push is not to master branch, nothing is done. ' unless github.repo.change_in_master?
     "#{ignore}Thanks #{github.repo.name}"
-  rescue Octokit::TooManyRequests, Octokit::Forbidden => e
-    puts "Can't process GitHub hook from #{json.dig('repository', 'full_name')}: #{e.class}: #{e.message}"
-    [429, 'GitHub API rate limit exceeded, the push will be delivered again later']
+  rescue Octokit::TooManyRequests => e
+    rate_limited(json, e)
+  rescue Octokit::Forbidden => e
+    raise unless e.message.downcase.include?('rate limit')
+    rate_limited(json, e)
   end
 end
 
@@ -458,6 +460,14 @@ end
 def vcs_name(name)
   return 'github' if name.nil?
   name.strip.downcase
+end
+
+# Reply 429 to a rate-limited GitHub hook. GitHub does not redeliver
+# failed webhook deliveries automatically, so the operator has to
+# redeliver the webhook from the repository settings, or push again.
+def rate_limited(json, e)
+  puts "Can't process GitHub hook from #{json.dig('repository', 'full_name')}: #{e.class}: #{e.message}"
+  [429, 'GitHub API rate limit exceeded, redeliver this webhook or push the commit again']
 end
 
 def merged(hash)
