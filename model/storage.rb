@@ -20,9 +20,8 @@ class Storage
     return unless @object.exists?
     data = @object.get.body
     puts "S3 #{data.size} from #{@object.bucket_name}/#{@object.key}"
-    # rubocop:disable Security/MarshalLoad
+    # rubocop:disable-next Security/MarshalLoad
     Marshal.load(data)
-    # rubocop:enable Security/MarshalLoad
   end
 
   def save(weights)
