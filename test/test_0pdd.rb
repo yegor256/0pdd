@@ -172,6 +172,101 @@ class AppTest < Minitest::Test
     assert_includes(last_response.body, 'nothing is done')
   end
 
+  def test_survives_rate_limit_while_checking_repo_in_github_hook
+    before = Sinatra::Application.settings.github
+    gh = FakeGithub.new
+    gh.define_singleton_method(:repository) do |*_|
+      raise(
+        Octokit::TooManyRequests.new(
+          status: 403, body: 'API rate limit exceeded', response_headers: {}
+        )
+      )
+    end
+    Sinatra::Application.set(:github, gh)
+    headers = {
+      'CONTENT_TYPE' => 'application/json',
+      'HTTP_USER_AGENT' => 'GitHub-Hookshot',
+      'HTTP_X_GITHUB_EVENT' => 'push'
+    }
+    post(
+      '/hook/github',
+      ['{"head_commit":{"id":"-"},',
+       '"repository":{"url":"localhost",',
+       '"full_name":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/master"}'].join,
+      headers
+    )
+    assert_equal(429, last_response.status)
+    refute_includes(last_response.body, '0pdd.rb')
+    refute_includes(last_response.body, 'octokit')
+  ensure
+    Sinatra::Application.set(:github, before)
+  end
+
+  def test_survives_rate_limit_reported_as_forbidden_in_github_hook
+    before = Sinatra::Application.settings.github
+    gh = FakeGithub.new
+    gh.define_singleton_method(:repository) do |*_|
+      raise(
+        Octokit::Forbidden.new(
+          status: 403,
+          body: 'You have exceeded a secondary rate limit',
+          response_headers: {}
+        )
+      )
+    end
+    Sinatra::Application.set(:github, gh)
+    headers = {
+      'CONTENT_TYPE' => 'application/json',
+      'HTTP_USER_AGENT' => 'GitHub-Hookshot',
+      'HTTP_X_GITHUB_EVENT' => 'push'
+    }
+    post(
+      '/hook/github',
+      ['{"head_commit":{"id":"-"},',
+       '"repository":{"url":"localhost",',
+       '"full_name":"yegor256-one/com.github.0pdd-test"},',
+       '"ref":"refs/heads/master"}'].join,
+      headers
+    )
+    assert_equal(429, last_response.status)
+  ensure
+    Sinatra::Application.set(:github, before)
+  end
+
+  def test_reports_non_rate_limit_forbidden_as_error_in_github_hook
+    before = Sinatra::Application.settings.github
+    gh = FakeGithub.new
+    gh.define_singleton_method(:repository) do |*_|
+      raise(
+        Octokit::Forbidden.new(
+          status: 403,
+          body: 'Resource not accessible by integration',
+          response_headers: {}
+        )
+      )
+    end
+    Sinatra::Application.set(:github, gh)
+    headers = {
+      'CONTENT_TYPE' => 'application/json',
+      'HTTP_USER_AGENT' => 'GitHub-Hookshot',
+      'HTTP_X_GITHUB_EVENT' => 'push'
+    }
+    exception = assert_raises(Octokit::Forbidden) do
+      post(
+        '/hook/github',
+        ['{"head_commit":{"id":"-"},',
+         '"repository":{"url":"localhost",',
+         '"full_name":"yegor256-one/com.github.0pdd-test"},',
+         '"ref":"refs/heads/master"}'].join,
+        headers
+      )
+    end
+    refute_includes(exception.message.downcase, 'rate limit')
+  ensure
+    Sinatra::Application.set(:github, before)
+  end
+
   def test_it_understands_push_from_gitlab
     headers = {
       'CONTENT_TYPE' => 'application/json',
