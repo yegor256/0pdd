@@ -4,12 +4,12 @@
 require_relative 'zero_vector'
 require_relative 'functions/rastrigin'
 
-# rubocop:disable Metrics/ParameterLists
 module Pso
   #
   # PSO Solver
   #
   class Solver
+    # rubocop:disable-next Metrics/ParameterLists
     def initialize(
       din: 5,
       density: 50,
@@ -113,4 +113,3 @@ module Pso
     end
   end
 end
-# rubocop:enable Metrics/ParameterLists
