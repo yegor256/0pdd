@@ -18,7 +18,7 @@ jobs:
         ruby: [3.3]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: sudo apt-get install --yes libmagic-dev
       - uses: ruby/setup-ruby@v1
         with:
