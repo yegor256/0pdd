@@ -2,8 +2,22 @@
 # SPDX-License-Identifier: MIT
 
 require 'rack/test'
+require 'rackup/handler/webrick'
 require_relative 'test__helper'
 require_relative '../0pdd'
+
+# Emulates what Rackup::Handler::WEBrick passes to the app as +rack.input+
+# in production: fiber-based input, consumed chunk by chunk, without a
+# +#rewind+ method. See https://github.com/yegor256/0pdd/issues/572
+class FakeWebrickRequest
+  def initialize(*chunks)
+    @chunks = chunks
+  end
+
+  def body(&block)
+    @chunks.each(&block)
+  end
+end
 
 class AppTest < Minitest::Test
   include Rack::Test::Methods
@@ -111,6 +125,48 @@ class AppTest < Minitest::Test
     )
     assert_predicate(last_response, :ok?)
     assert_includes(last_response.body, 'Thanks')
+  end
+
+  def test_it_understands_form_push_from_github_with_webrick_input
+    payload = [
+      '{"head_commit":{"id":"-"},',
+      '"repository":{"url":"localhost",',
+      '"full_name":"yegor256-one/com.github.0pdd-test"},',
+      '"ref":"refs/heads/master"}'
+    ].join
+    status, _headers, body = Sinatra::Application.call(
+      webrick_env('application/x-www-form-urlencoded', Rack::Utils.build_query(payload: payload))
+    )
+    assert_equal(200, status)
+    assert_includes(body.join, 'Thanks')
+  end
+
+  def test_it_understands_json_push_from_github_with_webrick_input
+    payload = [
+      '{"head_commit":{"id":"-"},',
+      '"repository":{"url":"localhost",',
+      '"full_name":"yegor256-one/com.github.0pdd-test"},',
+      '"ref":"refs/heads/master"}'
+    ].join
+    status, _headers, body = Sinatra::Application.call(
+      webrick_env('application/json', payload)
+    )
+    assert_equal(200, status)
+    assert_includes(body.join, 'Thanks')
+  end
+
+  def test_rejects_github_push_without_payload
+    headers = {
+      'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
+      'HTTP_USER_AGENT' => 'GitHub-Hookshot',
+      'HTTP_X_GITHUB_EVENT' => 'push'
+    }
+    post('/hook/github', 'foo=bar', headers)
+    assert_equal(400, last_response.status)
+    assert_includes(
+      last_response.body,
+      'URL-encoded content is expected in the "payload" query parameter'
+    )
   end
 
   def test_it_ignores_push_from_github_to_not_master
@@ -316,5 +372,37 @@ class AppTest < Minitest::Test
     get('/unknown_path')
     assert_equal(404, last_response.status)
     assert_equal('text/html;charset=utf-8', last_response.content_type)
+  end
+
+  private
+
+  # Builds a Rack env the same way Rackup::Handler::WEBrick#service does
+  # in production, with the non-rewindable fiber-based rack.input (#572).
+  def webrick_env(content_type, body)
+    {
+      'REQUEST_METHOD' => 'POST',
+      'SCRIPT_NAME' => '',
+      'PATH_INFO' => '/hook/github',
+      'QUERY_STRING' => '',
+      'SERVER_NAME' => 'localhost',
+      'SERVER_PORT' => '443',
+      'CONTENT_TYPE' => content_type,
+      'CONTENT_LENGTH' => body.bytesize.to_s,
+      'HTTP_USER_AGENT' => 'GitHub-Hookshot/abc123',
+      'HTTP_X_GITHUB_EVENT' => 'push',
+      'rack.version' => Rack::VERSION,
+      'rack.url_scheme' => 'https',
+      'rack.input' => Rackup::Handler::WEBrick::Input.new(
+        FakeWebrickRequest.new(
+          body.byteslice(0, body.bytesize / 2),
+          body.byteslice(body.bytesize / 2, body.bytesize)
+        )
+      ),
+      'rack.errors' => $stderr,
+      'rack.multithread' => true,
+      'rack.multiprocess' => false,
+      'rack.run_once' => false,
+      'rack.hijack?' => true
+    }
   end
 end
