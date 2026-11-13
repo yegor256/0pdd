@@ -16,7 +16,8 @@ class Log
   def initialize(dynamo, repo, vcs = 'github')
     @dynamo = dynamo
     @vcs = (vcs || 'github').strip.downcase
-    raise 'You need to specify your cloud VCS' unless SUPPORTED_VCS.include?(@vcs)
+    forgejo = /\Aforgejo-[a-z0-9]+(?:[.-][a-z0-9]+)*\z/.match?(@vcs)
+    raise 'You need to specify your cloud VCS' unless SUPPORTED_VCS.include?(@vcs) || forgejo
 
     @repo = if @vcs == 'github'
               repo

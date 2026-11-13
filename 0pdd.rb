@@ -26,6 +26,7 @@ require_relative 'objects/git_repo'
 require_relative 'objects/user_error'
 require_relative 'objects/vcs/github'
 require_relative 'objects/vcs/gitlab'
+require_relative 'objects/forgejo_hook'
 require_relative 'objects/clients/github'
 require_relative 'objects/clients/gitlab'
 require_relative 'objects/jobs/job'
@@ -237,6 +238,11 @@ get '/snapshot' do
   name = repo_name(params[:name])
   uri = "git@github.com:#{name}.git"
   uri = "git@gitlab.com:#{name}.git" if vcs == 'gitlab'
+  if vcs.start_with?('forgejo-')
+    host = vcs.delete_prefix('forgejo-')
+    error 404 unless settings.config.fetch('forgejo', {}).key?(host)
+    uri = "https://#{host}/#{name}.git"
+  end
   begin
     repo = GitRepo.new(
       uri: uri,
@@ -410,6 +416,22 @@ post '/hook/gitlab' do
   "#{ignore}Thanks #{gitlab.repo.name}"
 end
 
+post '/hook/forgejo/:host/:owner/:repo' do
+  halt 415, 'Expected application/json' unless request.media_type == 'application/json'
+  begin
+    request.body.rewind
+    vcs = ForgejoHook.new(settings.config.fetch('forgejo', {})).repository(
+      params[:host], "#{params[:owner]}/#{params[:repo]}", request.body.read, request.env
+    )
+    halt 200, 'Push is not a live default-branch update, nothing is done.' unless vcs
+    halt 400, 'Forgejo repository is unavailable or private' unless vcs.exists?
+    process_request(vcs)
+    "Thanks #{vcs.repo.name}"
+  rescue ForgejoHook::Rejected => e
+    halt e.status, e.message
+  end
+end
+
 get '/css/*.css' do
   content_type 'text/css', charset: 'utf-8'
   file = params[:splat].first
@@ -463,6 +485,7 @@ end
 
 def storage(repo, vcs)
   file_name = vcs == 'github' ? repo : "#{vcs}-#{repo}"
+  file_name = "#{vcs}/#{repo}" if vcs.start_with?('forgejo-')
   SyncStorage.new(
     UpgradedStorage.new(
       SafeStorage.new(

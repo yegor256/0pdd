@@ -54,10 +54,14 @@ class Tickets
 
   private
 
+  def provider
+    @vcs.respond_to?(:provider) ? @vcs.provider : @vcs.name.downcase
+  end
+
   def users
     yaml = @vcs.repo.config
-    if !yaml.nil? && yaml['alerts'] && yaml['alerts'][@vcs.name.downcase]
-      yaml['alerts'][@vcs.name.downcase]
+    if !yaml.nil? && yaml['alerts'] && yaml['alerts'][provider]
+      yaml['alerts'][provider]
         .map { |x| x.strip.downcase }
         .map { |n| n.gsub(/[^0-9a-zA-Z-]+/, '') }
         .map { |n| n[0..64] }
@@ -95,7 +99,7 @@ class Tickets
     sha = @vcs.repo.head_commit_hash || vcs.repo.master
     url = @vcs.puzzle_link_for_commit(sha, file, start, stop)
     template = File.read(
-      File.join(File.dirname(__FILE__), "../templates/#{@vcs.name.downcase}_tickets_body.haml")
+      File.join(File.dirname(__FILE__), "../templates/#{provider}_tickets_body.haml")
     )
     Haml::Engine.new(template).render(
       Object.new, url: url, puzzle: puzzle

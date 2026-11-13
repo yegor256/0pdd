@@ -51,6 +51,18 @@ class TestLog < Minitest::Test
     refute_equal(github.get(tag)['repo'], gitlab.get(tag)['repo'])
   end
 
+  def test_separates_forgejo_hosts_from_each_other_and_github
+    dynamo = FakeDynamoLog.new
+    logs = %w[github forgejo-codeberg.org forgejo-git.example.org].map do |vcs|
+      Log.new(dynamo, 'alice/project', vcs)
+    end
+    logs.each_with_index do |log, index|
+      refute(log.exists('puzzle/submit'))
+      log.put('puzzle/submit', "host #{index}")
+    end
+    assert_equal(3, logs.map { |log| log.get('puzzle/submit')['repo'] }.uniq.size)
+  end
+
   def test_rejects_unknown_vcs
     assert_raises(RuntimeError) do
       Log.new(FakeDynamoLog.new, 'yegor256/0pdd', 'unknown')
