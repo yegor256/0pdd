@@ -1,9 +1,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
+require 'delegate'
 require 'json'
+require 'nokogiri'
 require 'time'
 require 'crack'
+require_relative '../objects/puzzles'
 require_relative 'predictor'
 require_relative 'storage'
 require_relative 'fake_weights_storage'
@@ -28,15 +31,10 @@ class LinearModel
     end
   end
 
-  # ranks the puzzles using Machine-Learning
-  # @param puzzles XML puzzles
-  # @return array of positional index of the input puzzles
-  # @todo #532:60min Implement a ranked puzzles.
-  #  Let's implement a class that will use `LinearModel` to rank puzzles.
-  #  This class is need in order to do an integration between original 0pdd
-  #  and model modules. Probably it can be a decorator for `Puzzles`
-  #  that ranks XML puzzles, and then submits them into `Puzzles`.
-  #  Don't forget to remove this puzzle.
+  # Ranks the puzzles using Machine-Learning.
+  # @param puzzles Array of XML puzzles
+  # @return Array of positional indexes of the input puzzles,
+  #         in the order they should be submitted
   def predict(puzzles)
     weights = @storage.load # load weights for repo from s3
     clf = Predictor.new(
@@ -51,7 +49,8 @@ class LinearModel
     else
       # get x and y data for puzzles
       samples, _labels = extract_features(puzzles)
-      ranks = clf.predict(weights, samples[0]) # model rank of puzzles if weights are loaded
+      # model rank of puzzles if weights are loaded
+      ranks = argsort(clf.predict(weights, samples[0]))
     end
     ranks.map(&:to_i)
   end
@@ -64,17 +63,20 @@ class LinearModel
 
   def get_features_labels(samples)
     x = samples.map do |_, s|
-      replace_nil([
-        s['time_estimate'],
-        s['n_characters'],
-        s['level'],
-        s['n_puzzles_before'],
-        s['n_puzzles_after'],
-        s['time_before'],
-        s['time_after'],
-        s['n_additions'],
-        s['n_deletions']
-      ].append(s['vectorized_description']))
+      replace_nil(
+        [
+          s['time_estimate'],
+          s['n_characters'],
+          s['level'],
+          s['n_puzzles_before'],
+          s['n_puzzles_after'],
+          s['time_before'],
+          s['time_after'],
+          s['n_additions'],
+          s['n_deletions'],
+          s['vectorized_description']
+        ]
+      )
     end
     y = samples.map { |_, s| s['closed'] ? Time.parse(s['closed']).to_i : 0 }.map.with_index.sort.map(&:last)
     [[x], [y]] # single backlog of puzzles
@@ -132,5 +134,52 @@ class LinearModel
   def naive_rank(puzzles)
     estimates = puzzles.map { |puzzle| puzzle['estimate'].to_i }
     estimates.map.with_index.sort.map(&:last)
+  end
+end
+
+#
+# Ranked puzzles.
+#
+# A decorator for <tt>Puzzles</tt> that ranks the XML puzzles from the
+# repo snapshot with <tt>LinearModel</tt>, and then submits them into
+# <tt>Puzzles</tt> in the order of their ranks.
+#
+# rubocop:disable-next Style/OneClassPerFile
+class RankedPuzzles
+  def initialize(repo, storage)
+    @origin = Puzzles.new(RankedRepo.new(repo, storage), storage)
+  end
+
+  # Submits the ranked puzzles into the decorated Puzzles.
+  # @param tickets Where to submit puzzles
+  def deploy(tickets)
+    @origin.deploy(tickets)
+  end
+
+  #
+  # Repo with the XML puzzles in its snapshot, reordered according to
+  # their ranks.
+  #
+  class RankedRepo < SimpleDelegator
+    def initialize(repo, storage)
+      super(repo)
+      @model = LinearModel.new(repo.name, storage)
+    end
+
+    # Returns the XML snapshot of the repo, with its puzzles ranked.
+    def xml
+      ranked(super)
+    end
+
+    private
+
+    def ranked(snapshot)
+      puzzles = snapshot.xpath('//puzzle')
+      ranks = @model.predict(
+        puzzles.map { |puzzle| JSON.parse(Crack::XML.parse(puzzle.to_s).to_json)['puzzle'] }
+      )
+      ranks.each { |i| puzzles[i].parent << puzzles[i].remove }
+      snapshot
+    end
   end
 end
