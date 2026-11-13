@@ -3,7 +3,7 @@
 
 require 'mail'
 require_relative '../diff'
-require_relative '../puzzles'
+require_relative '../maybe_ranked_puzzles'
 
 #
 # One job.
@@ -18,7 +18,7 @@ class Job
   def proceed
     @vcs.repo.push
     before = @storage.load
-    Puzzles.new(@vcs.repo, @storage).deploy(@tickets)
+    MaybeRankedPuzzles.new(@vcs.repo, @storage).deploy(@tickets)
     return if opts.include?('on-scope')
     Diff.new(before, @storage.load).notify(@tickets)
   end

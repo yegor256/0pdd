@@ -10,6 +10,7 @@ require_relative 'fake_tickets'
 require_relative '../version'
 require_relative '../objects/git_repo'
 require_relative '../objects/puzzles'
+require_relative '../objects/maybe_ranked_puzzles'
 require_relative '../objects/storage/safe_storage'
 require_relative '../objects/storage/versioned_storage'
 
@@ -25,7 +26,7 @@ class TestPuzzles < Minitest::Test
       test_xml(d, 'ignores-unknown-issues.xml')
       test_xml(d, 'submits-old-puzzles.xml')
       test_xml(d, 'submits-three-tickets.xml')
-      # test_xml(d, 'submits-ranked-puzzles.xml', ordered: true)
+      test_xml(d, 'submits-ranked-puzzles.xml', model: true, ordered: true)
     end
   end
 
@@ -85,7 +86,7 @@ class TestPuzzles < Minitest::Test
 
   private
 
-  def test_xml(dir, name, ordered: false)
+  def test_xml(dir, name, ordered: false, model: false)
     xml = File.open("test-assets/puzzles/#{name}") { |f| Nokogiri::XML(f) }
     storage = VersionedStorage.new(
       SafeStorage.new(
@@ -98,10 +99,11 @@ class TestPuzzles < Minitest::Test
     )
     repo = OpenStruct.new(
       xml: Nokogiri.XML(xml.xpath('/test/snapshot/puzzles')[0].to_s),
-      config: {}
+      config: model ? { 'model' => true } : {}
     )
     tickets = FakeTickets.new
-    Puzzles.new(repo, storage).deploy(tickets)
+    deployable = model ? MaybeRankedPuzzles.new(repo, storage) : Puzzles.new(repo, storage)
+    deployable.deploy(tickets)
     xml.xpath('/test/assertions/xpath/text()').each do |xpath|
       after = storage.load
       refute_empty(
