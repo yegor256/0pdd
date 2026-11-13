@@ -27,6 +27,15 @@ class TestGithubRepo < Minitest::Test
     refute(repo(client).add_comment(1, 'hello'))
   end
 
+  def test_returns_nil_when_issue_is_not_found
+    client = Object.new
+    response = not_found_response
+    client.define_singleton_method(:issue) do |_, _|
+      raise Octokit::NotFound, response
+    end
+    assert_nil(repo(client).issue(1))
+  end
+
   private
 
   def repo(client)
@@ -54,6 +63,16 @@ class TestGithubRepo < Minitest::Test
       url: 'https://api.github.test/repos/yegor256/0pdd/issues/1',
       status: 500,
       body: 'boom',
+      response_headers: {}
+    }
+  end
+
+  def not_found_response
+    {
+      method: :get,
+      url: 'https://api.github.test/repos/yegor256/0pdd/issues/1',
+      status: 404,
+      body: '{"message":"Not Found","documentation_url":"https://docs.github.com/rest"}',
       response_headers: {}
     }
   end
