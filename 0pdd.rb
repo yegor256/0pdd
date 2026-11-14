@@ -53,6 +53,12 @@ require_relative 'objects/invitations/github_invitations'
 
 require_relative 'test/fake_storage'
 
+# Rack::MethodOverride, enabled by default in classic Sinatra apps, reads the
+# entire body of every form-urlencoded POST before our hooks can see it,
+# which breaks request.body and params inside the hooks (#572).
+# We never use the `_method` parameter, so we don't need this middleware:
+disable :method_override
+
 configure do
   Haml::Options.defaults[:format] = :xhtml
   config = if ENV['RACK_ENV'] == 'test'
@@ -345,11 +351,12 @@ post '/hook/github' do
     ]
   end
   request.body.rewind
+  body = request.body.read
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
-      payload = params[:payload]
       # see https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks
+      payload = Rack::Utils.parse_nested_query(body)['payload']
       if payload.nil?
         return [
           400,
@@ -358,7 +365,7 @@ post '/hook/github' do
       end
       payload
     when 'application/json'
-      request.body.read
+      body
     else
       raise "Invalid content-type: \"#{request.content_type}\""
     end
@@ -389,12 +396,13 @@ post '/hook/gitlab' do
     ]
   end
   request.body.rewind
+  body = request.body.read
   json = JSON.parse(
     case request.content_type
     when 'application/x-www-form-urlencoded'
-      params[:payload]
+      Rack::Utils.parse_nested_query(body)['payload']
     when 'application/json'
-      request.body.read
+      body
     else
       raise "Invalid content-type: \"#{request.content_type}\""
     end
