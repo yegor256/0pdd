@@ -17,9 +17,14 @@ class Tickets
   end
 
   def notify(issue, message)
+    found = @vcs.issue(issue)
+    if found.nil?
+      puts "Issue ##{issue} is not found, can't comment"
+      return
+    end
     @vcs.add_comment(
       issue,
-      "@#{@vcs.issue(issue)[:author][:username]} #{message}"
+      "@#{found[:author][:username]} #{message}"
     )
   rescue JIRA::HTTPError, Octokit::NotFound, Gitlab::Error::NotFound => e
     puts "The issue most probably is not found, can't comment: #{e.message}"
@@ -39,7 +44,12 @@ class Tickets
 
   def close(puzzle)
     issue = puzzle.xpath('issue')[0].text
-    return true if @vcs.issue(issue)[:state] == 'closed'
+    found = @vcs.issue(issue)
+    if found.nil?
+      puts "Issue ##{issue} is not found, skipping the ticket"
+      return true
+    end
+    return true if found[:state] == 'closed'
     return false unless @vcs.close_issue(issue)
     return false unless @vcs.add_comment(
       issue,
