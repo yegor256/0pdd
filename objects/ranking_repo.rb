@@ -4,38 +4,34 @@
 require_relative '../model/linear'
 
 #
-# Decorator of a Git repository that returns the XML snapshot with
-# puzzles ranked by the ML model.
+# Ranking of the puzzles to be deployed.
+#
+# Ranks the puzzles of the XML document that <tt>Puzzles</tt> builds
+# after the snapshot is joined with the storage: the puzzles that
+# will be submitted are moved to the end of the document, in the
+# order of their ranks. Puzzles that already have their issues stay
+# where they are, since they are not submitted.
 #
 class RankingRepo
-  def initialize(origin, storage)
+  def initialize(origin, storage, weights_storage = nil)
     @origin = origin
     @storage = storage
+    @weights_storage = weights_storage
   end
 
-  def name
-    @origin.name
-  end
-
-  def config
-    @origin.config
-  end
-
-  # XML snapshot with puzzles reordered according to their ranks.
-  def xml
-    rank(@origin.xml)
-  end
-
-  private
-
-  def rank(snapshot)
-    puzzles = snapshot.xpath('/puzzles/puzzle')
-    return snapshot if puzzles.empty?
-    ranks = LinearModel.new(@origin.name, @storage).predict(
-      puzzles.map { |p| p.element_children.to_h { |e| [e.name, e.text] } }
+  # Moves the puzzles to be submitted (alive, with no issue or an
+  # unknown one) to the end of the XML document, in the order of
+  # their ranks.
+  def rank(xml)
+    candidates = xml.xpath(
+      "//puzzle[@alive='true' and (not(issue) or issue='unknown')]"
     )
-    root = snapshot.xpath('/puzzles')[0]
-    ranks.each { |i| root.add_child(puzzles[i]) }
-    snapshot
+    return xml if candidates.empty?
+    ranks = LinearModel.new(@origin.name, @storage, @weights_storage).predict(
+      candidates.map { |puzzle| puzzle.element_children.to_h { |e| [e.name, e.text] } }
+    )
+    puzzles = xml.xpath('/puzzles')[0]
+    ranks.each { |i| puzzles << candidates[i].remove }
+    xml
   end
 end

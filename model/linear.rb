@@ -11,32 +11,16 @@ require_relative 'fake_weights_storage'
 #
 # Linear Model
 class LinearModel
-  def initialize(repo, storage)
+  def initialize(repo, storage, weights_storage = nil)
     @repo = repo
     @xml_storage = storage
-    if ENV['RACK_ENV'] == 'test'
-      @storage = FakeWeightsStorage.new(@repo)
-    else
-      settings = Sinatra::Application.settings
-      @storage = Storage.new(
-        "#{@repo}.marshal",
-        settings.config['s3']['bucket'],
-        settings.config['s3']['region'],
-        settings.config['s3']['key'],
-        settings.config['s3']['secret']
-      )
-    end
+    @storage = weights_storage || default_weights_storage
   end
 
-  # ranks the puzzles using Machine-Learning
-  # @param puzzles XML puzzles
-  # @return array of positional index of the input puzzles
-  # @todo #532:60min Implement a ranked puzzles.
-  #  Let's implement a class that will use `LinearModel` to rank puzzles.
-  #  This class is need in order to do an integration between original 0pdd
-  #  and model modules. Probably it can be a decorator for `Puzzles`
-  #  that ranks XML puzzles, and then submits them into `Puzzles`.
-  #  Don't forget to remove this puzzle.
+  # Ranks the puzzles using Machine-Learning.
+  # @param puzzles Array of puzzles, each is a Hash of puzzle attributes
+  # @return Array of positional indexes of the input puzzles,
+  #         in the order they should be submitted
   def predict(puzzles)
     weights = @storage.load # load weights for repo from s3
     clf = Predictor.new(
@@ -51,20 +35,32 @@ class LinearModel
     else
       # get x and y data for puzzles
       samples, _labels = extract_features(puzzles)
-      ranks = clf.predict(weights, samples[0]) # model rank of puzzles if weights are loaded
+      # model rank of puzzles if weights are loaded
+      ranks = argsort(clf.predict(weights, samples[0]))
     end
     ranks.map(&:to_i)
   end
 
   private
 
-  def replace_nil(arr, with = 0)
-    arr.map { |x| x.nil? ? with : x }
+  def default_weights_storage
+    if ENV['RACK_ENV'] == 'test'
+      FakeWeightsStorage.new(@repo)
+    else
+      settings = Sinatra::Application.settings
+      Storage.new(
+        "#{@repo}.marshal",
+        settings.config['s3']['bucket'],
+        settings.config['s3']['region'],
+        settings.config['s3']['key'],
+        settings.config['s3']['secret']
+      )
+    end
   end
 
   def get_features_labels(samples)
     x = samples.map do |_, s|
-      replace_nil([
+      normalized(
         s['time_estimate'],
         s['n_characters'],
         s['level'],
@@ -73,11 +69,19 @@ class LinearModel
         s['time_before'],
         s['time_after'],
         s['n_additions'],
-        s['n_deletions']
-      ].append(s['vectorized_description']))
+        s['n_deletions'],
+        s['vectorized_description']
+      )
     end
     y = samples.map { |_, s| s['closed'] ? Time.parse(s['closed']).to_i : 0 }.map.with_index.sort.map(&:last)
     [[x], [y]] # single backlog of puzzles
+  end
+
+  # Normalizes raw features into a flat array of numbers: +nil+ becomes
+  # a zero, strings become floats, arrays (like a vectorized
+  # description) are flattened element by element.
+  def normalized(*raw)
+    raw.flat_map { |feature| feature.nil? ? [0.0] : Array(feature).map(&:to_f) }
   end
 
   # depth first feature extraction
