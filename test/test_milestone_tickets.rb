@@ -12,6 +12,50 @@ require_relative '../objects/tickets/milestone_tickets'
 # Copyright:: Copyright (c) 2016-2026 Yegor Bugayenko
 # License:: MIT
 class TestGithubTickets < Minitest::Test
+  def test_sets_milestone_on_submitted_issue
+    config = YAML.safe_load(
+      "
+tickets:
+  - inherit-milestone
+alerts:
+  suppress:
+    - on-inherited-milestone
+    "
+    )
+    vcs = FakeGithub.new(repo: object(config: config))
+    def vcs.issue(_)
+      { milestone: { number: 123, title: 'v1.0' } }
+    end
+
+    def vcs.update_issue(issue, _)
+      @updated_issue = issue
+    end
+    class << vcs
+      attr_accessor :updated_issue
+    end
+    tickets = Object.new
+    def tickets.submit(_)
+      { number: 456, href: 'http://0pdd.com' }
+    end
+    test = MilestoneTickets.new(vcs, tickets)
+    test.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>23-ab536de</id>
+          <file>/a/b/c/test.txt</file>
+          <time>01-01-2019</time>
+          <author>yegor</author>
+          <body>привет дорогой друг, как твои дела?</body>
+          <ticket>123</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    assert_equal(456, vcs.updated_issue)
+  end
+
   def test_sets_milestone
     milestone = 123
     config = YAML.safe_load(
