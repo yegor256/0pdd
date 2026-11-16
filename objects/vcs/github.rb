@@ -31,7 +31,9 @@ class GithubRepo
   end
 
   # Read information about one issue in GitHub and return it
-  # as a map.
+  # as a map. If the issue is not found, most probably because
+  # the repository was deleted, renamed or made private, we
+  # return NIL, expecting the caller to skip the ticket.
   def issue(issue_id)
     hash = @client.issue(@repo.name, issue_id)
     id = hash[:user][:id] if hash[:user]
@@ -44,6 +46,9 @@ class GithubRepo
       },
       milestone: hash[:milestone]
     }
+  rescue Octokit::NotFound => e
+    puts "Issue ##{issue_id} in #{@repo.name} is not available: #{e.message}"
+    nil
   end
 
   def close_issue(issue_id)

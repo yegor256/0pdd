@@ -143,4 +143,45 @@ tickets:
     )
     assert(vcs.comment.start_with?('This puzzle inherited milestone'))
   end
+
+  def test_does_not_set_milestone_when_issue_is_not_found
+    config = YAML.safe_load(
+      "
+tickets:
+  - inherit-milestone
+      "
+    )
+    vcs = FakeGithub.new(repo: object(config: config))
+    def vcs.issue(_)
+      nil
+    end
+
+    def vcs.update_issue(_, _)
+      @updated = true
+    end
+    class << vcs
+      attr_accessor :updated
+    end
+    tickets = Object.new
+    def tickets.submit(_)
+      { number: 123, href: 'http://0pdd.com' }
+    end
+    test = MilestoneTickets.new(vcs, tickets)
+    test.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>23-ab536de</id>
+          <file>/a/b/c/test.txt</file>
+          <time>01-01-2019</time>
+          <author>yegor</author>
+          <body>привет дорогой друг, как твои дела?</body>
+          <ticket>123</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    refute(vcs.updated)
+  end
 end
