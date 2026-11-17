@@ -24,7 +24,7 @@ class MilestoneTickets
       unless parent.nil? || parent[:milestone].nil?
         begin
           @vcs.update_issue(
-            num,
+            submitted[:number],
             milestone: parent[:milestone][:number]
           )
           unless config.dig('alerts', 'suppress')
