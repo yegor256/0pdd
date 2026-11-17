@@ -40,7 +40,7 @@ class AppTest < Minitest::Test
     get('/')
     assert_predicate(last_response, :ok?)
     assert_equal(1, Nokogiri::HTML(last_response.body).css('div.center').size)
-    assert_includes(last_response.body, 'https://www.zerocracy.com')
+    assert_includes(Nokogiri::HTML(last_response.body).text.gsub(/\s+/, ' '), 'for Zerocracy.')
   end
 
   def test_renders_some_pages
