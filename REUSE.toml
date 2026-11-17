@@ -8,6 +8,7 @@ path = [
     ".gitattributes",
     ".gitignore",
     ".pdd",
+    ".ruby-version",
     "**.json",
     "**.md",
     "**.png",

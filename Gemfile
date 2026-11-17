@@ -3,6 +3,8 @@
 
 source 'https://rubygems.org'
 
+ruby file: '.ruby-version'
+
 gem 'atlassian-jwt', '~>0.2.1'
 gem 'aws-sdk-dynamodb', '~>1.182'
 gem 'aws-sdk-s3', '~>1.239'
