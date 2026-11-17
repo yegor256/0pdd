@@ -83,18 +83,7 @@ class Tickets
     format += yaml['format'].map { |x| x.strip.downcase } if !yaml.nil? && yaml['format'].is_a?(Array)
     len = format.find { |i| i =~ /title-length=\d+/ }
     Truncated.new(
-      if format.include?('short-title')
-        puzzle.xpath('body')[0].text
-      else
-        subject = File.basename(puzzle.xpath('file')[0].text)
-        start, stop = puzzle.xpath('lines')[0].text.split('-')
-        [
-          subject,
-          ':',
-          (start == stop ? start : "#{start}-#{stop}"),
-          ": #{puzzle.xpath('body')[0].text}"
-        ].join
-      end,
+      puzzle.xpath('body')[0].text.lines.first.to_s,
       [[len ? len.gsub(/^title-length=/, '').to_i : 60, 30].max, 255].min
     ).to_s
   end

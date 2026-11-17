@@ -133,7 +133,9 @@ root directory of the repository. Take
 The `format` section helps you instruct 0pdd about GitHub issues formatting.
 These options are supported:
 
-* `short-title`: issue title will not include file name and line numbers
+* `short-title`: kept for backward compatibility only. The title of a new
+issue is always built from the first line of the puzzle text, without the
+file name and line numbers
 
 * `title-length=...`: you may configure the length of the title of GitHub
 issues we create. Minimum length is 30, maximum is 255. Any other values
