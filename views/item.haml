@@ -1,7 +1,7 @@
 -# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Yegor Bugayenko
 -# SPDX-License-Identifier: MIT
 
-= Haml::Engine.new(File.read('views/_header.haml')).render(Object.new, local_assigns)
+!= haml(:_header, layout: false, locals: local_assigns)
 
 %p
   This is a single entry in the log. All entries have unique
@@ -25,4 +25,4 @@
     %a{href:url("/log-delete?name=#{repo}&time=#{item['time'].to_i}&tag=#{item['tag']}"), onclick: "return confirm('You are going to delete the \"#{item['tag']}\" event. Normally you should not do this. Are you sure?')"}
       delete it
 
-= Haml::Engine.new(File.read('views/_footer.haml')).render(Object.new, local_assigns)
+!= haml(:_footer, layout: false, locals: local_assigns)

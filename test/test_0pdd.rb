@@ -39,7 +39,8 @@ class AppTest < Minitest::Test
   def test_it_renders_home_page
     get('/')
     assert_predicate(last_response, :ok?)
-    assert_includes(last_response.body, '0pdd')
+    assert_equal(1, Nokogiri::HTML(last_response.body).css('div.center').size)
+    assert_includes(last_response.body, 'https://www.zerocracy.com')
   end
 
   def test_renders_some_pages
@@ -65,22 +66,24 @@ class AppTest < Minitest::Test
   def test_renders_log_page
     repo = 'yegor256/0pdd'
     log = Log.new(Dynamo.new.aws, repo)
-    log.put('some-tag', 'some text here')
+    log.put('some-tag', '<script>alert(1)</script> & some text here')
     get("/log?name=#{repo}")
     assert_predicate(last_response, :ok?, last_response.body)
-    assert_includes(last_response.body, repo, last_response.body)
-    assert_includes(last_response.body, 'some text', last_response.body)
+    html = Nokogiri::HTML(last_response.body)
+    assert_equal([1, VERSION], [html.css('img.logo').size, html.css('p').last.text.strip])
+    assert_includes(last_response.body, '&lt;script&gt;alert(1)&lt;/script&gt; &amp; some text')
   end
 
   def test_renders_log_item
     repo = 'yegor256/0pdd'
     log = Log.new(Dynamo.new.aws, repo)
     tag = 'some-tag'
-    log.put(tag, 'some text here')
+    log.put(tag, '<script>alert(1)</script> & some text here')
     get("/log-item?repo=#{repo}&tag=#{tag}")
     assert_predicate(last_response, :ok?, last_response.body)
-    assert_includes(last_response.body, repo, last_response.body)
-    assert_includes(last_response.body, 'some text', last_response.body)
+    html = Nokogiri::HTML(last_response.body)
+    assert_equal([1, VERSION], [html.css('img.logo').size, html.css('p').last.text.strip])
+    assert_includes(last_response.body, '&lt;script&gt;alert(1)&lt;/script&gt; &amp; some text')
   end
 
   def test_renders_page_not_found

@@ -60,7 +60,7 @@ require_relative 'test/fake_storage'
 disable :method_override
 
 configure do
-  Haml::Options.defaults[:format] = :xhtml
+  set :haml, format: :xhtml
   config = if ENV['RACK_ENV'] == 'test'
     {
       'testing' => true,
