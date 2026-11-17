@@ -107,7 +107,7 @@ class Tickets
     template = File.read(
       File.join(File.dirname(__FILE__), "../templates/#{@vcs.name.downcase}_tickets_body.haml")
     )
-    Haml::Engine.new(template).render(
+    Haml::Template.new(escape_html: false) { template }.render(
       Object.new, url: url, puzzle: puzzle
     )
   end

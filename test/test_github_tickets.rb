@@ -45,7 +45,7 @@ format:
           <id>23-ab536de</id>
           <file>/a/b/c/test.txt</file>
           <time>01-01-2019</time>
-          <author>yegor</author>
+          <author>Yegor &amp; co</author>
           <body>привет дорогой друг, как твои дела?</body>
           <ticket>123</ticket>
           <estimate>30</estimate>
@@ -54,6 +54,7 @@ format:
         </puzzle>'
       ).xpath('/puzzle')
     )
+    assert_includes(vcs.data[:description], 'Yegor & co')
     assert_equal('привет дорогой друг, как...', vcs.data[:title])
     assert(vcs.data[:description].start_with?('The puzzle `23-ab536de` from #123 has'))
   end
