@@ -8,11 +8,6 @@ require_relative '../model/linear'
 
 #
 # Puzzles in XML/S3
-# @todo #532:60min Implement a decorator for optional model configuration load.
-#  Let's implement a class that decorates `Puzzles` and
-#  based on presence of `model: true` attribute in YAML config, decides
-#  whether the puzzles should be ranked or not.
-#  Don't forget to remove this puzzle.
 #
 class Puzzles
   def initialize(repo, storage)
@@ -27,6 +22,7 @@ class Puzzles
   # puzzles are no longer active and remove them from GitHub.
   def deploy(tickets)
     xml = join(@storage.load, @repo.xml)
+    xml = rank(joined(xml))
     xml = group(xml)
     save(xml)
     expose(xml, tickets)
@@ -41,9 +37,9 @@ class Puzzles
 
   # Join existing XML with the snapshot just arrived from PDD
   # toolkit output after the analysis of the code base. New <puzzle>
-  # elements are added as <extra> elements. They later inside the
-  # method join() will be placed to the right positions and will
-  # either replace existing ones of will become new puzzles.
+  # elements are added as <extra> elements. They later, in joined(),
+  # will be placed to the right positions and will either replace
+  # existing ones or will become new puzzles.
   def join(before, snapshot)
     after = Nokogiri::XML(before.to_s)
     target = after.xpath('/puzzles')[0]
@@ -54,13 +50,26 @@ class Puzzles
     after
   end
 
-  # Merge <extra> elements with <puzzle> elements in the XML. Some
-  # extras will be simply deleted, while others will become new
-  # puzzles.
+  # Merge <extra> elements with <puzzle> elements in the XML
+  # (join.xsl). Some extras will be simply deleted, while others
+  # will become new puzzles. All puzzles in the resulting document
+  # are flat: they stay on the top level and receive the +alive+
+  # attribute and the +issue+ element.
+  def joined(xml)
+    Nokogiri::XSLT(File.read('assets/xsl/join.xsl')).transform(xml)
+  end
+
+  # Nest child puzzles under their parents (group.xsl).
   def group(xml)
-    Nokogiri::XSLT(File.read('assets/xsl/group.xsl')).transform(
-      Nokogiri::XSLT(File.read('assets/xsl/join.xsl')).transform(xml)
-    )
+    Nokogiri::XSLT(File.read('assets/xsl/group.xsl')).transform(xml)
+  end
+
+  # Ranks the puzzles that will be submitted, after the snapshot is
+  # joined with the storage. Does nothing by default: puzzles keep
+  # their order. Ranking extensions of +Puzzles+ override this
+  # method, see MaybeRankedPuzzles.
+  def rank(xml)
+    xml
   end
 
   # Take some puzzles from the XML and either close their tickets in GitHub
