@@ -12,6 +12,10 @@ class UpgradedStorage
 
   def load
     xml = @origin.load
+    if xml.xpath('/*')[0].nil?
+      puts 'The stored XML document has no document element, treating it as empty'
+      return Nokogiri::XML('<puzzles/>')
+    end
     if xml.xpath('/*/@version')[0] != @version
       %w[remove-broken-issues add-namespace].each do |xsl|
         xml = Nokogiri::XSLT(

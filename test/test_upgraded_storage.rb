@@ -2,10 +2,15 @@
 # SPDX-License-Identifier: MIT
 
 require 'nokogiri'
+require 'fileutils'
+require 'tempfile'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
+require_relative '../objects/storage/cached_storage'
+require_relative '../objects/storage/once_storage'
 require_relative '../objects/storage/safe_storage'
+require_relative '../objects/storage/sync_storage'
 require_relative '../objects/storage/upgraded_storage'
 require_relative '../objects/storage/versioned_storage'
 
@@ -46,5 +51,53 @@ class TestUpgradedStorage < Minitest::Test
     )
     refute_empty(storage.load.xpath('//puzzle[id="X1"]/issue/@href'))
     assert_empty(storage.load.xpath('//puzzle[id="X2"]/issue/@href'))
+  end
+
+  def test_empty_stored_document_treated_as_new
+    storage = UpgradedStorage.new(
+      FakeStorage.new(Dir.mktmpdir, '<?xml version="1.0"?>'),
+      '0.0.5'
+    )
+    refute_nil(storage.load.xpath('/puzzles')[0])
+  end
+
+  def test_empty_document_survives_full_storage_stack
+    storage = SyncStorage.new(
+      UpgradedStorage.new(
+        SafeStorage.new(
+          OnceStorage.new(
+            CachedStorage.new(
+              VersionedStorage.new(
+                FakeStorage.new(Dir.mktmpdir, '<?xml version="1.0"?>'),
+                '0.0.5'
+              ),
+              File.join(Dir.mktmpdir, 'cache')
+            )
+          )
+        ),
+        '0.0.5'
+      )
+    )
+    refute_empty(storage.load.xpath('/puzzles'))
+  end
+
+  def test_empty_cached_document_survives_full_storage_stack
+    file = File.join(Dir.mktmpdir, 'cache')
+    FileUtils.mkdir_p(File.dirname(file))
+    File.write(file, '<?xml version="1.0"?>')
+    storage = SyncStorage.new(
+      UpgradedStorage.new(
+        SafeStorage.new(
+          OnceStorage.new(
+            CachedStorage.new(
+              VersionedStorage.new(FakeStorage.new, '0.0.5'),
+              file
+            )
+          )
+        ),
+        '0.0.5'
+      )
+    )
+    refute_empty(storage.load.xpath('/puzzles'))
   end
 end
