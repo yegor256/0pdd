@@ -177,7 +177,7 @@ It is a Ruby project.
 First, install
 [Java] SDK 8+,
 [Maven 3.2+](https://maven.apache.org/),
-[Ruby 4.0.9](https://www.ruby-lang.org/en/documentation/installation/),
+[Ruby 4.0.10](https://www.ruby-lang.org/en/documentation/installation/),
 [Rubygems](https://rubygems.org/pages/download),
 and
 [Bundler](https://bundler.io/).
@@ -237,7 +237,7 @@ see how it's done in `.rultor.yml`.
 On Windows, `ruby-filemagic` (one of our dependencies) can't be built
 natively, which makes it hard to run the test suite locally. The easiest
 way is to run it inside [Docker](https://www.docker.com/), using the official
-[`ruby:4.0.9`](https://hub.docker.com/_/ruby) image.
+[`ruby:4.0.10`](https://hub.docker.com/_/ruby) image.
 Install Java, Maven, and libmagic inside the container before running the
 build. Java and Maven start DynamoDB Local (see the `Rakefile`), and
 libmagic is needed to build `ruby-filemagic`.
@@ -248,7 +248,7 @@ from rewriting container paths):
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm \
   -v "$(pwd -W):/0pdd" -w /0pdd \
-  ruby:4.0.9 bash -c \
+  ruby:4.0.10 bash -c \
   'apt-get update &&
    apt-get install -y default-jre-headless maven libmagic-dev &&
    bundle install --no-color && bundle exec rake'
@@ -258,7 +258,7 @@ In PowerShell on Windows:
 
 ```powershell
 docker run --rm -v "${PWD}:/0pdd" -w /0pdd `
-  ruby:4.0.9 bash -c `
+  ruby:4.0.10 bash -c `
   'apt-get update &&
    apt-get install -y default-jre-headless maven libmagic-dev &&
    bundle install --no-color && bundle exec rake'
