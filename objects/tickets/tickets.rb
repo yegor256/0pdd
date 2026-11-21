@@ -97,7 +97,18 @@ class Tickets
       File.join(File.dirname(__FILE__), "../templates/#{@vcs.name.downcase}_tickets_body.haml")
     )
     Haml::Template.new(escape_html: false) { template }.render(
-      Object.new, url: url, puzzle: puzzle
+      Object.new, url: url, puzzle: puzzle, append: appended(sha, puzzle)
     )
+  end
+
+  def appended(sha, puzzle)
+    yaml = @vcs.repo.config
+    return '' if yaml.nil? || yaml['append'].nil?
+    extra = yaml['append'].to_s
+    return '' if extra.empty?
+    ['', extra
+      .gsub('{{commit}}', sha.to_s)
+      .gsub('{{author}}', puzzle.xpath('author')[0].text)
+      .gsub('{{puzzle}}', puzzle.xpath('id')[0].text)].join("\n\n")
   end
 end
