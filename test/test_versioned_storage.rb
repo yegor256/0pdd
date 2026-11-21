@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 require 'nokogiri'
+require 'tempfile'
 require_relative 'test__helper'
 require_relative 'fake_storage'
 require_relative 'fake_log'
@@ -17,5 +18,13 @@ class TestVersionedStorage < Minitest::Test
     storage = VersionedStorage.new(FakeStorage.new, version)
     storage.save(Nokogiri::XML('<test>hello</test>'))
     assert_equal(version, storage.load.xpath('/test/@version')[0].text)
+  end
+
+  def test_passes_empty_document_through
+    storage = VersionedStorage.new(
+      FakeStorage.new(Dir.mktmpdir, '<?xml version="1.0"?>'),
+      '0.0.1'
+    )
+    assert_nil(storage.load.xpath('/*')[0])
   end
 end
