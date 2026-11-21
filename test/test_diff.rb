@@ -59,6 +59,40 @@ class TestDiff < Minitest::Test
     )
   end
 
+  def test_notification_unknown_issue_without_href
+    tickets = Tickets.new
+    Diff.new(
+      Nokogiri::XML('<puzzles/>'),
+      Nokogiri::XML(
+        '<puzzles>
+          <puzzle alive="true">
+            <id>1-abcdef</id>
+            <issue>5</issue>
+            <children>
+              <puzzle alive="true">
+                <id>5-abcdef</id>
+                <issue>unknown</issue>
+                <ticket>5</ticket>
+              </puzzle>
+            </children>
+          </puzzle>
+        </puzzles>'
+      )
+    ).notify(tickets)
+    assert_equal(
+      1, tickets.messages.length,
+      "Incorrect number of messages: #{tickets.messages.length}"
+    )
+    assert_equal(
+      '5 the puzzle `<id>5-abcdef</id>` is still not solved.', tickets.messages[0],
+      "Text is wrong: #{tickets.messages[0]}"
+    )
+    refute_includes(
+      tickets.messages[0], 'unknown',
+      "The message must not contain 'unknown': #{tickets.messages[0]}"
+    )
+  end
+
   def test_notification_on_two_new_puzzles
     tickets = Tickets.new
     Diff.new(

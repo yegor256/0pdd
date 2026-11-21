@@ -27,7 +27,7 @@ class Diff
   def issues(xml, *xpath)
     xpath.map { |x| xml.xpath(x) }.flatten.map do |p|
       issue = p.xpath('issue')
-      if issue.empty?
+      if issue.empty? || (issue[0].text == 'unknown' && issue[0]['href'].nil?)
         "`#{p.xpath('id')}`"
       else
         number = issue[0].text
