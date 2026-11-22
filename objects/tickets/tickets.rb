@@ -106,9 +106,15 @@ class Tickets
     return '' if yaml.nil? || yaml['append'].nil?
     extra = yaml['append'].to_s
     return '' if extra.empty?
-    ['', extra
-      .gsub('{{commit}}', sha.to_s)
-      .gsub('{{author}}', puzzle.xpath('author')[0].text)
-      .gsub('{{puzzle}}', puzzle.xpath('id')[0].text)].join("\n\n")
+    values = {
+      'commit' => sha.to_s,
+      'ticket' => puzzle.xpath('ticket')[0].text,
+      'author' => puzzle.xpath('author')[0].text,
+      'puzzle' => puzzle.xpath('id')[0].text
+    }
+    rendered = extra.gsub(/\{\{(\w+)\}\}/) do |match|
+      values.fetch(Regexp.last_match(1), match)
+    end
+    ['', rendered].join("\n\n")
   end
 end

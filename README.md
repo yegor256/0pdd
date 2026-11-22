@@ -149,10 +149,10 @@ repository, they will automatically be created.
 
 The `append` section (a text, not a list) lets you add a custom text to the
 end of the body of every new issue we create. Inside this text you can use
-the `{{commit}}`, `{{author}}`, and `{{puzzle}}` placeholders: they will be
-replaced with the hash of the commit where the puzzle was found, the author
-of the puzzle, and its id respectively. The number of the issue is not known
-at the time the body is composed, so it cannot be used as a placeholder.
+the `{{commit}}`, `{{ticket}}`, `{{author}}`, and `{{puzzle}}` placeholders:
+they will be replaced with the hash of the commit where the puzzle was found,
+the number of the ticket the puzzle was extracted from, the author of the
+puzzle, and its id respectively.
 
 To exclude files from analysis, create a `.pdd` file with the following content:
 
