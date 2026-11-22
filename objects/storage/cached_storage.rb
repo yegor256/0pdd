@@ -25,6 +25,11 @@ class CachedStorage
     xml
   end
 
+  # Drops the cached copy, without touching the origin.
+  def flush
+    FileUtils.rm_rf(@file)
+  end
+
   def save(xml)
     FileUtils.rm_rf(@file)
     @origin.save(xml)

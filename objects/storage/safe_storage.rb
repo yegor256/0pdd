@@ -20,6 +20,11 @@ class SafeStorage
     @origin.save(valid(xml))
   end
 
+  # Drops the cached copy at the origin.
+  def flush
+    @origin.flush
+  end
+
   private
 
   def valid(xml)

@@ -13,6 +13,13 @@ class UpgradedStorage
   def load
     xml = @origin.load
     if xml.xpath('/*')[0].nil?
+      # The rootless document may come from a corrupted cache, while the
+      # origin is still healthy; we flush the cache and reload the origin,
+      # before treating the document as empty
+      @origin.flush
+      xml = @origin.load
+    end
+    if xml.xpath('/*')[0].nil?
       puts 'The stored XML document has no document element, treating it as empty'
       return Nokogiri::XML('<puzzles/>')
     end
