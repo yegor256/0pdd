@@ -104,7 +104,7 @@ GEM
       multipart-post
       oauth (~> 1.0)
     jmespath (1.6.2)
-    json (3.1.0)
+    json (3.2.0)
     jwt (2.10.3)
       base64
     language_server-protocol (3.17.0.6)
