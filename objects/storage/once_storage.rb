@@ -16,4 +16,9 @@ class OnceStorage
   def save(xml)
     @origin.save(xml) if load.to_s != xml.to_s
   end
+
+  # Drops the cached copy at the origin.
+  def flush
+    @origin.flush
+  end
 end

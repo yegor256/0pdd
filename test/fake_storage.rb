@@ -20,4 +20,9 @@ class FakeStorage
   def save(xml)
     File.write(@file, xml.to_s)
   end
+
+  # Nothing is cached here, nothing to flush.
+  def flush
+    # no-op
+  end
 end

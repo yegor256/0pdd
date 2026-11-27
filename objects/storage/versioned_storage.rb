@@ -13,6 +13,8 @@ class VersionedStorage
   def load
     xml = @origin.load
     root = xml.xpath('/*')[0]
+    return xml if root.nil?
+
     unless root['date']
       root['date'] = '2016-12-08T12:00:49Z'
       root['version'] = '0.0.0'
