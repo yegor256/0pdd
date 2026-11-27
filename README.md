@@ -93,6 +93,8 @@ format:
 tags:
   - pdd
   - bug
+append: |
+  This puzzle was found in commit {{commit}} submitted by {{author}}.
 ```
 
 The element `threshold` allows you to limit the number of issues created
@@ -144,6 +146,13 @@ will be silently ignored. The default length is 60.
 The `tags` section lists GitHub labels that will automatically be attached
 to all new issues we create. If you don't have those labels in your GitHub
 repository, they will automatically be created.
+
+The `append` section (a text, not a list) lets you add a custom text to the
+end of the body of every new issue we create. Inside this text you can use
+the `{{commit}}`, `{{ticket}}`, `{{author}}`, and `{{puzzle}}` placeholders:
+they will be replaced with the hash of the commit where the puzzle was found,
+the number of the ticket the puzzle was extracted from, the author of the
+puzzle, and its id respectively.
 
 To exclude files from analysis, create a `.pdd` file with the following content:
 

@@ -210,6 +210,176 @@ format:
     refute_includes(vcs.data[:description], 'Estimate:')
   end
 
+  def test_appends_custom_text_when_configured
+    config = YAML.safe_load(
+      "
+append: |
+  Built from {{commit}} by {{author}}, puzzle {{puzzle}} is important.
+        "
+    )
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: 'abc123',
+      master: 'master'
+    )
+    require_relative 'fake_github'
+    vcs = FakeGithub.new(repo: repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
+    end
+    class << vcs
+      attr_accessor :data
+    end
+    tickets = Tickets.new(vcs)
+    tickets.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>77-ab536de</id>
+          <file>/a/b/c/test.txt</file>
+          <time>01-01-2026</time>
+          <author>yegor</author>
+          <body>please refactor this place</body>
+          <ticket>123</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    assert_includes(
+      vcs.data[:description],
+      'Built from abc123 by yegor, puzzle 77-ab536de is important.'
+    )
+  end
+
+  def test_appends_original_ticket_number_placeholder
+    config = YAML.safe_load(
+      "
+append: |
+  Extracted from ticket {{ticket}} in commit {{commit}}.
+        "
+    )
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: 'abc123',
+      master: 'master'
+    )
+    require_relative 'fake_github'
+    vcs = FakeGithub.new(repo: repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
+    end
+    class << vcs
+      attr_accessor :data
+    end
+    tickets = Tickets.new(vcs)
+    tickets.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>78-ab536de</id>
+          <file>/a/b/c/test.txt</file>
+          <time>01-01-2026</time>
+          <author>yegor</author>
+          <body>please refactor this place</body>
+          <ticket>123</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    assert_includes(
+      vcs.data[:description],
+      'Extracted from ticket 123 in commit abc123.'
+    )
+  end
+
+  def test_preserves_backslashes_and_placeholders_in_author
+    config = YAML.safe_load(
+      "
+append: |
+  Built from {{commit}} by {{author}}, puzzle {{puzzle}} is important.
+        "
+    )
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: 'abc123',
+      master: 'master'
+    )
+    require_relative 'fake_github'
+    vcs = FakeGithub.new(repo: repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
+    end
+    class << vcs
+      attr_accessor :data
+    end
+    tickets = Tickets.new(vcs)
+    tickets.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>78-ab536de</id>
+          <file>/a/b/c/test.txt</file>
+          <time>01-01-2026</time>
+          <author>A\&amp;B {{puzzle}}</author>
+          <body>please refactor this place</body>
+          <ticket>123</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    assert_includes(
+      vcs.data[:description],
+      'Built from abc123 by A\&B {{puzzle}}, puzzle 78-ab536de is important.'
+    )
+  end
+
+  def test_appends_nothing_when_not_configured
+    config = YAML.safe_load("\n\n")
+    repo = object(
+      name: 'github',
+      config: config,
+      head_commit_hash: '123',
+      master: 'master'
+    )
+    require_relative 'fake_github'
+    vcs = FakeGithub.new(repo: repo)
+    def vcs.create_issue(data)
+      @data = data
+      { number: 1, html_url: 'url' }
+    end
+    class << vcs
+      attr_accessor :data
+    end
+    tickets = Tickets.new(vcs)
+    tickets.submit(
+      Nokogiri::XML(
+        '<puzzle>
+          <id>55-ab536de</id>
+          <file>/a/bz.txt</file>
+          <time>01-05-2019</time>
+          <author>yegor</author>
+          <body>как дела?</body>
+          <ticket>123</ticket>
+          <estimate>30</estimate>
+          <role>DEV</role>
+          <lines>1-3</lines>
+        </puzzle>'
+      ).xpath('/puzzle')
+    )
+    assert(
+      vcs.data[:description].strip.end_with?('pdd-in-action.html).')
+    )
+  end
+
   def test_closes_tickets
     config = YAML.safe_load("alerts:\n  github:\n    - yegor256\n    - davvd")
     repo = object(
